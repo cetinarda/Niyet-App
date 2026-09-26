@@ -54,7 +54,7 @@ export function aggregate(users) {
   const aynaTip = Object.create(null);
   const hist = Object.create(null);   // ekran -> [6 kova]
   const onbDone = { baglan: 0, kesfet: 0 };
-  const np = { users: 0, count: { 1: 0, 2: 0, 3: 0 }, off: {} };
+  const np = { users: 0, count: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }, off: {} };
   let notifUsers = 0;
   const transTotals = Object.create(null);
   const platform = Object.create(null), lang = Object.create(null), version = Object.create(null);
@@ -202,7 +202,7 @@ export function aggregate(users) {
     notifPrefs: np,
     notif: {
       users: notifUsers,
-      byKind: ["genel", "kisisel", "tarot", "geridon", "mektup", "anlik", "diger"].map((k) => ({ k, n: ch["notif_" + k] || 0 })),
+      byKind: ["genel", "kisisel", "koc", "tarot", "geridon", "mektup", "anlik", "diger"].map((k) => ({ k, n: ch["notif_" + k] || 0 })),
       deeplink: ["mandala", "bugun", "nefes", "ses", "chakra"].map((k) => ({ k, n: ch["deeplink_" + k] || 0 })),
     },
     choices: {
@@ -418,7 +418,7 @@ export function renderHTML(r, truncated) {
       const tipRows = (c.aynaByTip || []).map((x) =>
         `<tr><td>Ayna · ${esc(x.tip)}</td><td class="num">${x.up} iyi · ${x.down} değil · %${x.upPct}</td></tr>`).join("");
       const o = r.onboarding || {}, nt = r.notif || { byKind: [] };
-      const NK = { genel: "Genel hatırlatma", kisisel: "Kişiye özel", tarot: "Sabah tarot", geridon: "Geri dönüş (10-30 gün)", mektup: "Niyet mektubu açıldı", anlik: "Anlık mesaj (panelden)", diger: "Diğer" };
+      const NK = { genel: "Genel hatırlatma", kisisel: "Kişiye özel", koc: "Yaşam koçu", tarot: "Sabah tarot", geridon: "Geri dönüş (10-30 gün)", mektup: "Niyet mektubu açıldı", anlik: "Anlık mesaj (panelden)", diger: "Diğer" };
       return `<h2>Tanışma</h2>
      <div class="card"><table>
        <tr><td>Sakinleşmek: başladı / bitirdi</td><td class="num">${o.baglanStarted || 0} / ${o.baglanDone || 0}</td></tr>
@@ -430,9 +430,9 @@ export function renderHTML(r, truncated) {
        ${nt.byKind.map((x) => `<tr><td>${esc(NK[x.k] || x.k)}</td><td class="num">${x.n} dokunma</td></tr>`).join("")}
        ${(nt.deeplink || []).filter((x) => x.n).map((x) => `<tr><td>Deep link (etkinlik) → ${esc(x.k === "mandala" ? "Bağlan" : x.k)}</td><td class="num">${x.n} açılış</td></tr>`).join("")}
        ${(() => { const q = r.notifPrefs || { users: 0, count: {}, off: {} }; if (!q.users) return "";
-         const OFF = { kisisel: "Kişisel mesaj", aksam: "Akşam pratiği", tarot: "Sabah tarotu", hatirlatici: "Kişisel hatırlatıcı", ogle: "Gün ortası", kozmik: "Gökyüzü uyarısı", geridon: "Uzun aradan sonra" };
+         const OFF = { kisisel: "Kişisel mesaj", koc: "Yaşam koçu", aksam: "Akşam pratiği", tarot: "Sabah tarotu", hatirlatici: "Kişisel hatırlatıcı", ogle: "Gün ortası", kozmik: "Gökyüzü uyarısı", geridon: "Uzun aradan sonra" };
          return `<tr><td>Ayarını değiştiren kullanıcı</td><td class="num">${q.users}</td></tr>
-           <tr><td>Günlük sayı seçimi (1 / 2 / 3)</td><td class="num">${q.count[1] || 0} / ${q.count[2] || 0} / ${q.count[3] || 0}</td></tr>` +
+           <tr><td>Günlük sayı seçimi (1 / 2 / 3 / 4 / 5)</td><td class="num">${q.count[1] || 0} / ${q.count[2] || 0} / ${q.count[3] || 0} / ${q.count[4] || 0} / ${q.count[5] || 0}</td></tr>` +
            Object.keys(q.off).map((k) => `<tr><td>Kapatan: ${esc(OFF[k] || k)}</td><td class="num">${q.off[k]}</td></tr>`).join(""); })()}
      </table></div>
      <h2>Seçimler</h2>

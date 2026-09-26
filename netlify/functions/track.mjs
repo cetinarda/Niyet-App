@@ -127,7 +127,7 @@ export function mergeBatch(rec, body, now) {
     else if (e === "onb_kesfet_done") setMilestone("onb_kesfet_done", ts);
     else if (e === "birth_saved") setMilestone("birth_saved", ts);
     else if (e === "notif_open") {
-      const k = ["genel", "kisisel", "tarot", "geridon", "mektup", "anlik", "diger"].includes(it.k) ? it.k : null;
+      const k = ["genel", "kisisel", "koc", "tarot", "geridon", "mektup", "anlik", "diger"].includes(it.k) ? it.k : null;
       if (k) { bump("notif_" + k); setMilestone("notif_open", ts); }
     }
     // Deep link ile açılış (App Store etkinliği vb.): hedef ekran sayılır.
@@ -187,10 +187,10 @@ export function mergeBatch(rec, body, now) {
     // Ayarlar > Bildirimler tercihi (kullanıcının SON seçimi önemli: sayaçlar
     // kişi başına "şu ayarla kaydetti" sinyali, rapor kişi sayısı olarak okur).
     else if (e === "notif_pref") {
-      const c = it.c === 1 || it.c === 2 || it.c === 3 ? it.c : null;
+      const c = [1, 2, 3, 4, 5].includes(it.c) ? it.c : null;
       if (c) { rec.np = { c, off: [] }; }
       const offs = typeof it.off === "string" ? it.off.split(",") : [];
-      const OK = ["kisisel", "aksam", "tarot", "hatirlatici", "ogle", "kozmik", "geridon"];
+      const OK = ["kisisel", "koc", "aksam", "tarot", "hatirlatici", "ogle", "kozmik", "geridon"];
       if (rec.np) rec.np.off = offs.filter((k) => OK.includes(k));
     }
     else if (e === "bugun_gate") {

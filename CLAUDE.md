@@ -514,6 +514,31 @@ demek soğutur).
 
 ## 🔔 BİLDİRİMLER: TEK PLANLAYICI + GÜNLÜK SINIR (Eyl 2026, GÜNCEL)
 
+⚠️ **YAŞAM KOÇU + 1-5 + TEKRARSIZ AKIŞ (Eyl 2026, kullanıcı: "5 bildirime kadar izin
+ver, default 3; eski kullanıcılara sayıyı azaltma sadece çeşitlendir; sonsuz ve
+tekrarlanmayan bir havuz; haritasına göre ne iyi gelir; kullanım biçiminden data;
+bir yaşam koçu asistanı gibi"):**
+- Sayı 1-5 (`readNotifPrefs`), varsayılan 3, kayıtlı tercih aynen korunur. Ayarlar'da
+  1-5 düğmeleri etiketin ALTINDA tam genişlik (320 px'te yan yana sığmıyordu).
+- Yeni tür `koc` (Yaşam koçu), `src/notif-coach.js`: adaylar puanlanır (kullanım:
+  nefes/ses/çakra boşluğu, Ayna hiç/uzun süredir yok, mektup yakında/hazır/yok, seri;
+  harita: baskın + eksik element `sakin_element_dist` (yoksa Güneş burcu), günün
+  kişisel sayısı (`personalDayNumber`, Bugün ile aynı), Ay evresi; koç soruları),
+  günün tohumuyla AĞIRLIKLI seçilir, önceki günün kategorisi dinlenir. Metin 7 dil:
+  tr+en `notif-coach.js`, de/es/pt/fr/ja `notif-coach-i18n.js` (şekil BİREBİR).
+  Kullanım verisi tamamen YEREL, sunucuya gitmez. Saat: en sık açılış saati
+  (`sakin_open_hours`, `recordOpenHour` açılışta), çakışırsa kaydırılır, ID 9230-9236.
+- Varsayılan 3'te sıra değişmedi (kişisel 10:00, akşam 18:00, tarot 08:30); koç,
+  AKŞAM slotuna gün aşırı karışır. 4-5 seçen koçu kendi saatinde ayrıca alır.
+- TEKRARSIZ: tüm havuzlar `bagPick` (karıştırılmış torba: havuz bitmeden tekrar yok,
+  her tur yeni sıra) + `sakin_notif_recent` (son 14 günde giden metinler atlanır).
+  AI kişisel mesajı ya da 16:00 yedeği son 14 günde gittiyse yerine koç mesajı.
+  Tarot sabah havuzu 3'ten 8 cümleye çıktı (7 dil).
+- Analitik: `notif_open` k="koc", `notif_pref` c 1-5 + off "koc" (track/report).
+- Doğrulama: planlayıcı esbuild ile paketlenip Node'da sahte LocalNotifications ile
+  çalıştırıldı (3/4/5, doğumlu/doğumsuz, tr/en/de/ja): 7 günde 33/34 benzersiz metin.
+  Cihazda test EDİLMEDİ.
+
 ⚠️ **Aşağıdaki eski "kişiye özel havuz" anlatımındaki "günde +2" ARTIK GEÇERSİZ.**
 Genel, kişisel ve tarot havuzları birbirinden habersiz kuruluyordu: kıdem kuralı
 yalnızca genel havuza uygulanıyor, doğum bilgisi olan 30+ günlük kullanıcıya

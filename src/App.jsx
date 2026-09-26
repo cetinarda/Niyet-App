@@ -14,6 +14,7 @@ import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, onPurcha
 import { readDailyIds, loadDailyIndex, mythOfDayPinned, CARD_APP } from "./daily-cards";
 import { ICHING } from "./iching-data";
 import { TAROT } from "./tarot-data";
+import { coachMessage, bagPick, usageSnapshot, recordOpenHour, preferredHour } from "./notif-coach";
 import { LocalNotifications } from "@capacitor/local-notifications";
 import { PushNotifications } from "@capacitor/push-notifications";
 import { Share } from "@capacitor/share";
@@ -850,6 +851,8 @@ const NOTIF_SET_TXT = {
                    n:{ tr:"10:00 · doğum haritana göre", en:"10:00 · based on your birth chart", de:"10:00 · nach deinem Geburtshoroskop", es:"10:00 · según tu carta natal", pt:"10:00 · segundo o teu mapa natal", fr:"10:00 · selon ton thème natal", ja:"10:00 · 出生図にもとづいて" } },
     aksam:       { icon:"◎", l:{ tr:"Akşam pratiği", en:"Evening practice", de:"Abendpraxis", es:"Práctica de la tarde", pt:"Prática da noite", fr:"Pratique du soir", ja:"夕方のプラクティス" },
                    n:{ tr:"18:00 · nefes, ses, gün görevleri", en:"18:00 · breath, sound, daily tasks", de:"18:00 · Atem, Klang, Tagesaufgaben", es:"18:00 · respiración, sonido, tareas del día", pt:"18:00 · respiração, som, tarefas do dia", fr:"18:00 · souffle, son, tâches du jour", ja:"18:00 · 呼吸、音、今日のタスク" } },
+    koc:         { icon:"❂", l:{ tr:"Yaşam koçu", en:"Life coach", de:"Lebenscoach", es:"Coach de vida", pt:"Coach de vida", fr:"Coach de vie", ja:"ライフコーチ" },
+                   n:{ tr:"haritana ve kullanımına göre, en sık açtığın saatte", en:"based on your chart and use, at the hour you open the app most", de:"nach deinem Horoskop und deiner Nutzung, zu deiner üblichen Uhrzeit", es:"según tu carta y tu uso, a la hora en que más abres la app", pt:"segundo o teu mapa e o teu uso, à hora em que mais abres a app", fr:"selon ton thème et ton usage, à l'heure où tu ouvres le plus l'app", ja:"あなたのチャートと使い方に合わせて、よく開く時間に" } },
     tarot:       { icon:"✧", l:{ tr:"Sabah tarot kartı", en:"Morning tarot card", de:"Morgendliche Tarotkarte", es:"Carta de tarot de la mañana", pt:"Carta de tarot da manhã", fr:"Carte de tarot du matin", ja:"朝のタロットカード" },
                    n:{ tr:"08:30 · kartın seni bekliyor", en:"08:30 · your card is waiting", de:"08:30 · deine Karte wartet", es:"08:30 · tu carta te espera", pt:"08:30 · a tua carta espera-te", fr:"08:30 · ta carte t'attend", ja:"08:30 · カードが待っています" } },
     hatirlatici: { icon:"❋", l:{ tr:"Kişisel hatırlatıcı", en:"Personal reminder", de:"Persönliche Erinnerung", es:"Recordatorio personal", pt:"Lembrete pessoal", fr:"Rappel personnel", ja:"パーソナルリマインダー" },
@@ -2388,13 +2391,13 @@ async function buildTarotStoryCard(card, reversed, lang) {
 // Bugün'de gün içinde birden fazla kart açılıyor (rehber kartları + tarot), "tek
 // kart" demek yanıltıcı. Kalıp: rehber kartlarını çek, tarot kartını aç, mesajı al.
 const TAROT_NOTIF = {
-  tr: ["Günün rehber kartlarını çek, tarot kartını aç ve mesajını al.", "Günün kartları hazır: rehberlerin, tarotun ve pusulan seni bekliyor.", "Güne kartlarınla başla. Tarotunu aç, rehber kartlarına bak, mesajını al."],
-  en: ["Draw today's guide cards, open your tarot card and receive your message.", "Today's cards are ready: your guides, your tarot and your compass are waiting.", "Start the day with your cards. Open your tarot, look at your guide cards, take your message."],
-  de: ["Zieh die Begleiterkarten des Tages, öffne deine Tarotkarte und empfange deine Botschaft.", "Die Karten des Tages sind bereit: deine Begleiter, dein Tarot und dein Kompass warten.", "Beginne den Tag mit deinen Karten. Öffne dein Tarot, schau auf deine Begleiterkarten, nimm deine Botschaft mit."],
-  es: ["Saca las cartas guía de hoy, abre tu carta de tarot y recibe tu mensaje.", "Las cartas de hoy están listas: tus guías, tu tarot y tu brújula te esperan.", "Empieza el día con tus cartas. Abre tu tarot, mira tus cartas guía y toma tu mensaje."],
-  pt: ["Tira as cartas-guia de hoje, abre a tua carta de tarô e recebe a tua mensagem.", "As cartas de hoje estão prontas: os teus guias, o teu tarô e a tua bússola esperam-te.", "Começa o dia com as tuas cartas. Abre o teu tarô, olha para as cartas-guia e recebe a tua mensagem."],
-  fr: ["Tire les cartes guides du jour, ouvre ta carte de tarot et reçois ton message.", "Les cartes du jour sont prêtes : tes guides, ton tarot et ta boussole t'attendent.", "Commence la journée avec tes cartes. Ouvre ton tarot, regarde tes cartes guides, reçois ton message."],
-  ja: ["今日の導きのカードを引き、タロットカードをひらいて、メッセージを受け取って。", "今日のカードが揃いました。導き、タロット、羅針盤があなたを待っています。", "カードと一緒に一日を始めよう。タロットをひらき、導きのカードを見て、メッセージを受け取って。"],
+  tr: ["Günün rehber kartlarını çek, tarot kartını aç ve mesajını al.", "Günün kartları hazır: rehberlerin, tarotun ve pusulan seni bekliyor.", "Güne kartlarınla başla. Tarotunu aç, rehber kartlarına bak, mesajını al.", "Sabahın ilk birkaç dakikası senin. Kartlarına bak, günün tonunu seç.", "Bugün seni hangi imge karşılayacak? Tarotun ve rehber kartların hazır.", "Bir kahve, bir nefes, bir kart. Güne sakin başla.", "Kartlar bugün sana bir soru soruyor olabilir. Açmadan önce bir nefes al.", "Günün pusulası ve kartların seni bekliyor. Bir dakikan yeter."],
+  en: ["Draw today's guide cards, open your tarot card and receive your message.", "Today's cards are ready: your guides, your tarot and your compass are waiting.", "Start the day with your cards. Open your tarot, look at your guide cards, take your message.", "The first minutes of the morning are yours. Look at your cards and choose the tone of your day.", "Which image will greet you today? Your tarot and guide cards are ready.", "A coffee, a breath, a card. Start the day calmly.", "Your cards may be asking you a question today. Take a breath before you open them.", "Today's compass and your cards are waiting. One minute is enough."],
+  de: ["Zieh die Begleiterkarten des Tages, öffne deine Tarotkarte und empfange deine Botschaft.", "Die Karten des Tages sind bereit: deine Begleiter, dein Tarot und dein Kompass warten.", "Beginne den Tag mit deinen Karten. Öffne dein Tarot, schau auf deine Begleiterkarten, nimm deine Botschaft mit.", "Die ersten Minuten des Morgens gehören dir. Schau auf deine Karten und wähle den Ton deines Tages.", "Welches Bild begrüßt dich heute? Dein Tarot und deine Begleiterkarten sind bereit.", "Ein Kaffee, ein Atemzug, eine Karte. Beginne den Tag ruhig.", "Deine Karten stellen dir heute vielleicht eine Frage. Atme einmal durch, bevor du sie öffnest.", "Der Kompass des Tages und deine Karten warten. Eine Minute genügt."],
+  es: ["Saca las cartas guía de hoy, abre tu carta de tarot y recibe tu mensaje.", "Las cartas de hoy están listas: tus guías, tu tarot y tu brújula te esperan.", "Empieza el día con tus cartas. Abre tu tarot, mira tus cartas guía y toma tu mensaje.", "Los primeros minutos de la mañana son tuyos. Mira tus cartas y elige el tono de tu día.", "¿Qué imagen te recibirá hoy? Tu tarot y tus cartas guía están listos.", "Un café, una respiración, una carta. Empieza el día con calma.", "Puede que hoy tus cartas te hagan una pregunta. Respira antes de abrirlas.", "La brújula del día y tus cartas te esperan. Basta un minuto."],
+  pt: ["Tira as cartas-guia de hoje, abre a tua carta de tarô e recebe a tua mensagem.", "As cartas de hoje estão prontas: os teus guias, o teu tarô e a tua bússola esperam-te.", "Começa o dia com as tuas cartas. Abre o teu tarô, olha para as cartas-guia e recebe a tua mensagem.", "Os primeiros minutos da manhã são teus. Olha para as tuas cartas e escolhe o tom do teu dia.", "Que imagem te vai receber hoje? O teu tarô e as tuas cartas-guia estão prontos.", "Um café, uma respiração, uma carta. Começa o dia com calma.", "Hoje as tuas cartas podem estar a fazer-te uma pergunta. Respira antes de as abrires.", "A bússola do dia e as tuas cartas esperam-te. Um minuto chega."],
+  fr: ["Tire les cartes guides du jour, ouvre ta carte de tarot et reçois ton message.", "Les cartes du jour sont prêtes : tes guides, ton tarot et ta boussole t'attendent.", "Commence la journée avec tes cartes. Ouvre ton tarot, regarde tes cartes guides, reçois ton message.", "Les premières minutes du matin t'appartiennent. Regarde tes cartes et choisis le ton de ta journée.", "Quelle image t'accueillera aujourd'hui ? Ton tarot et tes cartes guides sont prêts.", "Un café, une respiration, une carte. Commence la journée en douceur.", "Tes cartes te posent peut-être une question aujourd'hui. Respire avant de les ouvrir.", "La boussole du jour et tes cartes t'attendent. Une minute suffit."],
+  ja: ["今日の導きのカードを引き、タロットカードをひらいて、メッセージを受け取って。", "今日のカードが揃いました。導き、タロット、羅針盤があなたを待っています。", "カードと一緒に一日を始めよう。タロットをひらき、導きのカードを見て、メッセージを受け取って。", "朝の最初の数分はあなたのもの。カードを見て、今日のトーンを選んで。", "今日はどんなイメージが迎えてくれる？ タロットと導きのカードが準備できています。", "コーヒーと、ひと呼吸と、一枚のカード。穏やかに一日を始めよう。", "今日はカードがあなたに問いかけているかもしれません。ひらく前にひと呼吸。", "今日の羅針盤とカードが待っています。1分で十分。"],
 };
 const _tarotNotifId = (d) => 9300 + d.getDate();
 // ── GERİ DÖNÜŞ BİLDİRİMLERİ (kullanım raporu, Eyl 2026) ─────────────────────
@@ -2446,6 +2449,7 @@ function notifKind(id) {
   if (n === LETTER_NOTIF_ID) return "mektup";
   if (n >= 9400 && n < 9410) return "geridon";
   if (n >= 9300 && n < 9340) return "tarot";
+  if (n >= 9230 && n < 9240) return "koc";
   if (n >= 9200 && n < 9300) return "kisisel";
   if (n >= 9000 && n < 9200) return "genel";
   return "diger";
@@ -5116,21 +5120,26 @@ function _emMessageForDay(kozmik, dayIndex, lang) {
 // Varsayılanla doğum bilgisi olan kişi: 10:00 + 18:00 + 08:30 (hareketli
 // günlerde 12:00 + 10:00 + 18:00). Doğum bilgisi YOKSA yalnızca akşam + gün
 // ortası (diğerleri doğum ister; tarot Bugün kapısına düşerdi).
-const NOTIF_TYPES = ["kisisel", "aksam", "tarot", "hatirlatici", "ogle", "kozmik", "geridon"];
+const NOTIF_TYPES = ["kisisel", "koc", "aksam", "tarot", "hatirlatici", "ogle", "kozmik", "geridon"];
 const NOTIF_BIRTH_TYPES = ["kisisel", "tarot", "hatirlatici", "kozmik"];
 function readNotifPrefs() {
   let p = null;
   try { p = JSON.parse(localStorage.getItem("sakin_notif_prefs") || "null"); } catch (_) {}
-  const count = p && [1, 2, 3].includes(p.count) ? p.count : 3;
+  // 1-5 (kullanıcı, Eyl 2026: "5 bildirime kadar izin ver, varsayılan 3"). Kayıtlı
+  // tercih AYNEN korunur (eski kullanıcının sayısı azaltılmaz).
+  const count = p && [1, 2, 3, 4, 5].includes(p.count) ? p.count : 3;
   const on = {};
   for (const k of NOTIF_TYPES) on[k] = !(p && p.off && p.off[k]);
   return { count, on };
 }
 function _notifDayPlan(dn, dayDate, hasBirth, hasEm, prefs) {
   const pr = prefs || readNotifPrefs();
+  // "koc" (yaşam koçu, src/notif-coach.js) 4. sıradan: varsayılan 3'te sayı
+  // değişmez, koç mesajı AKŞAM slotunun içeriğine gün aşırı karışarak gelir.
+  // Doğum yoksa koç yalnızca kullanım + Ay + koç sorularıyla çalışır.
   const order = hasBirth
-    ? [hasEm ? "kozmik" : null, "kisisel", "aksam", "tarot", "hatirlatici", "ogle"]
-    : ["aksam", "ogle"];
+    ? [hasEm ? "kozmik" : null, "kisisel", "aksam", "tarot", "koc", "hatirlatici", "ogle"]
+    : ["aksam", "ogle", "koc"];
   return order.filter(k => k && pr.on[k]).slice(0, pr.count);
 }
 // Gün ortası slotu: Salı ve Cuma sabah 08:00 "günaydın", diğer günler 13:00.
@@ -5155,7 +5164,7 @@ async function scheduleAllNotifications(lang, birthDate, opts = {}) {
     const prefs = readNotifPrefs();
     const week = _isoWeekStamp();
     const contentStamp = hasBirth ? `${week}_${lang}_${birthDate}` : "-";
-    const stamp = `v3_${sakinDayKey()}_${lang}_${JSON.stringify(prefs)}_${contentStamp}`;
+    const stamp = `v4_${sakinDayKey()}_${lang}_${JSON.stringify(prefs)}_${contentStamp}`;
     if (!opts.force && localStorage.getItem("sakin_notif_plan") === stamp) return;
 
     // Kişisel içerik: haftada bir (AI birincil, şablon yedek), cache'li.
@@ -5201,7 +5210,29 @@ async function scheduleAllNotifications(lang, birthDate, opts = {}) {
       if (i < basePool.length) eveningPool.push(basePool[i]);
       if (i < sozArr.length) eveningPool.push(sozArr[i]);
     }
-    const pick = (arr, dn) => arr[((dn % arr.length) + arr.length) % arr.length];
+    // TEKRARSIZ AKIŞ (kullanıcı: "aynı yapının bilgilerin gitmesini engelle, sonsuz
+    // ve tekrarlanmayan bir havuz"): eskiden pick() havuzu HER TUR AYNI sırayla
+    // dönüyordu. Artık karıştırılmış torba: havuz bitmeden tekrar yok, her tur
+    // kişiye özel yeni bir sıra (bagPick, notif-coach.js).
+    const seed = (() => { try { return localStorage.getItem("sakin_anon_id") || birthDate || "sakin"; } catch (_) { return "sakin"; } })();
+    // Son 14 günde gönderilen metinler (bugünün planından kaydedilir) + bu turda
+    // önceki günlere planlananlar: aynı cümle iki hafta içinde tekrar gitmez.
+    const recentLog = (() => { try { return JSON.parse(localStorage.getItem("sakin_notif_recent") || "[]"); } catch (_) { return []; } })()
+      .filter(x => x && x.day && _dayDiff(x.day, _ymd(new Date())) <= 14 && x.day !== _ymd(new Date()));
+    const recent = new Set(recentLog.map(x => x.t));
+    const todayBodies = [];
+    // Öğe düz metin ya da { body, extra } olabilir; tazelik METNE bakılarak ölçülür.
+    const pick = (arr, dn, salt = "p") => {
+      const key = `${seed}|${salt}`, txt = (x) => (x && typeof x === "object" ? x.body : x);
+      let r = null;
+      for (let i = 0; i < arr.length; i++) { const c = bagPick(arr, key, dn + i); if (!recent.has(txt(c))) { r = c; break; } }
+      if (!r) r = bagPick(arr, key, dn);
+      if (txt(r)) recent.add(txt(r));
+      return r;
+    };
+    const usage = usageSnapshot();
+    const prefH = preferredHour();
+    let lastCoachCat = (() => { try { const x = JSON.parse(localStorage.getItem("sakin_notif_lastcoach") || "null"); return x && x.day === _ymd(new Date(Date.now() - 86400000)) ? x.cat : null; } catch (_) { return null; } })();
     const tarotArr = TAROT_NOTIF[lang] || TAROT_NOTIF.en;
     const drawnToday = localStorage.getItem("sakin_tarot_drawn") === sakinDayKey();
 
@@ -5221,7 +5252,12 @@ async function scheduleAllNotifications(lang, birthDate, opts = {}) {
     const icon = { smallIcon: "ic_stat_icon_config_sample", iconColor: "#b8a4d8" };
     const now = new Date();
     const out = [];
-    const add = (id, at, body, extra) => { if (body && at > now) out.push({ id, title: "Sakin", body, schedule: { at, ...SCHED }, extra, ...icon }); };
+    const add = (id, at, body, extra) => {
+      if (!body) return;
+      recent.add(body);
+      if (at.toDateString() === now.toDateString()) todayBodies.push(body);
+      if (at > now) out.push({ id, title: "Sakin", body, schedule: { at, ...SCHED }, extra, ...icon });
+    };
     for (let d = 0; d < 7; d++) {
       const day = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d);
       const dn = dayNumber(day);
@@ -5230,22 +5266,62 @@ async function scheduleAllNotifications(lang, birthDate, opts = {}) {
       const plan = _notifDayPlan(dn, day, hasBirth, !!em, prefs);
       const _off = content && content.start ? _dayDiff(content.start, _ymd(day)) : d;
       const pd = (content && content.days && _off >= 0 && content.days[_off]) || {};
+      // Günün koç mesajı (bir önceki günün kategorisi dinlenir).
+      const coach = coachMessage({ lang, birthDate: hasBirth ? birthDate : null, day, d, dn, usage, seed, prevCat: lastCoachCat, pdFn: personalDayNumber, recent });
+      if (coach) {
+        lastCoachCat = coach.cat;
+        if (d === 0) { try { localStorage.setItem("sakin_notif_lastcoach", JSON.stringify({ day: _ymd(day), cat: coach.cat })); } catch (_) {} }
+      }
+      // Varsayılan (3) kullanıcıda koç, AKŞAM slotuna gün aşırı karışır (sayı artmaz).
+      const coachInEvening = !!coach && !plan.includes("koc") && ((ichingHash(`${seed}|ev|${dn}`) % 2) === 0);
+      // Koç saati: kişinin uygulamayı en sık açtığı saat (yoksa 15:00), diğer
+      // slotlarla çakışırsa bir saat kaydırılır; 09:00-21:00 aralığında.
+      const coachHour = (() => {
+        const used = new Set([8, 10, 12, 13, 16, 18]);
+        let h = prefH != null ? Math.min(21, Math.max(9, prefH)) : 15;
+        for (let i = 0; i < 12 && used.has(h); i++) h = h >= 21 ? 9 : h + 1;
+        return h;
+      })();
       for (const slot of plan) {
-        if (slot === "aksam") { const e = pick(eveningPool, dn); add(9070 + d, at(18), e.body, e.extra); }
-        else if (slot === "ogle") {
-          if (_ogleIsMorning(day)) add(9050 + d, at(8), pick(mornings, dn), { screen: "sabah" });
-          else { const alt = pick(eveningPool, dn + Math.floor(eveningPool.length / 2)); add(9050 + d, at(13), alt.body, alt.extra); }
+        if (slot === "aksam") {
+          if (coachInEvening) add(9070 + d, at(18), coach.body, coach.extra);
+          else { const e = pick(eveningPool, dn, "ev"); add(9070 + d, at(18), e.body, e.extra); }
         }
-        else if (slot === "kisisel") add(9200 + d, at(10), pd.f, { screen: "bugun" });
-        else if (slot === "hatirlatici") add(9210 + d, at(16), pd.r, { screen: "mandala" });
+        else if (slot === "koc") {
+          if (coach) add(9230 + d, at(coachHour, 15), coach.body, coach.extra);
+        }
+        else if (slot === "ogle") {
+          if (_ogleIsMorning(day)) add(9050 + d, at(8), pick(mornings, dn, "mo"), { screen: "sabah" });
+          else { const alt = pick(eveningPool, dn, "og"); add(9050 + d, at(13), alt.body, alt.extra); }
+        }
+        else if (slot === "kisisel") {
+          // AI yoksa yedek şablon iki hafta içinde tekrar edebiliyordu: son
+          // gönderilenlerdeyse yerine ikinci bir koç mesajı (farklı tohum) gider.
+          if (pd.f && !recent.has(pd.f)) add(9200 + d, at(10), pd.f, { screen: "bugun" });
+          else {
+            const c2 = coachMessage({ lang, birthDate: hasBirth ? birthDate : null, day, d, dn, usage, seed: seed + "|k2", prevCat: coach && coach.cat, pdFn: personalDayNumber, recent });
+            if (c2) add(9200 + d, at(10), c2.body, c2.extra);
+          }
+        }
+        else if (slot === "hatirlatici") {
+          if (pd.r && !recent.has(pd.r)) add(9210 + d, at(16), pd.r, { screen: "mandala" });
+          else {
+            const c3 = coachMessage({ lang, birthDate: hasBirth ? birthDate : null, day, d, dn, usage, seed: seed + "|k3", prevCat: coach && coach.cat, pdFn: personalDayNumber, recent });
+            if (c3) add(9210 + d, at(16), c3.body, c3.extra);
+          }
+        }
         // ⚠️ Eskiden { screen: "ben" } idi: uygulamada "ben" adlı EKRAN YOK
         // (Ben sekmesinin ekranı "harita"), dokunan boş ekran görüyordu.
         else if (slot === "kozmik") add(9220 + d, at(12), em, { screen: "harita" });
-        else if (slot === "tarot" && !(d === 0 && drawnToday)) add(_tarotNotifId(day), at(8, 30), pick(tarotArr, dn), { screen: "bugun" });
+        else if (slot === "tarot" && !(d === 0 && drawnToday)) add(_tarotNotifId(day), at(8, 30), pick(tarotArr, dn, "ta"), { screen: "bugun" });
       }
     }
     if (out.length) await LocalNotifications.schedule({ notifications: out });
     localStorage.setItem("sakin_notif_plan", stamp);
+    try {
+      const td = _ymd(new Date());
+      localStorage.setItem("sakin_notif_recent", JSON.stringify([...recentLog, ...todayBodies.map(t => ({ day: td, t }))].slice(-80)));
+    } catch (_) {}
   } catch (e) { console.warn("[Notif] error:", e); }
 }
 
@@ -9110,6 +9186,7 @@ export default function SakinApp() {
       const n = (parseInt(localStorage.getItem("sakin_open_count") || "0", 10) || 0) + 1;
       localStorage.setItem("sakin_open_count", String(n));
     } catch(_) {}
+    recordOpenHour();   // koç bildirimi kişinin en sık açtığı saate yakın gelir
   };
   // Yalnızca ana sekmelerde açılır; giriş ekranında HAZIRIM zaten tetikler,
   // embed/onboarding/politika sayfası ortasında araya girmez.
@@ -18511,7 +18588,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                         background:"#fff",transition:"left .2s",boxShadow:"0 1px 3px rgba(0,0,0,0.3)" }} />
                     </span>
                   );
-                  const TYPES = ["kozmik","kisisel","aksam","tarot","hatirlatici","ogle","geridon"];
+                  const TYPES = ["kozmik","kisisel","aksam","tarot","koc","hatirlatici","ogle","geridon"];
                   // Anlık mesajlar yalnızca push destekli cihazda (ya da web test bayrağında) listelenir.
                   const showPush = pushSupported() || (() => { try { return localStorage.getItem("sakin_dev_notif") === "1"; } catch (_) { return false; } })();
                   const onCount = TYPES.filter(k => notifPrefs.on[k] && !(NOTIF_BIRTH_TYPES.includes(k) && !birthDate)).length;
@@ -18538,13 +18615,15 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                             transform:`rotate(${notifSetOpen ? 90 : 0}deg)`,transition:"transform .2s" }}>›</span>} />
                         {notifSetOpen && (<>
                         {/* Günlük sayı: 1 / 2 / 3 */}
-                        <div style={{ ...rowSt, cursor:"default" }}>
+                        {/* 1-5 düğmeleri etiketin ALTINDA, satırı kaplayan eşit genişlikte:
+                            320 px ekranda yan yana sığmıyor, etiket üç satıra kırılıp çakışıyordu. */}
+                        <div style={{ ...rowSt, cursor:"default", flexWrap:"wrap", rowGap:10 }}>
                           <span style={{ width:20,flexShrink:0,display:"flex",justifyContent:"center",opacity:0.72,fontSize:15,lineHeight:1 }}>#</span>
                           <span style={labSt}>{pickLang(NOTIF_SET_TXT.count, lang)}</span>
-                          <span style={{ display:"inline-flex",gap:6,flexShrink:0 }}>
-                            {[1,2,3].map(n => (
+                          <span style={{ display:"flex",gap:6,width:"100%",paddingLeft:32,boxSizing:"border-box" }}>
+                            {[1,2,3,4,5].map(n => (
                               <button key={n} onClick={() => saveNotifPrefs({ ...notifPrefs, count: n })}
-                                style={{ WebkitAppearance:"none",appearance:"none",width:34,height:30,borderRadius:10,cursor:"pointer",
+                                style={{ WebkitAppearance:"none",appearance:"none",flex:1,minWidth:0,height:32,borderRadius:10,cursor:"pointer",
                                   fontFamily:"'Jost',sans-serif",fontSize:14,display:"flex",alignItems:"center",justifyContent:"center",
                                   border:`1px solid ${notifPrefs.count === n ? "rgba(184,164,216,0.7)" : "rgba(255,255,255,0.12)"}`,
                                   background: notifPrefs.count === n ? "rgba(184,164,216,0.22)" : "transparent",
