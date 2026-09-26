@@ -11904,7 +11904,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
         <button
           onClick={()=>{
             if (!isNative) { window.location.href = "/"; return; }
-            setGirisPhase("intro"); setScreen("giris");
+            setShowAilesi(false); setGirisPhase("intro"); setScreen("giris");
           }}
           style={{ background:"transparent",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:5,padding:"0 10px 0 6px",height:44,flexShrink:0,borderRight:"1px solid rgba(255,255,255,0.06)" }}
         >
@@ -11913,11 +11913,11 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
           </svg>
           <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:13,letterSpacing:2,textTransform:"uppercase",color:"rgba(255,255,255,0.5)" }}>Sakin</span>
         </button>
-        <button className={`top-nav-btn${screen==="hakkinda"?" active":""}`} onClick={()=>setScreen("hakkinda")}>{t("nav_about")}</button>
-        <button className={`top-nav-btn${screen==="fiyat"?" active":""}`} onClick={()=>setScreen("fiyat")}>{t("nav_pricing")}</button>
-        <button className={`top-nav-btn${screen==="sartlar"?" active":""}`} onClick={()=>setScreen("sartlar")}>{t("nav_terms")}</button>
-        <button className={`top-nav-btn${screen==="gizlilik"?" active":""}`} onClick={()=>setScreen("gizlilik")}>{t("nav_privacy")}</button>
-        <button className={`top-nav-btn${screen==="iade"?" active":""}`} onClick={()=>setScreen("iade")}>{t("nav_refund")}</button>
+        <button className={`top-nav-btn${screen==="hakkinda"?" active":""}`} onClick={()=>{ setShowAilesi(false); setScreen("hakkinda"); }}>{t("nav_about")}</button>
+        <button className={`top-nav-btn${screen==="fiyat"?" active":""}`} onClick={()=>{ setShowAilesi(false); setScreen("fiyat"); }}>{t("nav_pricing")}</button>
+        <button className={`top-nav-btn${screen==="sartlar"?" active":""}`} onClick={()=>{ setShowAilesi(false); setScreen("sartlar"); }}>{t("nav_terms")}</button>
+        <button className={`top-nav-btn${screen==="gizlilik"?" active":""}`} onClick={()=>{ setShowAilesi(false); setScreen("gizlilik"); }}>{t("nav_privacy")}</button>
+        <button className={`top-nav-btn${screen==="iade"?" active":""}`} onClick={()=>{ setShowAilesi(false); setScreen("iade"); }}>{t("nav_refund")}</button>
         {/* KULLANICI: "webde en üstteki dil seçimini kapat, bi altta ortak dil
             seçimi var zaten." Giriş ekranında AŞAĞIDA (satır ~8134'te) zaten
             kendine ait, giriş için konumlanmış bir LangPicker var; burada da
