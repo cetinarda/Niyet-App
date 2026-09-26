@@ -19,9 +19,11 @@ export async function secret(name) {
   if (env) return env;
   const c = cache.get(name);
   if (c && Date.now() - c.t < TTL) return c.v;
-  let v = "";
-  try { v = (await secretStore().get(name)) || ""; } catch { v = ""; }
-  cache.set(name, { v, t: Date.now() });
+  let v = "", ok = true;
+  try { v = (await secretStore().get(name)) || ""; } catch { v = ""; ok = false; }
+  // Okuma HATASI önbelleğe alınmaz; boş değer yalnızca kısa süre (yeni kaydedilen
+  // anahtar diğer fonksiyon örneklerinde de hemen görünsün).
+  if (ok) cache.set(name, { v, t: v ? Date.now() : Date.now() - TTL + 30000 });
   return v;
 }
 export function clearSecretCache() { cache.clear(); }

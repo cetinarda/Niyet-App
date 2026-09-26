@@ -190,8 +190,10 @@ export function mergeBatch(rec, body, now) {
       const c = [1, 2, 3, 4, 5].includes(it.c) ? it.c : null;
       if (c) { rec.np = { c, off: [] }; }
       const offs = typeof it.off === "string" ? it.off.split(",") : [];
+      // İstemci NOTIF_TYPES ile AYNI sıradaki sıra numaralarını gönderir (1.4.2+); eski
+      // istemciler adları gönderir. İkisi de kabul edilir.
       const OK = ["kisisel", "koc", "aksam", "tarot", "hatirlatici", "ogle", "kozmik", "geridon"];
-      if (rec.np) rec.np.off = offs.filter((k) => OK.includes(k));
+      if (rec.np) rec.np.off = [...new Set(offs.map((k) => (/^\d$/.test(k) ? OK[+k] : k)).filter((k) => OK.includes(k)))];
     }
     else if (e === "bugun_gate") {
       const a = it.a === "shown" || it.a === "enter" || it.a === "skip" ? it.a : null;
@@ -245,6 +247,7 @@ export default async (req, context) => {
 
   let body;
   try { body = await req.json(); } catch (_) { return json(headers, 200, { ok: false }); }
+  if (!body || typeof body !== "object") return json(headers, 200, { ok: false });
   const id = safeId(body.id);
   if (!id || !Array.isArray(body.ev) || !body.ev.length) return json(headers, 200, { ok: false });
 
@@ -254,7 +257,8 @@ export default async (req, context) => {
 
   const key = "u/" + id;
   let rec;
-  try { rec = (await store.get(key, { type: "json" })) || null; } catch (_) { rec = null; }
+  // Okuma HATASI kaydı sıfırlamasın (ilk görülme/gün/sayaçlar kaybolup kullanıcı yeni sayılırdı).
+  try { rec = (await store.get(key, { type: "json" })) || null; } catch (_) { return json(headers, 200, { ok: false }); }
   rec = mergeBatch(rec, body, Date.now());
 
   try { await store.setJSON(key, rec); } catch (_) { return json(headers, 200, { ok: false }); }

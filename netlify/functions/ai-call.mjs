@@ -255,6 +255,7 @@ export const handler = async (event) => {
   } catch {
     return jsonResponse(400, cors, { error: "Invalid request body" });
   }
+  if (!body || typeof body !== "object") return jsonResponse(400, cors, { error: "Invalid request body" });
 
   const { system, messages, max_tokens, lang: rawLang } = body;
   const lang = normalizeLang(rawLang);

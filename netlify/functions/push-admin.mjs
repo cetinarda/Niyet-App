@@ -106,7 +106,9 @@ export default async (req) => {
   const platform = ["ios", "android"].includes(form.get("platform")) ? form.get("platform") : "";
   const screen = SCREENS.some(([v]) => v && v === form.get("screen")) ? form.get("screen") : "";
   const code = String(form.get("code") || "").trim().toUpperCase();
-  const textFor = (l) => per[l] || (onlyWritten && !general ? "" : general);
+  // Test gönderiminde cihazın dilinde metin yoksa yazılan İLK metin gider (boş bildirim gitmesin).
+  const anyText = general || per[LANGS.find((l) => per[l])] || "";
+  const textFor = (l) => per[l] || (mode === "test" ? anyText : (onlyWritten && !general ? "" : general));
   if (!general && !LANGS.some((l) => per[l])) return html(panel(token, devices, cfg, log, `<p class="bad">Mesaj boş.</p>`));
 
   let targets = devices.filter((d) => (!lang || d.l === lang) && (!platform || d.p === platform) && textFor(d.l));

@@ -148,7 +148,7 @@ const APPLE_DENIED   = new Set([2, 5]);
 async function appleLifetime(host, token, transactionId) {
   try {
     const r = await jsonFetch(
-      `${host}/inApps/v2/history/${encodeURIComponent(transactionId)}?sort=DESCENDING`,
+      `${host}/inApps/v2/history/${encodeURIComponent(transactionId)}?sort=DESCENDING&productType=NON_CONSUMABLE`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
     if (!r.ok) return "error";
@@ -194,12 +194,13 @@ async function appleEntitlement(transactionId, deadline) {
       return { status: "entitled", kind: "subscription" };
     }
 
-    // Abonelik hakkı görünmüyor → ömür boyu ürünü olabilir, ONA bak.
-    if (Date.now() <= deadline) {
-      const life = await appleLifetime(host, token, transactionId);
-      if (life === "entitled") return { status: "entitled", kind: "lifetime" };
-      if (life === "error")    return { status: "unknown", reason: "apple_history" };
-    }
+    // Abonelik hakkı görünmüyor → ömür boyu ürünü olabilir, ONA bak. Süre dolduysa
+    // ömür boyu kontrolü YAPILMADAN iptal kararı VERİLMEZ (denetim bulgusu: eski
+    // yıllık aboneliği bitmiş ömür boyu sahibi düşürülebiliyordu).
+    if (Date.now() > deadline) return { status: "unknown", reason: "apple_deadline" };
+    const life = await appleLifetime(host, token, transactionId);
+    if (life === "entitled") return { status: "entitled", kind: "lifetime" };
+    if (life === "error")    return { status: "unknown", reason: "apple_history" };
 
     // Ancak TÜM durumlar kesin olumsuzsa (2/5) iptal edilir. 3 varsa belirsiz sayılır.
     if (statuses.length && statuses.every(s => APPLE_DENIED.has(s))) {
@@ -327,6 +328,7 @@ export const handler = async (event) => {
   try { connectLambda(event); } catch { /* Blobs yoksa ortam değişkenleri kullanılır */ }
   let req = {};
   try { req = JSON.parse(event.body || "{}"); } catch { /* boş bırak */ }
+  if (!req || typeof req !== "object") req = {};
   const platform = req.platform === "android" ? "android" : "ios";
   // Genel bütçe: platformun fonksiyonu kesmesinden önce kendimiz "unknown" dönelim.
   const deadline = Date.now() + 8000;

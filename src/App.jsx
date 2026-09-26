@@ -1183,8 +1183,9 @@ function MeditationCard({ lang, S }) {
   // Android geri tuşu tam ekranı kapatsın.
   useEffect(() => {
     if (!full) return;
-    window.__sakinOverlayBack = () => setFull(false);
-    return () => { if (window.__sakinOverlayBack) window.__sakinOverlayBack = null; };
+    const back = () => setFull(false);
+    window.__sakinOverlayBack = back;
+    return () => { if (window.__sakinOverlayBack === back) window.__sakinOverlayBack = null; };
   }, [full]);
   const toggle = (openFull) => {
     try { haptic(); } catch (_) {}
@@ -2818,6 +2819,9 @@ const TODAY_HERO_TXT = {
   // Seri 1 iken "1 gün üst üste" garip okunuyor: ayrı cümle.
   streakOne:    { tr:"Dün ilk adımını attın. Bugünkü 3 adımı tamamla, seri 2 güne çıksın.", en:"You started yesterday. Complete today's 3 steps to make it 2 days.", de:"Gestern hast du angefangen. Schließ die 3 Schritte von heute ab, dann sind es 2 Tage.", es:"Empezaste ayer. Completa los 3 pasos de hoy y serán 2 días.", pt:"Começaste ontem. Completa os 3 passos de hoje e serão 2 dias.", fr:"Tu as commencé hier. Termine les 3 étapes du jour pour arriver à 2 jours.", ja:"昨日始めました。今日の3つのステップを終えると2日連続になります。" },
   doneOne:      { tr:"İlk günün tamam. Dilersen pratiğe devam et.", en:"Your first day is done. Keep practicing if you like.", de:"Dein erster Tag ist geschafft. Mach gern weiter.", es:"Tu primer día está hecho. Sigue practicando si quieres.", pt:"O teu primeiro dia está feito. Continua a praticar se quiseres.", fr:"Ton premier jour est fait. Continue si tu veux.", ja:"最初の一日が完了。よければ続けてみて。" },
+  // Seri SIFIRLANIP yeniden başlayan deneyimli kullanıcı için ("ilk adım" demek yanlış olur).
+  restartOne:   { tr:"Serin yeniden başladı. Bugünkü 3 adımı tamamla, seri 2 güne çıksın.", en:"Your streak has restarted. Complete today's 3 steps to make it 2 days.", de:"Deine Serie hat neu begonnen. Schließ die 3 Schritte von heute ab, dann sind es 2 Tage.", es:"Tu racha ha vuelto a empezar. Completa los 3 pasos de hoy y serán 2 días.", pt:"A tua série recomeçou. Completa os 3 passos de hoje e serão 2 dias.", fr:"Ta série a redémarré. Termine les 3 étapes du jour pour arriver à 2 jours.", ja:"連続記録が再スタートしました。今日の3つのステップを終えると2日連続になります。" },
+  restartDone:  { tr:"Yeniden başladın, bugün tamam. Dilersen pratiğe devam et.", en:"You're back, today is done. Keep practicing if you like.", de:"Du bist zurück, heute ist geschafft. Mach gern weiter.", es:"Has vuelto, hoy está hecho. Sigue practicando si quieres.", pt:"Voltaste, hoje está feito. Continua a praticar se quiseres.", fr:"Tu es de retour, aujourd'hui c'est fait. Continue si tu veux.", ja:"再開しました。今日は完了。よければ続けてみて。" },
   ctaDoneSub:   { tr:"{n} gün üst üste. Dilersen pratiğe devam et.", en:"{n}-day streak. Keep practicing if you like.", de:"Serie: {n}. Mach gern weiter.", es:"Racha: {n}. Sigue practicando si quieres.", pt:"Série: {n}. Continua a praticar se quiseres.", fr:"Série : {n}. Continue si tu veux.", ja:"連続{n}日。よければ続けましょう。" },
   pairSection:  { tr:"İkili uyum", en:"Compatibility", de:"Verbindung", es:"Compatibilidad", pt:"Compatibilidade", fr:"Compatibilité", ja:"相性" },
 };
@@ -5444,7 +5448,7 @@ async function scheduleAllNotifications(lang, birthDate, opts = {}) {
     };
     const usage = usageSnapshot();
     const prefH = preferredHour();
-    let lastCoachCat = (() => { try { const x = JSON.parse(localStorage.getItem("sakin_notif_lastcoach") || "null"); return x && x.day === _ymd(new Date(Date.now() - 86400000)) ? x.cat : null; } catch (_) { return null; } })();
+    let lastCoachCat = (() => { try { const x = JSON.parse(localStorage.getItem("sakin_notif_lastcoach") || "null"); return x && x.day === _ymd(_daysAgo(1)) ? x.cat : null; } catch (_) { return null; } })();
     const tarotArr = TAROT_NOTIF[lang] || TAROT_NOTIF.en;
     const drawnToday = localStorage.getItem("sakin_tarot_drawn") === sakinDayKey();
 
@@ -7862,6 +7866,8 @@ export default function SakinApp() {
   const [deleteToast, setDeleteToast] = useState("");
   const [embeddedApp, setEmbeddedApp] = useState(null); // { name, path } for fullscreen iframe overlay
   const [embedQuotaExceeded, setEmbedQuotaExceeded] = useState(false); // Sakin Ailesi ortak kotası dolduysa yumuşak kapı (yarım sayfa)
+  const embedQuotaExceededRef = useRef(false);
+  embedQuotaExceededRef.current = embedQuotaExceeded;
   // Kapı açıkken Android geri tuşu / Escape yalnızca kapıyı kapatır.
   useEffect(() => {
     if (!embedQuotaExceeded) return;
@@ -7932,7 +7938,7 @@ export default function SakinApp() {
       }
     }
     // Nereden geldik? Keşfet paneli açıksa oraya, değilse o anki ekrana dönülecek.
-    embedReturn.current = showAilesi ? { ailesi: true } : { screen };
+    embedReturn.current = app.returnTo || (showAilesi ? { ailesi: true } : { screen });
     playPortalSound(); haptic();
     // iOS 13+: DeviceMotionEvent izni SADECE top-level frame'den (user gesture içinde)
     // istenebilir. İframe embed'den istemek sessizce 'denied' döner. Burada parent
@@ -7978,7 +7984,8 @@ export default function SakinApp() {
   // ESC tuşuyla embed'den çıkış: web kullanıcıları için bir fallback (back button bulunamazsa)
   useEffect(() => {
     if (!embeddedApp) return;
-    const onKey = (e) => { if (e.key === "Escape") { releaseStandardEmbedFrame(); setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); } };
+    // Kota kapısı açıkken Escape yalnızca kapıyı kapatır (kendi dinleyicisi var), alttaki uygulama kalır.
+    const onKey = (e) => { if (e.key === "Escape" && !embedQuotaExceededRef.current) { releaseStandardEmbedFrame(); setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); } };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [embeddedApp]);
@@ -8542,7 +8549,9 @@ export default function SakinApp() {
     setNotifPrefsState(next);
     const off = {}; for (const k of NOTIF_TYPES) if (!next.on[k]) off[k] = true;
     try { localStorage.setItem("sakin_notif_prefs", JSON.stringify({ count: next.count, off })); } catch (_) {}
-    try { track("notif_pref", { c: next.count, off: Object.keys(off).join(",") || "-" }); } catch (_) {}
+    // Kapalı türler SIRA NUMARASIYLA gider (NOTIF_TYPES sırası): analytics 40 harfte kesiyor,
+    // adlarla 6+ tür kapalıyken sondakiler kayboluyordu.
+    try { track("notif_pref", { c: next.count, off: NOTIF_TYPES.map((k, i) => (off[k] ? i : -1)).filter(i => i >= 0).join(",") || "-" }); } catch (_) {}
     scheduleAllNotifications(lang, birthDate, { force: true });
     scheduleWinBack(lang);
   };
@@ -10587,15 +10596,19 @@ ${facts}
 
   function aynaSoruTipi(metin, ruyaModu) {
     if (ruyaModu) return "ruya";
-    const s = String(metin || "").toLocaleLowerCase("tr");
-    const var_ = (...k) => k.some(x => s.includes(x));
+    // Küçük harfe çevirme DİLE göre (tr kuralı "I"yı "ı" yapıyor, "Insomnia" kaçıyordu).
+    const tr = lang === "tr";
+    const s = String(metin || "").toLocaleLowerCase(tr ? "tr" : "en");
+    // Türkçe anahtar kelimeler YALNIZCA Türkçe arayüzde aranır (denetim bulgusu:
+    // İspanyolca "hasta" = "-e kadar", Fransızca "bel " vb. yanlış eşleşiyordu).
+    const var_ = (...k) => tr && k.some(x => s.includes(x));
+    const any_ = (...k) => k.some(x => s.includes(x));
     if (var_("ağrı", "uyku", "uyuyam", "yorgun", "mide", "bel ", "boyun", "sırt", "cilt",
              "kilo", "hasta", "sindirim", "migren", "baş ağr", "kas ", "eklem", "regl",
-             "adet", "tansiyon", "şişkin", "bağırsak", "boğaz", "öksür", "ateşim", "nefes darlığı",
-             // Diğer diller (örnek sorular + sık beden kelimeleri): sınıflandırıcı
-             // yalnızca Türkçe bakıyordu, tr dışı beden sorusuna Reiki/Louise Hay
-             // yönlendirmesi eksik kalıyordu.
-             "back pain", "stomach", "headache", "insomnia", "can't sleep", "fatigue", "tired",
+             "adet", "tansiyon", "şişkin", "bağırsak", "boğaz", "öksür", "ateşim", "nefes darlığı")) return "beden";
+    // Diğer diller (sık beden kelimeleri). "tired" BİLEREK yok: "tired of this
+    // relationship" gibi duygusal soruları bedene çekiyordu.
+    if (any_("back pain", "stomach", "headache", "insomnia", "can't sleep", "fatigue",
              "rücken", "magen", "kopfschmerz", "schlaf", "müde",
              "espalda", "estómago", "dolor de cabeza", "insomnio", "cansad",
              "costas", "estômago", "dor de cabeça", "insónia", "cansaç",
@@ -14136,7 +14149,9 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                     pendingEmbedRef.current = null;
                     if (pend && birthInput) {
                       setScreen(back || "harita");
-                      handleOpenEmbed({ ...pend, skipBirthGate: true });
+                      // Dönüş hedefi AÇIKÇA verilir: aynı tıklamada setScreen henüz işlenmediği için
+                      // handleOpenEmbed eski ekranı (giriş) dönüş sanıyordu.
+                      handleOpenEmbed({ ...pend, skipBirthGate: true, returnTo: pend.fromKesfet ? { ailesi: true } : { screen: back || "harita" } });
                       return;
                     }
                     // Bugün kapısından gelindiyse: bilgi girildiyse kısa
@@ -18032,6 +18047,8 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
         const doneToday = streakData?.lastDate === dk;
         const alive = doneToday || streakData?.lastDate === yKey;
         const streakN = alive ? (streakData?.current || 0) : 0;
+        // İlk kez mi başlıyor, yoksa seri sıfırlanıp yeniden mi başladı? (totalTunnels bugünkünü de sayar)
+        const firstEver = (streakData?.totalTunnels || 0) <= 1;
 
         // Pazar haftalık özeti: son 7 gün (bugün dahil), tamamen yerel.
         const isSunday = new Date().getDay() === 0;
@@ -18653,7 +18670,8 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
             {/* ── 7b) MEDİTASYON PRATİĞİ (kullanıcı: "I Ching'den öğüt alın altına taşı";
                 şimdilik tek meditasyon, o yüzden "günlük" değil). Denenene kadar görünür. */}
             {/* Meditasyon şimdilik YALNIZCA Türkçe (kayıt Türkçe seslendirmeli, kullanıcı kararı). */}
-            {lang === "tr" && medVisible() && <MeditationCard lang={lang} S={{ SEC, SURF, BTN, eyebrow, SERIF, INTER, INK, MUTE, GOLD }} />}
+            {/* Çalarken kart KALIR (gece yarısı ya da dil değişince denetimsiz ses kalmasın). */}
+            {((lang === "tr" && medVisible()) || (typeof window !== "undefined" && window.__sakinMed && !window.__sakinMed.paused)) && <MeditationCard lang={lang} S={{ SEC, SURF, BTN, eyebrow, SERIF, INTER, INK, MUTE, GOLD }} />}
 
             {/* ── 8) İKİLİ UYUM ── (I Ching ile yer değiştirdi, kullanıcı isteği) iki halka: sen (burcun) + boş halka "?".
                 Eksik ikinci kişi görsel olarak duruyor; SoulID eşleşmesini açar. */}
@@ -18695,8 +18713,8 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                   {pickLang(doneToday ? TODAY_HERO_TXT.ctaDoneTitle : TODAY_HERO_TXT.ctaTitle, lang)}
                 </span>
                 <span style={{ display:"block",fontSize:13,color:BODY,fontFamily:INTER,lineHeight:1.45 }}>
-                  {doneToday ? (streakN === 1 ? pickLang(TODAY_HERO_TXT.doneOne, lang) : pickLang(TODAY_HERO_TXT.ctaDoneSub, lang).replace("{n}", streakN))
-                    : streakN === 1 ? pickLang(TODAY_HERO_TXT.streakOne, lang)
+                  {doneToday ? (streakN === 1 ? pickLang(firstEver ? TODAY_HERO_TXT.doneOne : TODAY_HERO_TXT.restartDone, lang) : pickLang(TODAY_HERO_TXT.ctaDoneSub, lang).replace("{n}", streakN))
+                    : streakN === 1 ? pickLang(firstEver ? TODAY_HERO_TXT.streakOne : TODAY_HERO_TXT.restartOne, lang)
                     : streakN > 0 ? pickLang(TODAY_HERO_TXT.streakAlive, lang).replace("{n}", streakN).replace("{m}", streakN + 1)
                     : pickLang(TODAY_HERO_TXT.ctaZeroSub, lang)}
                 </span>
