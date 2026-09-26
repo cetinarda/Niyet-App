@@ -5,6 +5,7 @@ import type { GalacticReport } from '@/lib/types';
 import { todayTransits, moonPhase } from '@/lib/astrology/transits';
 import { MoonDisc } from '@/components/MoonDisc';
 import { useT } from '@/lib/i18n';
+import { buildProfileDaily } from '@/lib/profile/daily';
 
 const TONE_COLOR: Record<string, string> = {
   flow: '#5bd9a0',
@@ -31,7 +32,15 @@ export function TodaySky({ report }: { report: GalacticReport }) {
     return moonPhase(new Date());
   }, []);
 
-  if (insights.length === 0) return null;
+  // "Bakman gereken yer" + "Haftaya bakış" (Eyl 2026, kullanıcı: Sakin Bugün
+  // ekranından kaldırılan bu iki bilgi burada, detayda dursun). Güneş kapısına
+  // ve Ay'ın büyüyüp küçülmesine bağlı: birkaç gün aynı kalır, etiket bunu söyler.
+  const compass = useMemo(() => {
+    if (typeof window === 'undefined') return null;
+    try { return buildProfileDaily(report, new Date()); } catch { return null; }
+  }, [report]);
+
+  if (insights.length === 0 && !compass) return null;
 
   const today = new Date().toLocaleDateString(tr ? 'tr-TR' : 'en-US', {
     day: 'numeric',
@@ -63,6 +72,23 @@ export function TodaySky({ report }: { report: GalacticReport }) {
           </span>
         )}
       </div>
+
+      {compass ? (
+        <div className="mt-6 grid gap-3 sm:grid-cols-2">
+          <div className="rounded-2xl border border-gold/25 bg-gold/[0.04] p-4">
+            <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-gold">
+              {tr ? 'Bakman gereken yer · bu hafta' : 'Where to look · this week'}
+            </p>
+            <p className="mt-1.5 text-[14px] leading-relaxed text-ink">{tr ? compass.focus.tr : compass.focus.en}</p>
+          </div>
+          <div className="rounded-2xl border border-gold/25 bg-gold/[0.04] p-4">
+            <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-gold">
+              {tr ? 'Haftaya bakış' : 'The week ahead'}
+            </p>
+            <p className="mt-1.5 text-[14px] leading-relaxed text-ink">{tr ? compass.week.tr : compass.week.en}</p>
+          </div>
+        </div>
+      ) : null}
 
       <div className="mt-6 space-y-4">
         {insights.map((it) => (

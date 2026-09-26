@@ -2594,6 +2594,14 @@ function innerReflectTemplate(lang, moon, gate, niyet, hasEvening) {
 // BUGÜN KARŞILAMA ALANI: selamlama + kişisel gün sayısı + seri teşviki.
 // Kişisel gün (numeroloji): kişisel yıl -> kişisel ay -> kişisel gün, 1-9'a
 // indirgenir. Doğum tarihi yoksa takvim tarihinin rakamlarından "bugünün sayısı".
+// BUGÜN > GÜNÜN ŞÜKRANI (kullanıcı, Eyl 2026): buraya yazılan her şükran akşam
+// kapanışındaki şükür alanına (`sukur`, sakin_sukur_<gün>) satır olarak eklenir.
+const GRATITUDE_TXT = {
+  title: { tr:"Günün şükranı", en:"Today's gratitude", de:"Dankbarkeit des Tages", es:"Gratitud del día", pt:"Gratidão do dia", fr:"Gratitude du jour", ja:"今日の感謝" },
+  ph:    { tr:"Bugün neye şükrediyorsun?", en:"What are you grateful for today?", de:"Wofür bist du heute dankbar?", es:"¿Por qué estás agradecido hoy?", pt:"Pelo que estás grato hoje?", fr:"Pour quoi es-tu reconnaissant aujourd'hui ?", ja:"今日は何に感謝していますか？" },
+  note:  { tr:"Akşam kapanışındaki şükür notlarına da eklenir.", en:"Also added to your evening closing gratitude.", de:"Wird auch zu deiner Dankbarkeit beim Abendabschluss hinzugefügt.", es:"También se añade a tu gratitud del cierre de la noche.", pt:"Também é acrescentada à tua gratidão do fecho da noite.", fr:"Ajouté aussi à ta gratitude de la clôture du soir.", ja:"夜の締めくくりの感謝にも追加されます。" },
+  add:   { tr:"Ekle", en:"Add", de:"Hinzufügen", es:"Añadir", pt:"Adicionar", fr:"Ajouter", ja:"追加" },
+};
 const TODAY_HERO_TXT = {
   greet: [
     { tr:"Günaydın", en:"Good morning", de:"Guten Morgen", es:"Buenos días", pt:"Bom dia", fr:"Bonjour", ja:"おはよう" },
@@ -8564,9 +8572,11 @@ export default function SakinApp() {
   const tunnelsBeforeToday = (streakData.totalTunnels || 0)
     - (streakData.lastDate === todayKey ? 1 : 0);
   const isEarlyTunnel = tunnelsBeforeToday < 3;
-  const STEP_MIN = isEarlyTunnel
-    ? { nefes: 5, ses: 30, chakra: 60, gun: 1 }
-    : { nefes: 10, ses: 60, chakra: 120, gun: 3 };
+  // HERKES İÇİN HAFİF EŞİK (kullanıcı, Eyl 2026: "3 görevi yapınca nefes 5/10
+  // oluyor, 5 nefes daha al diyor; bu kullanıcının tercihine kalmalı, tünel 5
+  // nefeste açılmalı"). Eskiden deneyimli kullanıcıda 10 nefes / 60 sn / 120 sn /
+  // 3 görev isteniyordu; fazlası artık isteğe bağlı.
+  const STEP_MIN = { nefes: 5, ses: 30, chakra: 60, gun: 1 };
   // ── YENİ KULLANICI DENEMESİ (kullanıcı kararı, Eyl 2026) ────────────────────
   // İlk 3 TÜNEL boyunca (ilk 3 gün değil: tünel = günün bağlantısının tamamlanması)
   // jenerik içerik açık: nefes modları, solfeggio frekansları, niyet kelimeleri.
@@ -11181,6 +11191,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   const [dailyHoroOpen, setDailyHoroOpen] = useState(false);
   // Güncel geçiş kartındaki haftalık tema: Vurgu/Nelere dikkat kapalı başlar.
   const [transitThemeOpen, setTransitThemeOpen] = useState(false);
+  const [gratDraft, setGratDraft] = useState("");
   // ── GÜNLÜK YORUM ("daha fazlası") ───────────────────────────────────────────
   // Gökyüzü raporunun altındaki uzun okuma. Kolektif rapor herkes için aynıyken
   // bu, kullanıcının GÜNEŞ BURCU + günün gerçek gökyüzü ile kişiye özel bir
@@ -18388,6 +18399,42 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                 </div>
               )}
             </section>
+
+            {/* ── 9b) GÜNÜN ŞÜKRANI: akşam kapanışının şükür alanına satır olarak eklenir. */}
+            {(() => {
+              const lines = String(sukur || "").split("\n").map(x => x.trim()).filter(Boolean);
+              const addGrat = () => {
+                const v = gratDraft.trim();
+                if (!v) return;
+                try { haptic(); } catch (_) {}
+                setSukur(prev => (String(prev || "").trim() ? String(prev).trim() + "\n" + v : v));
+                setGratDraft("");
+              };
+              return (
+                <section style={SEC}>
+                  {eyebrow(pickLang(GRATITUDE_TXT.title, lang))}
+                  <div style={{ ...SURF,padding:"12px 12px 12px 16px",display:"flex",alignItems:"center",gap:10 }}>
+                    <input value={gratDraft} onChange={e => setGratDraft(e.target.value.slice(0, 160))}
+                      onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); addGrat(); } }}
+                      placeholder={pickLang(GRATITUDE_TXT.ph, lang)} aria-label={pickLang(GRATITUDE_TXT.title, lang)}
+                      style={{ flex:1,minWidth:0,background:"transparent",border:"none",outline:"none",color:INK,fontFamily:INTER,fontSize:16,padding:"6px 0" }} />
+                    <button onClick={addGrat} aria-label={pickLang(GRATITUDE_TXT.add, lang)}
+                      style={{ ...BTN,width:34,height:34,flexShrink:0,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",
+                        border:`1px solid ${gratDraft.trim() ? GOLD + "99" : "rgba(255,255,255,0.18)"}`,color: gratDraft.trim() ? GOLD : MUTE,fontSize:18,lineHeight:1 }}>+</button>
+                  </div>
+                  {lines.length > 0 && (
+                    <div style={{ display:"flex",flexDirection:"column",gap:6,margin:"10px 4px 0" }}>
+                      {lines.slice(-5).map((l, i) => (
+                        <div key={i} style={{ display:"flex",gap:8,alignItems:"baseline",fontFamily:SERIF,fontSize:17,lineHeight:1.4,color:BODY }}>
+                          <span style={{ color:GOLD,fontSize:11 }}>✦</span><span style={{ minWidth:0,overflowWrap:"anywhere" }}>{l}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <div style={{ fontFamily:INTER,fontSize:11.5,color:MUTE,margin:"8px 4px 0" }}>{pickLang(GRATITUDE_TXT.note, lang)}</div>
+                </section>
+              );
+            })()}
 
             {/* ── 10) BUGÜNÜN İLK ADIMI (en altta, kullanıcı isteği: "mantık olarak
                 devam etsin", Güne Başla kaldırıldı). Sayfayı okuyan kullanıcıyı
