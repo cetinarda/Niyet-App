@@ -10,28 +10,32 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { Colors, Typography, Spacing, BorderRadius } from '../theme/colors';
-import { useData, Archetype, Myth, ImageItem } from '../data/loader';
+import { useData, Archetype, Myth, ImageItem, CANONICAL_DATA } from '../data/loader';
 import { MitlerDetailScreen, MitlerEntry, Kind } from './MitlerDetailScreen';
-import { calcLifePath } from '../utils/numerology';
 import { useLanguage, getLanguage, translate } from '../i18n/useLanguage';
 import type { Lang } from '../i18n/translations';
 import { pushBackHandler, BACK_PRIORITY } from '../utils/backStack';
+import {
+  FINDER_QUIZ, quizProfile, birthProfile, pickFinderIds, byId, elementLabel,
+  FinderIds, BirthProfile,
+} from '../utils/finder';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-interface Weight { trait: string; value: number }
 // Quiz metinleri 7 dilde. Bir dil eksik kalırsa İngilizceye düşer.
+// Puanlama (özellik ağırlıkları + element) burada DEĞİL: utils/finder.ts
+// FINDER_QUIZ[soru][seçenek], dilden bağımsız. Soru/seçenek sırası ikisinde aynı.
 type Bi = { tr: string; en: string } & Partial<Record<Lang, string>>;
-interface Option { text: Bi; weights: Weight[]; element?: string }
+interface Option { text: Bi }
 interface Question { q: Bi; emoji: string; options: Option[] }
 const qL = (b: Bi) => b[getLanguage()] ?? b.en;
 type Mode = 'intro' | 'quiz' | 'needsProfile' | 'result';
 
+// Sonuç kararlı id + açıklama girdisi olarak saklanır; gösterim her çizimde
+// seçili dilden çözülür (sonuç açıkken dil değişirse metinler de değişir).
 interface FinderResult {
-  archetype: Archetype;
-  myth: Myth;
-  image: ImageItem;
-  reason: string;
+  ids: FinderIds;
+  birth?: { profile: BirthProfile; city?: string };
 }
 
 // ─── Quiz data ─────────────────────────────────────────────────────────────────
@@ -47,23 +51,19 @@ const QUESTIONS: Question[] = [
       { text: { tr: 'Dağlar ve açık gökyüzü', en: 'Mountains and open sky',
         de: 'Berge und offener Himmel', es: 'Montañas y cielo abierto',
         pt: 'Montanhas e céu aberto', fr: 'Montagnes et ciel ouvert',
-        ja: '山々と広い空' }, element: 'hava',
-        weights: [{ trait: 'özgürlük', value: 2 }, { trait: 'vizyon', value: 2 }, { trait: 'yüksek bakış', value: 2 }] },
+        ja: '山々と広い空' } },
       { text: { tr: 'Orman ve ıssız toprak', en: 'Forest and quiet earth',
         de: 'Wald und stille Erde', es: 'Bosque y tierra tranquila',
         pt: 'Floresta e terra quieta', fr: 'Forêt et terre paisible',
-        ja: '森と静かな大地' }, element: 'toprak',
-        weights: [{ trait: 'güç', value: 2 }, { trait: 'istikrar', value: 2 }, { trait: 'kök', value: 2 }] },
+        ja: '森と静かな大地' } },
       { text: { tr: 'Nehir, deniz, derin sular', en: 'River, sea, deep waters',
         de: 'Fluss, Meer, tiefe Wasser', es: 'Río, mar, aguas profundas',
         pt: 'Rio, mar, águas profundas', fr: 'Rivière, mer, eaux profondes',
-        ja: '川、海、深い水' }, element: 'su',
-        weights: [{ trait: 'akış', value: 2 }, { trait: 'bilinçdışı', value: 2 }, { trait: 'dönüşüm', value: 2 }] },
+        ja: '川、海、深い水' } },
       { text: { tr: 'Sıcak alev ve ateş', en: 'Warm flame and fire',
         de: 'Warme Flamme und Feuer', es: 'Llama cálida y fuego',
         pt: 'Chama quente e fogo', fr: 'Flamme chaude et feu',
-        ja: '温かな炎と火' }, element: 'ateş',
-        weights: [{ trait: 'cesaret', value: 2 }, { trait: 'tutku', value: 2 }, { trait: 'dönüşüm', value: 2 }] },
+        ja: '温かな炎と火' } },
     ],
   },
   {
@@ -76,23 +76,19 @@ const QUESTIONS: Question[] = [
       { text: { tr: 'Dur, gözlemle, anlamlandır', en: 'Pause, observe, make sense of it',
         de: 'Innehalten, beobachten, verstehen', es: 'Detenerme, observar, darle sentido',
         pt: 'Parar, observar, dar-lhe sentido', fr: 'M\'arrêter, observer, comprendre',
-        ja: '立ち止まり、見つめ、意味をつかむ' },
-        weights: [{ trait: 'bilgelik', value: 3 }, { trait: 'sezgi', value: 2 }, { trait: 'derinlik', value: 2 }] },
+        ja: '立ち止まり、見つめ、意味をつかむ' } },
       { text: { tr: 'Cesaretle harekete geç', en: 'Act with courage',
         de: 'Mutig handeln', es: 'Actuar con valentía',
         pt: 'Agir com coragem', fr: 'Agir avec courage',
-        ja: '勇気をもって動く' },
-        weights: [{ trait: 'kahraman', value: 3 }, { trait: 'cesaret', value: 2 }, { trait: 'irade', value: 2 }] },
+        ja: '勇気をもって動く' } },
       { text: { tr: 'Bakım veren olarak başkasını koru', en: 'Protect someone as a caregiver',
         de: 'Fürsorglich jemanden beschützen', es: 'Cuidar y proteger a alguien',
         pt: 'Cuidar e proteger alguém', fr: 'Prendre soin de quelqu\'un et le protéger',
-        ja: '誰かを守り、支える' },
-        weights: [{ trait: 'şefkat', value: 3 }, { trait: 'sevgi', value: 2 }, { trait: 'beslenme', value: 2 }] },
+        ja: '誰かを守り、支える' } },
       { text: { tr: 'Kuralı kır, yeni bir yol aç', en: 'Break the rule, open a new path',
         de: 'Die Regel brechen, einen neuen Weg öffnen', es: 'Romper la regla, abrir un camino nuevo',
         pt: 'Quebrar a regra, abrir um novo caminho', fr: 'Briser la règle, ouvrir une nouvelle voie',
-        ja: 'ルールを破り、新しい道を開く' },
-        weights: [{ trait: 'asilik', value: 3 }, { trait: 'mizah', value: 2 }, { trait: 'kuralı kırmak', value: 2 }] },
+        ja: 'ルールを破り、新しい道を開く' } },
     ],
   },
   {
@@ -105,23 +101,19 @@ const QUESTIONS: Question[] = [
       { text: { tr: 'Yaratıcı', en: 'Creator',
         de: 'Schöpfer', es: 'Creador',
         pt: 'Criador', fr: 'Créateur',
-        ja: '創造者' },
-        weights: [{ trait: 'yaratım', value: 3 }, { trait: 'ifade', value: 2 }, { trait: 'sanat', value: 2 }] },
+        ja: '創造者' } },
       { text: { tr: 'Bilge', en: 'Sage',
         de: 'Weiser', es: 'Sabio',
         pt: 'Sábio', fr: 'Sage',
-        ja: '賢者' },
-        weights: [{ trait: 'bilgelik', value: 3 }, { trait: 'içgörü', value: 2 }, { trait: 'mentor', value: 2 }] },
+        ja: '賢者' } },
       { text: { tr: 'Aşık', en: 'Lover',
         de: 'Liebender', es: 'Amante',
         pt: 'Amante', fr: 'Amoureux',
-        ja: '恋する者' },
-        weights: [{ trait: 'sevgi', value: 3 }, { trait: 'tutku', value: 3 }, { trait: 'adanma', value: 2 }] },
+        ja: '恋する者' } },
       { text: { tr: 'Asi', en: 'Rebel',
         de: 'Rebell', es: 'Rebelde',
         pt: 'Rebelde', fr: 'Rebelle',
-        ja: '反逆者' },
-        weights: [{ trait: 'başkaldırı', value: 3 }, { trait: 'özgürlük', value: 2 }, { trait: 'değişim', value: 2 }] },
+        ja: '反逆者' } },
     ],
   },
   {
@@ -134,23 +126,19 @@ const QUESTIONS: Question[] = [
       { text: { tr: 'Lider ve yön gösteren', en: 'Leader who shows the way',
         de: 'Anführen und den Weg zeigen', es: 'Liderar y mostrar el camino',
         pt: 'Liderar e mostrar o caminho', fr: 'Mener et montrer le chemin',
-        ja: '先頭に立ち、道を示す' },
-        weights: [{ trait: 'liderlik', value: 3 }, { trait: 'sorumluluk', value: 2 }, { trait: 'vizyon', value: 2 }] },
+        ja: '先頭に立ち、道を示す' } },
       { text: { tr: 'Arabulucu ve dengeleyici', en: 'Mediator and balancer',
         de: 'Vermitteln und ausgleichen', es: 'Mediar y equilibrar',
         pt: 'Mediar e equilibrar', fr: 'Apaiser et équilibrer',
-        ja: '間を取り持ち、調和させる' },
-        weights: [{ trait: 'denge', value: 3 }, { trait: 'arabuluculuk', value: 2 }, { trait: 'uyum', value: 2 }] },
+        ja: '間を取り持ち、調和させる' } },
       { text: { tr: 'İlham veren yaratıcı', en: 'Inspiring creative',
         de: 'Inspirieren und erschaffen', es: 'Inspirar y crear',
         pt: 'Inspirar e criar', fr: 'Inspirer et créer',
-        ja: '創造し、周りを鼓舞する' },
-        weights: [{ trait: 'yaratım', value: 3 }, { trait: 'ilham', value: 2 }, { trait: 'estetik', value: 2 }] },
+        ja: '創造し、周りを鼓舞する' } },
       { text: { tr: 'Gözlemleyen analizci', en: 'Observing analyst',
         de: 'Beobachten und analysieren', es: 'Observar y analizar',
         pt: 'Observar e analisar', fr: 'Observer et analyser',
-        ja: '観察し、分析する' },
-        weights: [{ trait: 'içgörü', value: 3 }, { trait: 'derinlik', value: 2 }, { trait: 'gözlem', value: 2 }] },
+        ja: '観察し、分析する' } },
     ],
   },
   {
@@ -163,23 +151,19 @@ const QUESTIONS: Question[] = [
       { text: { tr: 'Sezgi ve içgüdü', en: 'Intuition and instinct',
         de: 'Intuition und Instinkt', es: 'Intuición e instinto',
         pt: 'Intuição e instinto', fr: 'Intuition et instinct',
-        ja: '直感と本能' },
-        weights: [{ trait: 'sezgi', value: 3 }, { trait: 'bilinçaltı', value: 2 }, { trait: 'derinlik', value: 2 }] },
+        ja: '直感と本能' } },
       { text: { tr: 'Sabır ve dayanıklılık', en: 'Patience and endurance',
         de: 'Geduld und Ausdauer', es: 'Paciencia y resistencia',
         pt: 'Paciência e resistência', fr: 'Patience et endurance',
-        ja: '忍耐と粘り強さ' },
-        weights: [{ trait: 'sabır', value: 3 }, { trait: 'dayanıklılık', value: 2 }, { trait: 'istikrar', value: 2 }] },
+        ja: '忍耐と粘り強さ' } },
       { text: { tr: 'Zekâ ve esneklik', en: 'Wit and flexibility',
         de: 'Klugheit und Beweglichkeit', es: 'Ingenio y flexibilidad',
         pt: 'Engenho e flexibilidade', fr: 'Esprit et souplesse',
-        ja: '機知と柔軟さ' },
-        weights: [{ trait: 'zekâ', value: 3 }, { trait: 'oyun', value: 2 }, { trait: 'uyum', value: 2 }] },
+        ja: '機知と柔軟さ' } },
       { text: { tr: 'Cesaret ve tutku', en: 'Courage and passion',
         de: 'Mut und Leidenschaft', es: 'Valor y pasión',
         pt: 'Coragem e paixão', fr: 'Courage et passion',
-        ja: '勇気と情熱' },
-        weights: [{ trait: 'cesaret', value: 3 }, { trait: 'tutku', value: 3 }, { trait: 'irade', value: 2 }] },
+        ja: '勇気と情熱' } },
     ],
   },
   {
@@ -192,23 +176,19 @@ const QUESTIONS: Question[] = [
       { text: { tr: 'Terk edilmişlik, yalnızlık', en: 'Abandonment, loneliness',
         de: 'Verlassenheit, Einsamkeit', es: 'Abandono, soledad',
         pt: 'Abandono, solidão', fr: 'Abandon, solitude',
-        ja: '見捨てられること、孤独' },
-        weights: [{ trait: 'yetim', value: 3 }, { trait: 'kayıp', value: 2 }, { trait: 'sürgün', value: 2 }] },
+        ja: '見捨てられること、孤独' } },
       { text: { tr: 'Yetersizlik, görünmemek', en: 'Not-enough-ness, feeling unseen',
         de: 'Nicht genug sein, nicht gesehen werden', es: 'No ser suficiente, no ser visto',
         pt: 'Não ser suficiente, não ser visto', fr: 'Ne pas être assez, ne pas être vu',
-        ja: '足りないという思い、見てもらえないこと' },
-        weights: [{ trait: 'maske', value: 3 }, { trait: 'gölge', value: 2 }, { trait: 'utanç', value: 2 }] },
+        ja: '足りないという思い、見てもらえないこと' } },
       { text: { tr: 'Kontrolü kaybetmek', en: 'Losing control',
         de: 'Die Kontrolle verlieren', es: 'Perder el control',
         pt: 'Perder o controlo', fr: 'Perdre le contrôle',
-        ja: '自分を制御できなくなること' },
-        weights: [{ trait: 'kontrol', value: 3 }, { trait: 'sınır', value: 2 }, { trait: 'disiplin', value: 2 }] },
+        ja: '自分を制御できなくなること' } },
       { text: { tr: 'Anlamsızlık, derin boşluk', en: 'Meaninglessness, deep emptiness',
         de: 'Sinnlosigkeit, tiefe Leere', es: 'Falta de sentido, un vacío profundo',
         pt: 'Falta de sentido, um vazio profundo', fr: 'Absence de sens, vide profond',
-        ja: '意味のなさ、深い空虚' },
-        weights: [{ trait: 'arayış', value: 3 }, { trait: 'bilgelik', value: 2 }, { trait: 'manevi', value: 2 }] },
+        ja: '意味のなさ、深い空虚' } },
     ],
   },
   {
@@ -221,23 +201,19 @@ const QUESTIONS: Question[] = [
       { text: { tr: 'Bütünleşme: kayıp parçaları toplamak', en: 'Wholeness: gathering the lost pieces',
         de: 'Ganzheit: die verlorenen Teile sammeln', es: 'Plenitud: reunir las piezas perdidas',
         pt: 'Inteireza: reunir as peças perdidas', fr: 'Unité : rassembler les morceaux perdus',
-        ja: '統合：失われたかけらを集めること' },
-        weights: [{ trait: 'self', value: 3 }, { trait: 'bütünlük', value: 3 }, { trait: 'merkez', value: 2 }] },
+        ja: '統合：失われたかけらを集めること' } },
       { text: { tr: 'Dönüşüm: eskiyi yakıp yenisini doğurmak', en: 'Transformation: burning the old to birth the new',
         de: 'Wandlung: das Alte verbrennen, das Neue gebären', es: 'Transformación: quemar lo viejo para que nazca lo nuevo',
         pt: 'Transformação: queimar o velho para fazer nascer o novo', fr: 'Transformation : brûler l\'ancien pour faire naître le nouveau',
-        ja: '変容：古いものを燃やし、新しいものを生むこと' },
-        weights: [{ trait: 'dönüşüm', value: 3 }, { trait: 'yeniden doğuş', value: 3 }, { trait: 'ölüm-doğuş', value: 2 }] },
+        ja: '変容：古いものを燃やし、新しいものを生むこと' } },
       { text: { tr: 'İfade: içtekini görünür kılmak', en: 'Expression: making the inner visible',
         de: 'Ausdruck: das Innere sichtbar machen', es: 'Expresión: hacer visible lo interior',
         pt: 'Expressão: tornar visível o que está dentro', fr: 'Expression : rendre visible l\'intérieur',
-        ja: '表現：内なるものを目に見える形にすること' },
-        weights: [{ trait: 'yaratım', value: 3 }, { trait: 'ifade', value: 2 }, { trait: 'sanat', value: 2 }] },
+        ja: '表現：内なるものを目に見える形にすること' } },
       { text: { tr: 'Hizmet: kendinden büyüğüne adanmak', en: 'Service: devoting to something greater',
         de: 'Hingabe: sich etwas Größerem widmen', es: 'Servicio: entregarse a algo más grande',
         pt: 'Serviço: dedicar-se a algo maior', fr: 'Service : se consacrer à plus grand que soi',
-        ja: '奉仕：自分より大きなものに身を捧げること' },
-        weights: [{ trait: 'aziz', value: 3 }, { trait: 'adanma', value: 2 }, { trait: 'şifa', value: 2 }] },
+        ja: '奉仕：自分より大きなものに身を捧げること' } },
     ],
   },
 ];
@@ -306,129 +282,39 @@ const REASON_TXT: Partial<Record<Lang, ReasonText>> & { en: ReasonText } = {
   },
 };
 
-// ─── Matching algorithms ───────────────────────────────────────────────────────
+// ─── Matching ──────────────────────────────────────────────────────────────────
+// Puanlama utils/finder.ts'te ve HER ZAMAN temel (tr) veriye karşı: quiz
+// özellikleri Türkçe iç anahtar, tr dışındaki veri dosyalarıyla eşleşmiyordu.
 
-function normalizeWord(s: string): string {
-  return s.toLocaleLowerCase('tr-TR')
-    .replace(/ı/g, 'i').replace(/ş/g, 's').replace(/ğ/g, 'g')
-    .replace(/ü/g, 'u').replace(/ö/g, 'o').replace(/ç/g, 'c');
-}
-
-function scoreEntry<T extends { name: string; element?: string; keywords?: string[]; category?: string; culture?: string }>(
-  pool: T[],
-  traits: Record<string, number>,
-  elements: Record<string, number>,
-): T {
-  let best = pool[0];
-  let bestScore = -1;
-  for (const item of pool) {
-    let score = item.element ? (elements[item.element] || 0) : 0;
-    const blob = normalizeWord(
-      [item.name, ...(item.keywords || []), item.category || '', item.culture || ''].join(' ')
-    );
-    for (const [k, v] of Object.entries(traits)) {
-      if (blob.includes(normalizeWord(k))) score += v;
-    }
-    if (score > bestScore) { bestScore = score; best = item; }
-  }
-  return best;
-}
-
-function findByQuiz(
-  picks: Option[],
-  archetypesData: Archetype[],
-  mythsData: Myth[],
-  imagesData: ImageItem[],
-): FinderResult {
-  const traits: Record<string, number> = {};
-  const elements: Record<string, number> = {};
-  for (const p of picks) {
-    for (const { trait, value } of p.weights) traits[trait] = (traits[trait] || 0) + value;
-    if (p.element) elements[p.element] = (elements[p.element] || 0) + 3;
-  }
-  return {
-    archetype: scoreEntry(archetypesData, traits, elements),
-    myth:      scoreEntry(mythsData,      traits, elements),
-    image:     scoreEntry(imagesData,     traits, elements),
-    reason:    (REASON_TXT[getLanguage()] ?? REASON_TXT.en).quiz,
-  };
+function findByQuiz(answers: number[]): FinderResult {
+  return { ids: pickFinderIds(quizProfile(answers), CANONICAL_DATA) };
 }
 
 function findByBirth(
   day: number, month: number, year: number,
   hour: number | undefined, city: string | undefined,
-  archetypesData: Archetype[],
-  mythsData: Myth[],
-  imagesData: ImageItem[],
 ): FinderResult {
-  const traits: Record<string, number> = {};
-  const elements: Record<string, number> = {};
+  const profile = birthProfile(day, month, year, hour);
+  return { ids: pickFinderIds(profile, CANONICAL_DATA), birth: { profile, city } };
+}
 
-  const seasonEl: Record<number, string> = {
-    1:'su',2:'su',3:'hava',4:'hava',5:'hava',
-    6:'ateş',7:'ateş',8:'ateş',9:'toprak',10:'toprak',11:'toprak',12:'su',
-  };
-  elements[seasonEl[month]] = 5;
-
-  const birthDate = `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-  const lifePath = calcLifePath(birthDate);
-
-  const lifePathTraits: Record<number, string[]> = {
-    1:  ['liderlik','cesaret','özgürlük'],
-    2:  ['denge','sezgi','arabuluculuk'],
-    3:  ['yaratım','ifade','sanat'],
-    4:  ['istikrar','disiplin','sabır'],
-    5:  ['özgürlük','değişim','yolculuk'],
-    6:  ['şefkat','sevgi','beslenme'],
-    7:  ['bilgelik','derinlik','arayış'],
-    8:  ['güç','dönüşüm','adanma'],
-    9:  ['bilgelik','şefkat','dönüşüm'],
-    11: ['sezgi','ilham','manevi'],
-    22: ['vizyon','yaratım','liderlik'],
-    33: ['şefkat','adanma','şifa'],
-  };
-  for (const t of (lifePathTraits[lifePath] || [])) traits[t] = (traits[t] || 0) + 3;
-
-  const dg = Math.min(Math.ceil(day / 8), 4);
-  const dayTraits: Record<number, string[]> = {
-    1: ['kahraman','cesaret','liderlik'],
-    2: ['sezgi','derinlik','bilgelik'],
-    3: ['dönüşüm','yeniden doğuş','değişim'],
-    4: ['sevgi','şefkat','beslenme'],
-  };
-  for (const t of (dayTraits[dg] || [])) traits[t] = (traits[t] || 0) + 2;
-
-  const HOUR_RANGES = [
-    { min: 0,  max: 5,  traits: ['gölge','bilinçaltı','sezgi','derinlik'], label: 'gece' },
-    { min: 6,  max: 11, traits: ['kahraman','cesaret','irade','yaratım'],  label: 'sabah' },
-    { min: 12, max: 17, traits: ['liderlik','güç','vizyon','self'],        label: 'öğlen' },
-    { min: 18, max: 23, traits: ['dönüşüm','bilgelik','şefkat','aziz'],    label: 'akşam' },
-  ];
-  let hourLabel = '';
-  if (hour !== undefined) {
-    const hr = HOUR_RANGES.find(r => hour >= r.min && hour <= r.max)!;
-    for (const t of hr.traits) traits[t] = (traits[t] || 0) + 3;
-    hourLabel = hr.label;
-  }
-
-  const SEASON_NAMES: Record<string, string> = { hava:'ilkbahar', ateş:'yaz', toprak:'sonbahar', su:'kış' };
-  const seasonName = SEASON_NAMES[seasonEl[month]];
-  // Doğum açıklaması 7 dilde (REASON_TXT). Eksik dil İngilizceye düşer.
-  const R = REASON_TXT[getLanguage()] ?? REASON_TXT.en;
-  const el = seasonEl[month];
-  const reason = [
-    R.lifePath(lifePath),
-    R.season(el, seasonName),
-    hourLabel ? R.hour[hourLabel] : '',
+// Açıklama satırı seçili dilde (REASON_TXT). Eksik dil İngilizceye düşer.
+function reasonText(r: FinderResult, lang: Lang): string {
+  const R = REASON_TXT[lang] ?? REASON_TXT.en;
+  if (!r.birth) return R.quiz;
+  const { profile, city } = r.birth;
+  return [
+    R.lifePath(profile.lifePath),
+    R.season(profile.element, profile.season),
+    profile.hour ? R.hour[profile.hour] : '',
     city && city.trim() ? R.city(city.trim()) : '',
   ].filter(Boolean).join(' · ');
+}
 
-  return {
-    archetype: scoreEntry(archetypesData, traits, elements),
-    myth:      scoreEntry(mythsData,      traits, elements),
-    image:     scoreEntry(imagesData,     traits, elements),
-    reason,
-  };
+// Kararlı sayaç: ekrandaki soru/seçenek sayısı puan tanımıyla aynı olmalı.
+if (__DEV__ && (QUESTIONS.length !== FINDER_QUIZ.length
+  || QUESTIONS.some((q, i) => q.options.length !== FINDER_QUIZ[i].length))) {
+  console.warn('[Finder] QUESTIONS and FINDER_QUIZ shapes differ');
 }
 
 // ─── Main component ────────────────────────────────────────────────────────────
@@ -456,11 +342,11 @@ export function MitlerFinderScreen({
   onGoToProfile,
 }: Props) {
   const insets = useSafeAreaInsets();
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const { archetypes: archetypesData, myths: mythsData, images: imagesData } = useData();
   const [mode, setMode]     = useState<Mode>('intro');
   const [qIndex, setQIndex] = useState(0);
-  const [picks, setPicks]   = useState<Option[]>([]);
+  const [picks, setPicks]   = useState<number[]>([]);
   const [chosen, setChosen] = useState<number | null>(null);
   const [result, setResult] = useState<FinderResult | null>(null);
   const [openDetail, setOpenDetail] = useState<MitlerEntry | null>(null);
@@ -491,12 +377,12 @@ export function MitlerFinderScreen({
     cardFade.setValue(1); resultFade.setValue(0);
   };
 
-  const handlePick = (idx: number, opt: Option) => {
+  const handlePick = (idx: number) => {
     if (chosen !== null) return;
     setChosen(idx);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setTimeout(() => {
-      const newPicks = [...picks, opt];
+      const newPicks = [...picks, idx];
       if (qIndex < QUESTIONS.length - 1) {
         Animated.timing(cardFade, { toValue: 0, duration: 180, useNativeDriver: true }).start(() => {
           setPicks(newPicks); setQIndex(i => i + 1); setChosen(null);
@@ -504,7 +390,7 @@ export function MitlerFinderScreen({
         });
       } else {
         Animated.timing(cardFade, { toValue: 0, duration: 280, useNativeDriver: true }).start(() => {
-          showResult(findByQuiz(newPicks, archetypesData, mythsData, imagesData));
+          showResult(findByQuiz(newPicks));
         });
       }
     }, 350);
@@ -518,9 +404,6 @@ export function MitlerFinderScreen({
         parsedBirth.year,
         profileBirthHour,
         profileBirthCity,
-        archetypesData,
-        mythsData,
-        imagesData,
       ));
     } else {
       setMode('needsProfile');
@@ -553,6 +436,14 @@ export function MitlerFinderScreen({
   if (openDetail) {
     return <MitlerDetailScreen entry={openDetail} onClose={() => setOpenDetail(null)} />;
   }
+
+  // Sonucun seçili dildeki kayıtları (id tr ile puanlandı, gösterim bu dilden).
+  const shown = result ? {
+    archetype: byId(archetypesData, CANONICAL_DATA.archetypes, result.ids.archetypeId),
+    myth:      byId(mythsData, CANONICAL_DATA.myths, result.ids.mythId),
+    image:     byId(imagesData, CANONICAL_DATA.images, result.ids.imageId),
+    reason:    reasonText(result, lang),
+  } : null;
 
   const currentQ = QUESTIONS[qIndex];
   const progress = qIndex / QUESTIONS.length;
@@ -622,7 +513,7 @@ export function MitlerFinderScreen({
                 <TouchableOpacity
                   key={i}
                   style={[styles.optBtn, chosen === i && styles.optBtnChosen, chosen !== null && chosen !== i && styles.optBtnDimmed]}
-                  onPress={() => handlePick(i, opt)}
+                  onPress={() => handlePick(i)}
                   activeOpacity={0.75}
                   disabled={chosen !== null}
                 >
@@ -653,46 +544,46 @@ export function MitlerFinderScreen({
       )}
 
       {/* Result */}
-      {mode === 'result' && result && (
+      {mode === 'result' && shown && (
         <Animated.ScrollView
           style={{ opacity: resultFade }}
           contentContainerStyle={styles.resultScroll}
           showsVerticalScrollIndicator={false}
         >
           <Text style={styles.resultLabel}>{t('finder.result.label')}</Text>
-          {result.reason ? <Text style={styles.resultReason}>{result.reason}</Text> : null}
+          {shown.reason ? <Text style={styles.resultReason}>{shown.reason}</Text> : null}
 
           <TripleCard
             color={Colors.gold}
             label={t("finder.result.archetype")}
-            emoji={result.archetype.emoji}
-            name={result.archetype.name}
-            meta={`${result.archetype.tradition} · ${result.archetype.category}`}
-            body={result.archetype.essence}
-            tags={result.archetype.keywords || []}
-            onOpen={() => openArchetype(result.archetype)}
+            emoji={shown.archetype.emoji}
+            name={shown.archetype.name}
+            meta={`${shown.archetype.tradition} · ${shown.archetype.category}`}
+            body={shown.archetype.essence}
+            tags={shown.archetype.keywords || []}
+            onOpen={() => openArchetype(shown.archetype)}
           />
 
           <TripleCard
             color={Colors.purpleLight}
             label={t("finder.result.myth")}
-            emoji={result.myth.emoji}
-            name={result.myth.name}
-            meta={`${result.myth.culture} · ${result.myth.era}`}
-            body={result.myth.summary}
-            tags={[result.myth.category, result.myth.element]}
-            onOpen={() => openMyth(result.myth)}
+            emoji={shown.myth.emoji}
+            name={shown.myth.name}
+            meta={`${shown.myth.culture} · ${shown.myth.era}`}
+            body={shown.myth.summary}
+            tags={[shown.myth.category, elementLabel(shown.myth.element, lang)]}
+            onOpen={() => openMyth(shown.myth)}
           />
 
           <TripleCard
             color={Colors.tealLight}
             label={t("finder.result.image")}
-            emoji={result.image.emoji}
-            name={result.image.name}
-            meta={`${result.image.tradition} · ${result.image.category}`}
-            body={result.image.essence}
-            tags={result.image.keywords || []}
-            onOpen={() => openImage(result.image)}
+            emoji={shown.image.emoji}
+            name={shown.image.name}
+            meta={`${shown.image.tradition} · ${shown.image.category}`}
+            body={shown.image.essence}
+            tags={shown.image.keywords || []}
+            onOpen={() => openImage(shown.image)}
           />
 
           <TouchableOpacity

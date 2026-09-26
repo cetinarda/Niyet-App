@@ -62,6 +62,16 @@ const TABLES = {
   iching:     { tr: ichingTR,     en: ichingEN,     de: ichingDE,     es: ichingES,     pt: ichingPT,     fr: ichingFR,     ja: ichingJA },
 } as const;
 
+/**
+ * Temel (tr) veri: dilden bağımsız eşleştirme için (Mit Bulucu puanlaması,
+ * bkz. utils/finder.ts). Gösterim için DEĞİL; gösterim useData() ile.
+ */
+export const CANONICAL_DATA = {
+  archetypes: archetypesTR as Archetype[],
+  myths: mythsTR as Myth[],
+  images: imagesTR as ImageItem[],
+};
+
 function pick<T>(table: Record<string, T[]>, lang: string): T[] {
   return (table[lang] ?? table.en ?? table.tr);
 }
