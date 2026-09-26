@@ -2612,14 +2612,19 @@ const TODAY_HERO_TXT = {
   personalDay:  { tr:"Kişisel günün", en:"Your personal day", de:"Dein persönlicher Tag", es:"Tu día personal", pt:"O teu dia pessoal", fr:"Ton jour personnel", ja:"あなたのパーソナルデー" },
   universalDay: { tr:"Bugünün sayısı", en:"Today's number", de:"Zahl des Tages", es:"Número del día", pt:"Número do dia", fr:"Nombre du jour", ja:"今日の数" },
   streakToday:  { tr:"Bugün bağlandın. Serin {n} gün.", en:"You connected today. {n}-day streak.", de:"Heute verbunden. Serie: {n}.", es:"Hoy te conectaste. Racha: {n}.", pt:"Ligaste-te hoje. Série: {n}.", fr:"Lien du jour fait. Série : {n}.", ja:"今日つながりました。連続{n}日。" },
-  streakAlive:  { tr:"Serin {n} gün. Bugün bağlanırsan {m} olur.", en:"{n}-day streak. Connect today to make it {m}.", de:"Deine Serie steht bei {n}. Verbinde dich heute, dann wird sie {m}.", es:"Racha: {n}. Conéctate hoy y será {m}.", pt:"Série: {n}. Liga-te hoje e passa a {m}.", fr:"Série : {n}. Connecte-toi aujourd'hui pour passer à {m}.", ja:"連続{n}日。今日つながれば{m}日に。" },
+  // Kullanıcı: "Bugün bağlanırsan 2 olur mantığını anlamadım". "Bağlanmak" bir
+  // uygulama terimi; ne yapılacağını (3 adım) ve sonucu açıkça söyle.
+  streakAlive:  { tr:"{n} gün üst üste. Bugünkü 3 adımı tamamla, seri {m} güne çıksın.", en:"{n} days in a row. Complete today's 3 steps to reach {m}.", de:"{n} Tage in Folge. Schließ die 3 Schritte von heute ab, dann sind es {m}.", es:"{n} días seguidos. Completa los 3 pasos de hoy y llegarás a {m}.", pt:"{n} dias seguidos. Completa os 3 passos de hoje e chegas a {m}.", fr:"{n} jours d'affilée. Termine les 3 étapes du jour pour passer à {m}.", ja:"{n}日連続。今日の3つのステップを終えると{m}日になります。" },
   streakZero:   { tr:"Bugün ilk adımı at, serin başlasın.", en:"Take the first step today and start your streak.", de:"Mach heute den ersten Schritt und starte deine Serie.", es:"Da hoy el primer paso y empieza tu racha.", pt:"Dá hoje o primeiro passo e começa a tua série.", fr:"Fais le premier pas aujourd'hui et lance ta série.", ja:"今日最初の一歩を。連続記録が始まる。" },
   // Sayfanın EN ALTINDAKİ çağrı (kullanıcı: "ilk adımı en alta al, mantık
   // olarak devam etsin", Güne Başla kaldırıldı). Başlık + alt satır.
   ctaTitle:     { tr:"Bugünün ilk adımını at", en:"Take today's first step", de:"Mach den ersten Schritt des Tages", es:"Da el primer paso de hoy", pt:"Dá o primeiro passo de hoje", fr:"Fais le premier pas du jour", ja:"今日の最初の一歩を" },
   ctaZeroSub:   { tr:"Nefes, ses, niyet: günün pratiği seni bekliyor.", en:"Breath, sound, intention: today's practice is waiting.", de:"Atem, Klang, Absicht: deine Praxis wartet.", es:"Respiración, sonido, intención: tu práctica te espera.", pt:"Respiração, som, intenção: a tua prática espera-te.", fr:"Souffle, son, intention : ta pratique t'attend.", ja:"呼吸、音、意図。今日のプラクティスが待っています。" },
   ctaDoneTitle: { tr:"Bugün bağlandın", en:"Connected today", de:"Heute verbunden", es:"Conexión de hoy completa", pt:"Ligação de hoje completa", fr:"Lien du jour complet", ja:"今日はつながりました" },
-  ctaDoneSub:   { tr:"Serin {n} gün. Dilersen pratiğe devam et.", en:"{n}-day streak. Keep practicing if you like.", de:"Serie: {n}. Mach gern weiter.", es:"Racha: {n}. Sigue practicando si quieres.", pt:"Série: {n}. Continua a praticar se quiseres.", fr:"Série : {n}. Continue si tu veux.", ja:"連続{n}日。よければ続けましょう。" },
+  // Seri 1 iken "1 gün üst üste" garip okunuyor: ayrı cümle.
+  streakOne:    { tr:"Dün ilk adımını attın. Bugünkü 3 adımı tamamla, seri 2 güne çıksın.", en:"You started yesterday. Complete today's 3 steps to make it 2 days.", de:"Gestern hast du angefangen. Schließ die 3 Schritte von heute ab, dann sind es 2 Tage.", es:"Empezaste ayer. Completa los 3 pasos de hoy y serán 2 días.", pt:"Começaste ontem. Completa os 3 passos de hoje e serão 2 dias.", fr:"Tu as commencé hier. Termine les 3 étapes du jour pour arriver à 2 jours.", ja:"昨日始めました。今日の3つのステップを終えると2日連続になります。" },
+  doneOne:      { tr:"İlk günün tamam. Dilersen pratiğe devam et.", en:"Your first day is done. Keep practicing if you like.", de:"Dein erster Tag ist geschafft. Mach gern weiter.", es:"Tu primer día está hecho. Sigue practicando si quieres.", pt:"O teu primeiro dia está feito. Continua a praticar se quiseres.", fr:"Ton premier jour est fait. Continue si tu veux.", ja:"最初の一日が完了。よければ続けてみて。" },
+  ctaDoneSub:   { tr:"{n} gün üst üste. Dilersen pratiğe devam et.", en:"{n}-day streak. Keep practicing if you like.", de:"Serie: {n}. Mach gern weiter.", es:"Racha: {n}. Sigue practicando si quieres.", pt:"Série: {n}. Continua a praticar se quiseres.", fr:"Série : {n}. Continue si tu veux.", ja:"連続{n}日。よければ続けましょう。" },
   pairSection:  { tr:"İkili uyum", en:"Compatibility", de:"Verbindung", es:"Compatibilidad", pt:"Compatibilidade", fr:"Compatibilité", ja:"相性" },
 };
 // PAZAR HAFTALIK ÖZETİ (Bugün ekranı, yalnızca Pazar ve haftada en az bir aktif gün
@@ -18451,7 +18456,8 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                   {pickLang(doneToday ? TODAY_HERO_TXT.ctaDoneTitle : TODAY_HERO_TXT.ctaTitle, lang)}
                 </span>
                 <span style={{ display:"block",fontSize:13,color:BODY,fontFamily:INTER,lineHeight:1.45 }}>
-                  {doneToday ? pickLang(TODAY_HERO_TXT.ctaDoneSub, lang).replace("{n}", streakN)
+                  {doneToday ? (streakN === 1 ? pickLang(TODAY_HERO_TXT.doneOne, lang) : pickLang(TODAY_HERO_TXT.ctaDoneSub, lang).replace("{n}", streakN))
+                    : streakN === 1 ? pickLang(TODAY_HERO_TXT.streakOne, lang)
                     : streakN > 0 ? pickLang(TODAY_HERO_TXT.streakAlive, lang).replace("{n}", streakN).replace("{m}", streakN + 1)
                     : pickLang(TODAY_HERO_TXT.ctaZeroSub, lang)}
                 </span>
