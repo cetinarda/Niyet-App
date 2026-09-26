@@ -567,7 +567,7 @@ günde 4, yeni kullanıcıya 5 bildirim gidiyordu. Artık TEK fonksiyon:
   `_notifDayPlan(dn, day, hasBirth, hasEm, prefs)`. Analitik `notif_pref`
   (track.mjs beyaz listede, raporda "Bildirimler" altında).
   Varsayılanla doğum var: 08:30 tarot + 10:00 kişisel + 18:00 akşam; doğum yok:
-  13:00 (Salı/Cuma 08:00) + 18:00 = 2.
+  18:00 akşam + koç + 13:00 (Salı/Cuma 08:00) = 3 (kullanıcı onayladı, Eyl 2026).
 - ~~Günlük üst sınır: yeni 3 · orta 2 · eski 1~~ (tarihsel, yukarıya bak)
 - **Doğum VARSA öncelik:** jeomanyetik 12:00 (yalnızca Kp>=4) > kişisel 10:00
   (→Bugün) > akşam 18:00 > tarot 08:30 > hatırlatıcı 16:00 > gün ortası.
@@ -701,7 +701,8 @@ DEĞİL) → İkili uyum → Bugünün ilk adımı. Aşağıdaki numaralar tarih
   `public/audio/`'ya koy; ses dosyalarını repo köküne KOYMA (her klona iner).
   ⚠️ Headless Chromium AAC çalamaz; test cihazda/Chrome'da yapılır.
 - **Bağlantı eşikleri herkese hafif** (`STEP_MIN` 5 nefes / 30 sn / 60 sn / 1 görev).
-- **Alt çağrı metni** seri 1'de "Dün ilk adımını attın...", sonra "{n} gün üst üste.
+- **Alt çağrı metni** seri 1'de "Dün ilk adımını attın..." (serisi sıfırlanıp yeniden
+  başlayan eski kullanıcıya aynı motivasyonla "Dün yeniden başladın...", `restartOne`), sonra "{n} gün üst üste.
   Bugünkü 3 adımı tamamla, seri {m} güne çıksın" (`streakAlive/streakOne/doneOne`).
 
 ⚠️ **KAPSAM ETİKETLERİ (Eyl 2026, kullanıcı: "vurgu ve nelere dikkat değişmiyor,
@@ -927,6 +928,9 @@ temizliği (App.jsx ~5594, geçmiş iOS OOM fix'i) korunuyor.
 - ⚠️ BAĞIŞ GİBİ SUNMA: Apple IAP ile bağış toplanmasına izin vermez. Not ürünün
   YERİNE geçmez; özellik listesi, fiyatlar, abonelik koşulları (3.1.2) aynen durur.
   Doğrulanamayan iddia ("reklamsız", "veri satmıyoruz") EKLEME.
+- ⚠️ **HER AÇILIŞ SAYILIR, Bugün rehber kartlarından açılanlar DAHİL** (kullanıcı kararı,
+  Eyl 2026: "amacımız premium aldırmak, Keşfet dışında yeterince ücretsiz özellik var").
+  "Uygulama başına günde bir kez say" ya da "Bugün kartlarını muaf tut" ÖNERME.
 - **SAKİN AİLESİ KOTASI ORTAK (Eyl 2026, kullanıcı: "toplam 3 olsun, hepsi için ayrı
   ayrı değil"):** Hayvan/Bitkiler/Taşlar/Mitler BİRLİKTE günde 3 açılış
   (`sakin_ailesi_opens_all_<gün>`, `AILESI_FREE_OPENS`). SoulID hiç SAYILMAZ; Tasarım
