@@ -48,7 +48,7 @@ android {
         //   ./gradlew assembleRelease
         //   adb install -r app/build/outputs/apk/release/app-release.apk
         //   (kurulu paket DEBUGGABLE görünüyorsa yanlış sürümü test ediyorsun)
-        versionCode 19
+        versionCode 20
         versionName "1.4.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
