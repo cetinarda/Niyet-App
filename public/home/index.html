@@ -223,6 +223,7 @@
   @media (prefers-reduced-motion: reduce) { .phone { transition:none; } }
   /* ── Bildirimler bölümü: telefon bildirimi görünümünde üç örnek ── */
   .notifs { display:flex; flex-direction:column; gap:10px; max-width:440px; margin:0 auto; }
+  .notif-assist { font-family:var(--font-display); font-weight:300; font-size:20px; letter-spacing:.3px; color:var(--title); margin-top:14px; }
   .notif {
     display:flex; align-items:flex-start; gap:12px; text-align:left;
     background:var(--surface); border:1px solid var(--line-soft); border-radius:18px;
@@ -501,6 +502,7 @@
       <span class="kicker" data-t="notifKicker">Bildirimler</span>
       <h2 data-t="notifTitle" data-t-html>Bildirimlerini açık tut,<br>Sakin gün içinde yanında olsun.</h2>
       <p data-t="notifText">Sakin'in en güzel anları bazen sen aramadan gelir: sabah seni bekleyen kartlar, gökyüzü hareketlendiğinde küçük bir haber, akşamüstü içine dokunan bir söz. Bildirimleri açık tutarsan bu küçük hatırlatmalar gününe sessizce eşlik eder.</p>
+      <p class="notif-assist" data-t="notifAssist">Sakin senin ruhsal asistanın olabilir.</p>
     </div>
     <!-- Örnek bildirimler: metinler uygulamadaki GERÇEK bildirimlerden
          (TAROT_NOTIF, PNOTIF_EM, NOTIF_SOZ). Saatler varsayılan plandan. -->
