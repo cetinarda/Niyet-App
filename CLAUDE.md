@@ -22,7 +22,7 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    - **BİRLEŞTİRME PLANI (TAMAMLANDI):** `main` zaten web-deploy-able (src + bundle + netlify backend + toml hepsi var). Kullanıcı Netlify production branch'ini `main` yaparsa gdkpd emekliye ayrılır → manuel main→gdkpd deploy (asıl drift kaynağı) biter. Web/iOS karışmaz: tek `src/App.jsx`, `isNative` ile runtime ayrışır; `ios/` (iOS-only) ve `netlify/` (web-only) ayrı klasör. Netlify değişene kadar gdkpd canlı kalır.
    - **ALTIN DİSİPLİN (bu oturumun acı dersi):** git proxy bazen bayat ref + sahte "pushed" döndürür; container reset yerel ağacı eski tabana düşürür. **Her push'u SHA değil İÇERİKLE doğrula** (re-fetch + `grep -c marker`). Branch+HEAD'i edit ÖNCESİ doğrula. Her milestone'da commit+push.
    - Portekizce dil kodu = **`pt`** (eski `pt-BR` değil; `sakin_lang` "pt" yazılır, embed'ler "pt" bekler). Legacy pt-BR i18n bloğu kaldırıldı.
-   - **Portekizce = AVRUPA Portekizcesi, "tu" hitabı** (Eyl 2026 çeviri denetimi): `locale_code`/`voice_lang` "pt-PT", "ecrã/tu/descarrega". Brezilya biçimi ("você", "tela", "baixar") EKLEME. Mitler'in pt sözlüğü hâlâ Brezilya biçimli (bilinen eksik).
+   - **Portekizce = AVRUPA Portekizcesi, "tu" hitabı** (Eyl 2026 çeviri denetimi): `locale_code`/`voice_lang` "pt-PT", "ecrã/tu/descarrega". Brezilya biçimi ("você", "tela", "baixar") EKLEME. Gömülü dört uygulama (Mitler/Hayvan/Bitkiler/Taşlar) da Eyl 2026'da tamamen Avrupa Portekizcesine çevrildi (bitki/mineral adları dahil: Aloé vera, Feto, Hematite...).
 2b. **🚨 ANDROID YAYIN KAPISI: R8 TESTİ GEÇMEDEN PLAY'E HİÇBİR ŞEY YÜKLENMEZ.**
    Kullanıcı Android sürümü göndermek istediğinde, mağaza komutundan ÖNCE bunu ver:
    ```
@@ -1184,13 +1184,12 @@ onay ister" yalnızca 5 özellik için). Yeni onay kapısı EKLEME.
   nagualReason.ts`) 7 dilde, dört uygulamada. Ölü dosyalar silindi:
   Bitkiler/Taşlar `data/animalLore.ts` (1931 satır, pakete giriyordu, ~400 KB)
   + Taşlar `screens/NagualScreen.tsx`. Hakkında metni "9 ritim" (eskiden 6).
+- **3. tur (Eyl 2026) ÇÖZÜLDÜ:** Bitkiler/Taşlar kendi ürün kimlikleri
+  (`life.sakin.plants.*` / `life.sakin.stones.*`), yıllık plan etiketi "yıl/yr/ano...",
+  gömülü uygulamaların pt metinleri tamamen Avrupa Portekizcesi "tu", Mitler testi
+  dilden bağımsız puanlama (`apps/mitler/src/utils/finder.ts` + `finder.verify.ts`).
 - **HÂLÂ AÇIK:** gömülü uygulamalarda `APP_IS_FREE = true` (satın alma ekranı şu
-  an hiç görünmüyor); Bitkiler/Taşlar ürün kimlikleri hâlâ `life.sakin.animals.*`
-  (satın alma mantığı, dokunulmadı); yıllık planın etiketi "ay/mo" diyor;
-  gömülü uygulamaların pt metinlerinin çoğu hâlâ Brezilya "você" biçimi
-  (yalnızca dokunulanlar "tu"); Mitler testi puanlamayı Türkçe özellik
-  kelimeleriyle yapıyor, tr dışında sonuç çoğunlukla elemente dayanıyor;
-  burç adlarının pt yazımları; ja kaynak verisinde 地/土 tutarsızlığı.
+  an hiç görünmüyor); ja kaynak verisinde 地/土 tutarsızlığı.
   Abonelik doğrulama env'leri (`APPLE_*`, `GOOGLE_*`) canlıda TANIMLI DEĞİL:
   `verify-entitlement` `apple_not_configured` döner, iptal kontrolü sessizce kapalı.
 

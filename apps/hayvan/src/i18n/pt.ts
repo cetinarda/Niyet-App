@@ -24,7 +24,7 @@ export const pt = {
       animal: {
         title: 'Animal',
         short: 'ANIMAL',
-        subtitle: 'Ouça o seu companheiro de alma',
+        subtitle: 'Ouve o teu companheiro de alma',
       },
       quote: {
         title: 'Palavras',
@@ -32,7 +32,7 @@ export const pt = {
         subtitle: 'Das tradições de sabedoria',
       },
     },
-    tapHint: 'agite · toque',
+    tapHint: 'agita · toca',
     nextDeck: 'Próximo baralho →',
     completed: 'Concluído ✦',
     doneTitle: 'Orientação diária\nconcluída',
@@ -55,7 +55,7 @@ export const pt = {
     back: '← Voltar',
     familyTag: 'SAKIN · ANIMAL',
     subtitle: 'Da Anatólia para o mundo · {count} guias animais',
-    searchPlaceholder: 'Pesquise por nome, símbolo ou elemento...',
+    searchPlaceholder: 'Pesquisa por nome, símbolo ou elemento...',
     noResults: 'Nenhum resultado encontrado.',
   },
 
@@ -66,7 +66,7 @@ export const pt = {
     sections: {
       anatolian: 'Na Anatólia',
       world: 'No Mundo',
-      todayMessage: 'O que ele lhe diz hoje',
+      todayMessage: 'O que ele te diz hoje',
       guidance: 'ORIENTAÇÃO',
       jung: 'Nas palavras de Jung',
       dream: 'Vê-lo em sonhos',
@@ -78,30 +78,30 @@ export const pt = {
       relatedMyth: 'Mito relacionado',
     },
     missingLore:
-      'A orientação mais profunda deste animal será ampliada em breve.\nPor ora, ele carrega a voz da Anatólia e a leitura de hoje.',
+      'A orientação mais profunda deste animal será ampliada em breve.\nPor agora, carrega a voz da Anatólia e a leitura de hoje.',
     resonanceHint: 'Força simbólica que ressoa com este animal →',
     footer: 'FAMÍLIA SAKIN ✦',
   },
 
   // ─── Animal finder ────────────────────────────────────────────────────────────
   animalFinder: {
-    headerTitle: 'Encontre o seu guia animal',
+    headerTitle: 'Encontra o teu guia animal',
     intro: {
-      title: 'Descubra o seu animal espiritual',
-      desc: 'Há dois caminhos para encontrar o animal totem alinhado com a sua alma.',
-      note: 'Sakin segura um espelho: reflete o que já está dentro de você e sussurra o que é possível.\nSó você pode despertá-lo no seu coração, senti-lo e torná-lo seu.',
+      title: 'Descobre o teu animal espiritual',
+      desc: 'Há dois caminhos para encontrar o animal totem alinhado com a tua alma.',
+      note: 'Sakin segura um espelho: reflete o que já está dentro de ti e sussurra o que é possível.\nSó tu o podes despertar no teu coração, senti-lo e torná-lo teu.',
       quizBtn: {
-        title: 'Descubra com perguntas',
-        desc: '7 perguntas, de acordo com o seu caráter',
+        title: 'Descobre com perguntas',
+        desc: '7 perguntas, de acordo com o teu carácter',
       },
       birthBtn: {
-        title: 'Encontre pelos dados de nascimento',
+        title: 'Encontra pelos dados de nascimento',
         desc: 'Totem natal por data e hora',
       },
     },
     birth: {
-      title: 'Insira os seus dados de nascimento',
-      desc: 'A estação, o ano e a hora do seu nascimento moldam o seu animal totem.',
+      title: 'Introduz os teus dados de nascimento',
+      desc: 'A estação, o ano e a hora do teu nascimento moldam o teu animal totem.',
       dateLabel: 'Data de nascimento',
       dayPlaceholder: 'Dia',
       monthPlaceholder: 'Mês',
@@ -109,15 +109,15 @@ export const pt = {
       cityLabel: 'Cidade de nascimento',
       cityOptional: '(opcional)',
       cityPlaceholder: 'ex. Istambul, Lisboa, São Paulo...',
-      cityHint: 'A energia do seu local de nascimento acrescenta profundidade à leitura.',
+      cityHint: 'A energia do teu local de nascimento acrescenta profundidade à leitura.',
       hourLabel: 'Hora de nascimento',
       hourOptional: '(opcional)',
       hourPlaceholder: 'Hora (0-23)',
-      hourHint: 'Se não souber a hora, deixe em branco, ainda assim será encontrada uma forte correspondência.',
+      hourHint: 'Se não souberes a hora, deixa em branco; ainda assim será encontrada uma forte correspondência.',
       submitBtn: 'Encontrar o meu guia ✦',
     },
     result: {
-      label: 'O seu guia animal',
+      label: 'O teu guia animal',
       rediscoverBtn: 'Redescobrir ✦',
       closeBtn: 'Fechar ✦',
     },
@@ -126,7 +126,7 @@ export const pt = {
       continueBtn: 'Continuar',
       questions: [
         {
-          q: 'Qual ambiente na natureza o chama?',
+          q: 'Que ambiente na natureza te chama?',
           options: [
             'Montanhas e céu aberto',
             'Floresta e terra solitária',
@@ -135,20 +135,20 @@ export const pt = {
           ],
         },
         {
-          q: 'Como você reage ao enfrentar uma situação difícil?',
+          q: 'Como reages quando enfrentas uma situação difícil?',
           options: [
-            'Pare, observe, trace uma estratégia',
-            'Aja rapidamente',
-            'Reúna os que estão à sua volta',
-            'Recolha-se e busque força interior',
+            'Para, observa, traça uma estratégia',
+            'Age rapidamente',
+            'Reúne os que estão à tua volta',
+            'Recolhe-te e procura força interior',
           ],
         },
         {
-          q: 'Qual palavra o descreve melhor?',
+          q: 'Que palavra te descreve melhor?',
           options: ['Livre', 'Forte', 'Sábio', 'Amoroso'],
         },
         {
-          q: 'Que papel você assume em um grupo?',
+          q: 'Que papel assumes num grupo?',
           options: [
             'Pioneiro e desbravador',
             'Mediador e equilibrador',
@@ -157,16 +157,16 @@ export const pt = {
           ],
         },
         {
-          q: 'Qual é a sua maior força?',
+          q: 'Qual é a tua maior força?',
           options: [
-            'Meus instintos e minha intuição',
-            'Minha paciência e minha resistência',
-            'Minha inteligência e minha adaptabilidade',
-            'Minha coragem e minha paixão',
+            'Os meus instintos e a minha intuição',
+            'A minha paciência e a minha resistência',
+            'A minha inteligência e a minha adaptabilidade',
+            'A minha coragem e a minha paixão',
           ],
         },
         {
-          q: 'O que lhe faz sentir liberdade na vida?',
+          q: 'O que te faz sentir liberdade na vida?',
           options: [
             'Tomar decisões independentes',
             'Estar seguro com os que amo',
@@ -175,7 +175,7 @@ export const pt = {
           ],
         },
         {
-          q: 'Qual energia você sente mais forte agora?',
+          q: 'Que energia sentes mais forte agora?',
           options: [
             'Movimento e velocidade',
             'Silêncio e observação',
@@ -193,7 +193,7 @@ export const pt = {
     familyTag: 'SAKIN · NAGUAL',
     introTitle: 'Nagual: Guia periódico',
     introText:
-      'O seu animal totem nasce com você e permanece por toda a vida. O nagual é um guia temporário\nque o acompanha durante um período específico. Ele chega em momentos de provação,\ntransformação ou crise. Cumprido o seu propósito, cede o lugar\na outro guia.',
+      'O teu animal totem nasce contigo e permanece para toda a vida. O nagual é um guia temporário\nque te acompanha durante um período específico. Chega em momentos de provação,\ntransformação ou crise. Cumprido o seu propósito, cede o lugar\na outro guia.',
     weekTag: 'ESTA SEMANA · UNIVERSAL',
     thisWeek: 'NESTE PERÍODO',
     daysLeft: 'Faltam {n} dias',
@@ -201,7 +201,7 @@ export const pt = {
     guidance: 'ORIENTAÇÃO',
     locked: {
       title: 'O meu guia pessoal',
-      text: 'Para determinar um animal guia periódico personalizado com base no seu mapa natal,\ncomplete o seu perfil.\n\nVocê pode adicionar a sua data de nascimento e o seu elemento em Perfil → Mapa pessoal.',
+      text: 'Para determinar um animal guia periódico personalizado com base no teu mapa natal,\ncompleta o teu perfil.\n\nPodes adicionar a tua data de nascimento e o teu elemento em Perfil → Mapa pessoal.',
     },
   },
 
@@ -225,7 +225,7 @@ export const pt = {
     },
     empty: {
       title: 'Ainda não há leituras.',
-      subtitle: 'Abra a sua carta na tela inicial.',
+      subtitle: 'Abre a tua carta no ecrã inicial.',
     },
   },
 
@@ -235,10 +235,10 @@ export const pt = {
     onboarding: {
       title: 'Bem-vindo ao Sakin Hayvan',
       subtitle: 'Orientação diária da antiga tradição da Anatólia',
-      step1Question: 'Qual é o seu nome, viajante?',
-      step1Placeholder: 'Digite o seu nome...',
-      step2Question: 'De qual elemento você se sente mais próximo?',
-      step3Question: 'Para o seu mapa pessoal',
+      step1Question: 'Como te chamas, viajante?',
+      step1Placeholder: 'Escreve o teu nome...',
+      step2Question: 'De que elemento te sentes mais próximo?',
+      step3Question: 'Para o teu mapa pessoal',
       step3Hint: 'Numerologia, Human Design e análise de elementos.\nMais dados = leitura mais forte.',
       fullNamePlaceholder: 'Nome completo...',
       birthDateLabel: 'Data de nascimento',
@@ -254,7 +254,7 @@ export const pt = {
       cityPlaceholder: 'Istambul, Lisboa...',
       continueBtn: 'Continuar →',
       startBtn: 'Iniciar a jornada ✦',
-      skipBtn: 'Agora não, pular',
+      skipBtn: 'Agora não, saltar',
     },
     // Stats
     stats: {
@@ -272,12 +272,12 @@ export const pt = {
       freeLabel: 'Viajante gratuito',
       premiumRenewal: 'Renovação: {date}',
       premiumLifetime: 'Vitalício',
-      freeCta: 'Torne-se Mestre para uma análise aprofundada',
+      freeCta: 'Torna-te Mestre para uma análise aprofundada',
       upgradeBtn: 'Tornar-se Mestre ✦',
       cancelBtn: 'Cancelar',
       remindersLabel: 'Lembrete diário',
-      remindersSub: 'Receba o seu guia todas as manhãs às 08:00',
-      cloudBackup: 'Dados salvos na nuvem',
+      remindersSub: 'Recebe o teu guia todas as manhãs às 08:00',
+      cloudBackup: 'Dados guardados na nuvem',
       signOutBtn: 'Sair',
       licenseTitle: 'Chave de licença',
       licensePlaceholder: 'XXXX-XXXX-XXXX',
@@ -285,14 +285,14 @@ export const pt = {
       licenseSuccess: 'Premium ativado! Bem-vindo à família Sakin.',
       licenseAlready: 'O Premium já está ativo nesta conta.',
       licenseInvalid: 'Chave inválida ou já utilizada.',
-      licenseNetwork: 'Erro de conexão. Tente novamente.',
-      licenseSignInRequired: 'Faça login na sua conta primeiro para aplicar uma chave.',
-      deleteLabel: 'Excluir conta',
-      deleteSub: 'Exclui permanentemente a sua conta e todos os dados.',
-      deleteBtn: 'Excluir',
-      deleteConfirmTitle: 'Excluir a sua conta?',
-      deleteConfirmMessage: 'Todas as leituras, o arquivo, o perfil e as estatísticas serão apagados permanentemente. Isso não pode ser desfeito.',
-      deleteConfirm: 'Sim, excluir',
+      licenseNetwork: 'Erro de ligação. Tenta novamente.',
+      licenseSignInRequired: 'Inicia sessão na tua conta primeiro para aplicar uma chave.',
+      deleteLabel: 'Eliminar conta',
+      deleteSub: 'Elimina permanentemente a tua conta e todos os dados.',
+      deleteBtn: 'Eliminar',
+      deleteConfirmTitle: 'Eliminar a tua conta?',
+      deleteConfirmMessage: 'Todas as leituras, o arquivo, o perfil e as estatísticas serão apagados permanentemente. Isto não pode ser desfeito.',
+      deleteConfirm: 'Sim, eliminar',
       deleteCancel: 'Cancelar',
     },
     // Personal Map
@@ -306,21 +306,21 @@ export const pt = {
       humanDesign: 'Human Design',
       strategy: 'Estratégia',
       estimated: '(estimado)',
-      hdTypeSelectHint: 'Selecione o seu tipo:',
+      hdTypeSelectHint: 'Seleciona o teu tipo:',
       hdDisclaimer:
-        '⚠ O cálculo é uma estimativa, um HD preciso requer hora de nascimento e efemérides.\nSe você conhece o seu tipo, selecione-o acima.',
+        '⚠ O cálculo é uma estimativa, um HD preciso de requer hora de nascimento e efemérides.\nSe conheces o teu tipo, seleciona-o acima.',
       sunGates: 'Portões solares',
       consciousSun: 'Sol consciente',
       designSun: 'Sol do design',
-      gatesNote: 'Tipo estimado · Adicione a sua hora de nascimento e selecione ✎ para um resultado preciso',
+      gatesNote: 'Tipo estimado · Adiciona a tua hora de nascimento e seleciona ✎ para um resultado preciso',
       notSelf: 'Tema do Não-Eu',
       weeklyReading: 'Orientação semanal',
       weeklyThisWeek: 'Leitura personalizada para esta semana',
       weeklyMeta: 'Orientação semanal · Semana {week}',
       personalYear: 'Ano pessoal: {year}',
       unlock: {
-        title: 'Abra o seu mapa pessoal',
-        desc: 'Insira o seu nome completo e a sua data de nascimento.\nNumerologia, Human Design e análise semanal.',
+        title: 'Abre o teu mapa pessoal',
+        desc: 'Introduz o teu nome completo e a tua data de nascimento.\nNumerologia, Human Design e análise semanal.',
       },
       birthForm: {
         title: 'Dados do mapa natal',
@@ -343,35 +343,35 @@ export const pt = {
     },
     // Animal Guidance section
     animalGuidance: {
-      birthAnimalTitle: 'Seu Animal de Nascimento',
+      birthAnimalTitle: 'O teu Animal de Nascimento',
       sectionTitle: 'O que é a orientação animal?',
       totemTitle: '⊕ Animal totem',
       totemText:
-        'Toda pessoa carrega o espírito de um animal em sua natureza. Esse animal totem representa você; a sua energia, os seus pontos fortes e o caminho que você percorre carregam os seus rastros. O totem nunca muda: nasce com você e cresce com você.',
+        'Cada pessoa carrega na sua natureza o espírito de um animal. Esse animal totem representa-te; a tua energia, os teus pontos fortes e o caminho que percorres carregam as suas marcas. O totem nunca muda: nasce contigo e cresce contigo.',
       nagualTitle: '◎ Nagual: Guia periódico',
       nagualText:
-        'O nagual é um guia temporário que vem até você por um período específico. Ele é chamado em momentos de provação, transformação ou crise. Cumprido o seu propósito, cede o lugar a outro guia. O animal sorteado na sua leitura diária carrega a voz do nagual de hoje.',
-      finderTitle: 'Encontre o seu guia animal',
-      finderDescPremium: 'Por perguntas ou pela sua data e hora de nascimento',
+        'O nagual é um guia temporário que vem até ti por um período específico. É chamado em momentos de provação, transformação ou crise. Cumprido o seu propósito, cede o lugar a outro guia. O animal sorteado na tua leitura diária carrega a voz do nagual de hoje.',
+      finderTitle: 'Encontra o teu guia animal',
+      finderDescPremium: 'Por perguntas ou pela tua data e hora de nascimento',
       finderDescFree: 'Recurso de Mestre ✦',
     },
     // Spiritual Map
     spiritualMap: {
       title: 'Mapa espiritual',
       topGuide: 'Poeta guia principal',
-      topStone: 'A sua pedra guardiã',
-      topAnimal: 'O seu animal totem',
-      topNagual: 'O seu guia nagual',
-      companionCount: 'acompanhou você {n} vezes',
+      topStone: 'A tua pedra guardiã',
+      topAnimal: 'O teu animal totem',
+      topNagual: 'O teu guia nagual',
+      companionCount: 'acompanhou-te {n} vezes',
       stoneCount: 'apareceu {n} vezes · {chakra}',
       nagualCount: 'foi invocado {n} vezes · {aspect}',
-      emptyHint: 'Abra a sua primeira carta e o seu mapa espiritual começará a tomar forma.',
+      emptyHint: 'Abre a tua primeira carta e o teu mapa espiritual começará a ganhar forma.',
     },
     // Sakin Family
     sakinFamily: {
       title: 'Família Sakin',
-      intro: 'Um ecossistema. Uma assinatura. Muitas portas.',
-      masterDesc: 'Central: acesso a todos os apps',
+      intro: 'Um ecossistema. Uma subscrição. Muitas portas.',
+      masterDesc: 'Central: acesso a todas as apps',
       apps: {
         animalGuidance: 'Orientação animal',
         stoneGuidance: 'Orientação de cristais',
@@ -381,12 +381,12 @@ export const pt = {
         numerology: 'Numerologia',
       },
       appDescs: {
-        animalGuidance: 'Este app',
+        animalGuidance: 'Esta app',
         stoneGuidance: 'A linguagem dos cristais',
         plantGuidance: 'Sabedoria herbal',
         myths: 'Arquétipos e símbolos',
-        humanDesign: 'Conheça o seu design',
-        numerology: 'O você por trás dos números',
+        humanDesign: 'Conhece o teu design',
+        numerology: 'O teu eu por trás dos números',
       },
       active: 'ATIVO',
       comingSoon: 'EM BREVE',
@@ -417,7 +417,7 @@ export const pt = {
     // Notification rationale (App Store 4.5.4 / Play Console)
     notif: {
       rationaleTitle: 'Lembrete diário',
-      rationaleMessage: 'Você quer que o Sakin Hayvan envie um lembrete suave todas as manhãs às 08:00 para você tirar a sua carta diária? As notificações nunca são usadas para publicidade ou marketing.',
+      rationaleMessage: 'Queres que o Sakin Hayvan te envie um lembrete suave todas as manhãs às 08:00 para tirares a tua carta diária? As notificações nunca são usadas para publicidade ou marketing.',
       rationaleConfirm: 'Permitir',
       rationaleCancel: 'Agora não',
     },
@@ -434,7 +434,7 @@ export const pt = {
     back: '← Voltar',
     familyTag: 'SAKIN · MITO',
     subtitle: 'Forças simbólicas que a alma encontra · {count} mitos',
-    searchPlaceholder: 'Pesquise por nome, símbolo ou elemento...',
+    searchPlaceholder: 'Pesquisa por nome, símbolo ou elemento...',
     noResults: 'Nenhum resultado encontrado.',
     filterAll: 'Todos',
     msgSection: 'MENSAGEM',
@@ -446,24 +446,24 @@ export const pt = {
     subtitle: 'Orientação diária da antiga\ntradição da Anatólia',
     orLabel: 'ou',
     emailPlaceholder: 'E-mail',
-    passwordPlaceholder: 'Senha',
+    passwordPlaceholder: 'Palavra-passe',
     signinBtn: 'Entrar',
     signupBtn: 'Criar conta',
-    toSignup: 'Não tem conta? Crie uma',
-    toSignin: 'Já tem conta? Entre',
+    toSignup: 'Não tens conta? Cria uma',
+    toSignin: 'Já tens conta? Entra',
     offlineBtn: 'Continuar sem conta',
-    offlineHint: 'Os seus dados ficam apenas neste dispositivo',
-    errorNotConfigured: 'Servidor não configurado. Continue offline por ora.',
-    errorInvalidInput: 'É necessário um e-mail válido e uma senha de pelo menos 6 caracteres.',
-    errorGeneric: 'Algo deu errado.',
+    offlineHint: 'Os teus dados ficam apenas neste dispositivo',
+    errorNotConfigured: 'Servidor não configurado. Continua offline por agora.',
+    errorInvalidInput: 'É necessário um e-mail válido e uma palavra-passe com pelo menos 6 caracteres.',
+    errorGeneric: 'Algo correu mal.',
     errorNotConfiguredShort: 'Servidor não configurado.',
-    errorAppleFailed: 'Não foi possível concluir o login com a Apple.',
-    errorAppleError: 'O login com a Apple falhou.',
-    infoEmailSent: 'E-mail de confirmação enviado. Verifique a sua caixa de entrada.',
-    errInvalidLogin: 'E-mail ou senha incorretos.',
-    errAlreadyRegistered: 'Este e-mail já está cadastrado.',
-    errNotConfirmed: 'Confirme o seu e-mail primeiro.',
-    errNetwork: 'Sem conexão com a internet.',
+    errorAppleFailed: 'Não foi possível concluir o início de sessão com a Apple.',
+    errorAppleError: 'O início de sessão com a Apple falhou.',
+    infoEmailSent: 'E-mail de confirmação enviado. Verifica a tua caixa de entrada.',
+    errInvalidLogin: 'E-mail ou palavra-passe incorretos.',
+    errAlreadyRegistered: 'Este e-mail já está registado.',
+    errNotConfirmed: 'Confirma primeiro o teu e-mail.',
+    errNetwork: 'Sem ligação à internet.',
   },
 
   // ─── Paywall screen ───────────────────────────────────────────────────────────
@@ -476,7 +476,7 @@ export const pt = {
     mikroPlan: 'Micro',
     premiumPlan: 'Premium',
     mikroCadence: 'mês · só Animal',
-    premiumCadence: "mês · todas as apps",
+    premiumCadence: "ano",
     mostPopular: 'MAIS POPULAR',
     iosPrice: "Os preços são apresentados pela App Store.",
     androidPrice: "Os preços são apresentados pela Play Store.",
@@ -516,11 +516,11 @@ export const pt = {
   glossary: {
     totem: {
       term: 'Animal totem',
-      short: 'O animal espiritual que nasce com você e permanece por toda a vida.',
+      short: 'O animal espiritual que nasce contigo e permanece para toda a vida.',
     },
     nagual: {
       term: 'Nagual',
-      short: 'Um guia temporário que o acompanha durante um período específico.',
+      short: 'Um guia temporário que te acompanha durante um período específico.',
     },
     mit: {
       term: 'Mito',
@@ -528,7 +528,7 @@ export const pt = {
     },
     hayatYolu: {
       term: 'Número do caminho de vida',
-      short: 'O resumo numerológico da sua data de nascimento, mostra a sua energia central.',
+      short: 'O resumo numerológico da tua data de nascimento, mostra a tua energia central.',
     },
     numeroloji: {
       term: 'Numerologia',
@@ -536,15 +536,15 @@ export const pt = {
     },
     ifade: {
       term: 'Número da expressão',
-      short: 'Derivado das letras do seu nome, os seus talentos naturais e o seu potencial.',
+      short: 'Derivado das letras do teu nome, os teus talentos naturais e o teu potencial.',
     },
     ruhIstegi: {
       term: 'Número do desejo da alma',
-      short: 'Das vogais do seu nome, a sua motivação interior.',
+      short: 'Das vogais do teu nome, a tua motivação interior.',
     },
     kisilik: {
       term: 'Número da personalidade',
-      short: 'Das consoantes do seu nome, o rosto que você mostra ao mundo.',
+      short: 'Das consoantes do teu nome, o rosto que mostras ao mundo.',
     },
     humanDesign: {
       term: 'Human Design',
@@ -572,7 +572,7 @@ export const pt = {
     },
     notSelf: {
       term: 'Tema do Não-Eu',
-      short: 'A emoção que sinaliza que você está fora do seu verdadeiro caminho.',
+      short: 'A emoção que sinaliza que estás fora do teu verdadeiro caminho.',
     },
     unsur: {
       term: 'Elemento',
@@ -580,19 +580,19 @@ export const pt = {
     },
     arketip: {
       term: 'Arquétipo',
-      short: 'Uma figura simbólica universal compartilhada por toda a humanidade.',
+      short: 'Uma figura simbólica universal partilhada por toda a humanidade.',
     },
     golge: {
       term: 'Sombra',
-      short: 'As partes de nós mesmos que rejeitamos ou reprimimos em nossa consciência.',
+      short: 'As partes de nós mesmos que rejeitamos ou reprimimos na nossa consciência.',
     },
     kisiselYil: {
       term: 'Ano pessoal',
-      short: 'O tema específico do seu ano numerológico, em qual passo do ciclo de 9 anos você está.',
+      short: 'O tema específico do teu ano numerológico, em que passo do ciclo de 9 anos estás.',
     },
     rehber: {
       term: 'Animal espiritual',
-      short: 'O animal totem que reflete a sua personalidade e a sua energia.',
+      short: 'O animal totem que reflete a tua personalidade e a tua energia.',
     },
   },
 } as const;
