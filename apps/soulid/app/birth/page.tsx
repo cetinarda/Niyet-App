@@ -3,7 +3,7 @@
 import { useNav } from '@/lib/nav';
 import { setActiveReportId } from '@/lib/active-report';
 import { FORM_INPUT, BTN_PRIMARY } from '@/lib/ui';
-import { IS_CAPACITOR } from '@/lib/nav';
+import { IS_CAPACITOR, resolveHref } from '@/lib/nav';
 import { WEB_APP_OPEN } from '@/lib/feature-flags';
 import { AppOnlyGate } from '@/components/AppOnlyGate';
 import { LabeledField, DateField, TimeKnownField } from '@/components/LabeledField';
@@ -425,7 +425,7 @@ export default function BirthPage() {
 
           <p className="text-center text-xs text-faint">
             {t('birth.privacyNote')}{' '}
-            <a href="/privacy" className="text-muted hover:text-gold underline">
+            <a href={resolveHref('/privacy')} className="text-muted hover:text-gold underline">
               {t('nav.privacy')}
             </a>
           </p>

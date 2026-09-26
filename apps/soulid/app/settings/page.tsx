@@ -1,6 +1,6 @@
 'use client';
 
-import { useNav } from '@/lib/nav';
+import { useNav, resolveHref } from '@/lib/nav';
 import { useState } from 'react';
 import { PageLayout, Section, Bullet } from '@/components/PageLayout';
 import { MotionToggle } from '@/components/MotionToggle';
@@ -131,8 +131,8 @@ export default function Settings() {
       <Section heading="Gizliliğin">
         <p>
           Hangi verileri topladığımız, nasıl sakladığımız ve haklarının tamamı{' '}
-          <a className="text-gold underline" href="/privacy">Gizlilik Politikası</a> ve{' '}
-          <a className="text-gold underline" href="/data">Veri Hakları</a> sayfalarında.
+          <a className="text-gold underline" href={resolveHref('/privacy')}>Gizlilik Politikası</a> ve{' '}
+          <a className="text-gold underline" href={resolveHref('/data')}>Veri Hakları</a> sayfalarında.
         </p>
       </Section>
     </PageLayout>
