@@ -13087,10 +13087,11 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                 <div style={{ fontSize:11, letterSpacing:5, color:`rgba(${rgb},0.85)`, textTransform:"uppercase", fontFamily:"'Jost',sans-serif" }}>
                   {t("ailesi_title")}
                 </div>
-                {/* YUMUŞAK KAPI (kullanıcı onayladı, örnek görseldeki gibi): ne olduğu,
-                    ne zaman yenileneceği, premium'un getirdikleri. */}
-                <div style={{ fontSize:26, color:"#f1ecf9", fontFamily:"'Cormorant Garamond',Georgia,serif", textAlign:"center", maxWidth:330, lineHeight:1.2 }}>
-                  {pickLang(AILESI_GATE_TXT.title, lang)}
+                {/* YUMUŞAK KAPI: üst kısım ESKİ tasarımın zarif başlığı (kullanıcı:
+                    "yıldız, Sakin Ailesi, Devam etmek için Premium gerekli kalsın"),
+                    altı yeni bilgilendirme: ne zaman yenileneceği, premium'un getirdikleri. */}
+                <div style={{ fontSize:22, color:"#fff", fontFamily:"'Jost',sans-serif", fontWeight:300, lineHeight:1.4, letterSpacing:1, textAlign:"center", maxWidth:330 }}>
+                  {t("ailesi_premium_needed_title")}
                 </div>
                 <div style={{ display:"flex", gap:8 }} aria-hidden="true">
                   {Array.from({ length: AILESI_FREE_OPENS }, (_, i) => <span key={i} style={{ width:9, height:9, borderRadius:"50%", background:"#e8c07a", boxShadow:"0 0 8px rgba(232,192,122,0.55)" }} />)}
