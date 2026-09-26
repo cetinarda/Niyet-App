@@ -89,7 +89,7 @@ export default async (req) => {
   let store, logStore;
   try { store = getStore("sakin-push"); logStore = getStore("sakin-push-log"); }
   catch { return html(`<h1>Depo açılamadı</h1><p class="muted">Netlify Blobs erişilemedi.</p>`, 500); }
-  const cfg = pushConfig();
+  const cfg = await pushConfig();
   let log = [];
   try { log = (await logStore.get("log", { type: "json" })) || []; } catch {}
   const devices = await loadDevices(store);

@@ -4,14 +4,17 @@
 // GEREKLİ ENV (Netlify > Environment variables, scope: Functions):
 //   APNS_KEY_ID        Apple Developer > Keys > push anahtarının Key ID'si
 //   APNS_TEAM_ID       Apple Developer Team ID
-//   APNS_PRIVATE_KEY   indirilen .p8 dosyasının TAM içeriği
+//   APNS_PRIVATE_KEY   indirilen .p8 dosyasının TAM içeriği (ARTIK secrets-admin
+//                      panelinden, Blobs'a; bkz. _secrets.mjs, 4 KB sınırı)
 //   APNS_BUNDLE_ID     app.sakin.life (yoksa bu varsayılır)
 //   FCM_SA_JSON        Firebase > Proje ayarları > Hizmet hesapları > yeni özel
-//                      anahtar: indirilen JSON dosyasının TAM içeriği
+//                      anahtar: indirilen JSON dosyasının TAM içeriği (ARTIK
+//                      secrets-admin panelinden, Blobs'a; bkz. _secrets.mjs)
 //   PUSH_ADMIN_TOKEN   gönderim panelinin şifresi (uzun, tahmin edilemez)
 // Biri eksikse o platforma gönderim atlanır, panel bunu açıkça yazar.
 import { createHash, createSign, createPrivateKey } from "node:crypto";
 import http2 from "node:http2";
+import { secret } from "./_secrets.mjs";
 
 export const tokenKey = (t) => "d/" + createHash("sha256").update(t).digest("hex").slice(0, 40);
 // Ayarlar'da gösterilen kısa CİHAZ KODU: panelde "yalnız bana test gönder" için.
@@ -24,7 +27,7 @@ const b64url = (buf) => Buffer.from(buf).toString("base64").replace(/\+/g, "-").
 // satırlık PEM'i okuyamıyor. Gövde (base64) başlıklardan ayrılır, tüm boşluk /
 // kaçış / tırnak atılır, 64'lük satırlarla yeniden sarılır. Başlıksız yapıştırılan
 // ham base64 da kabul edilir.
-function pem(s) {
+export function pem(s) {
   let t = String(s || "").trim().replace(/^["']|["']$/g, "").replace(/\\r|\\n/g, "\n");
   const m = t.match(/-----BEGIN ([A-Z ]+)-----([\s\S]*?)-----END \1-----/);
   const label = m ? m[1] : "PRIVATE KEY";
@@ -34,7 +37,7 @@ function pem(s) {
 }
 // Anahtarı gönderimden ÖNCE bir kez dene: okunamıyorsa fonksiyon çökmesin,
 // panel "anahtar okunamadı" desin.
-function keyOk(k) { try { createPrivateKey(k); return true; } catch { return false; } }
+export function keyOk(k) { try { createPrivateKey(k); return true; } catch { return false; } }
 function signJwt(header, payload, key, alg) {
   const h = b64url(JSON.stringify(header)), p = b64url(JSON.stringify(payload));
   const signer = createSign(alg === "ES256" ? "SHA256" : "RSA-SHA256");
@@ -44,13 +47,21 @@ function signJwt(header, payload, key, alg) {
   return `${h}.${p}.${b64url(sig)}`;
 }
 
-export function pushConfig() {
-  let fcm = null;
-  try { const j = JSON.parse(process.env.FCM_SA_JSON || "null"); if (j && j.client_email && j.private_key && j.project_id) fcm = j; } catch { /* bozuk JSON */ }
-  if (fcm && !keyOk(pem(fcm.private_key))) { fcm = null; }
+// FCM servis hesabı JSON'u (bildirim + Android abonelik doğrulaması ortak kullanır).
+export async function fcmServiceAccount() {
+  try {
+    const j = JSON.parse((await secret("FCM_SA_JSON")) || "null");
+    if (j && j.client_email && j.private_key && j.project_id && keyOk(pem(j.private_key))) return j;
+  } catch { /* bozuk JSON */ }
+  return null;
+}
+
+export async function pushConfig() {
+  const fcm = await fcmServiceAccount();
+  const apnsKeyRaw = await secret("APNS_PRIVATE_KEY");
   let apns = null, apnsError = "";
-  if (process.env.APNS_KEY_ID && process.env.APNS_TEAM_ID && process.env.APNS_PRIVATE_KEY) {
-    const key = pem(process.env.APNS_PRIVATE_KEY);
+  if (process.env.APNS_KEY_ID && process.env.APNS_TEAM_ID && apnsKeyRaw) {
+    const key = pem(apnsKeyRaw);
     if (keyOk(key)) apns = { kid: String(process.env.APNS_KEY_ID).trim(), team: String(process.env.APNS_TEAM_ID).trim(), key, topic: (process.env.APNS_BUNDLE_ID || "app.sakin.life").trim() };
     else apnsError = "APNS_PRIVATE_KEY okunamadı: .p8 dosyasının içeriği eksik ya da bozuk yapıştırılmış";
   }

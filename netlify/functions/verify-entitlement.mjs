@@ -30,6 +30,9 @@
  */
 
 import { createSign, createPrivateKey } from "node:crypto";
+import { connectLambda } from "@netlify/blobs";
+import { secret } from "./_secrets.mjs";
+import { fcmServiceAccount } from "./_push.mjs";
 
 const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life", "capacitor://localhost", "ionic://localhost", "https://localhost", "http://localhost"];
 const YEARLY_ID = "app.sakin.life.yearly";
@@ -107,10 +110,12 @@ const jsonFetch = async (url, opts = {}) => {
 };
 
 // ── APPLE ────────────────────────────────────────────────────────────────────
-function appleToken() {
+// APPLE_PRIVATE_KEY ortam değişkeni YERİNE secrets-admin panelinden (Blobs) de
+// gelebilir: fonksiyon ortam değişkenleri toplamı 4 KB'ı geçemiyor (_secrets.mjs).
+async function appleToken() {
   const kid = process.env.APPLE_KEY_ID;
   const iss = process.env.APPLE_ISSUER_ID;
-  const key = pem(process.env.APPLE_PRIVATE_KEY);
+  const key = pem(await secret("APPLE_PRIVATE_KEY"));
   const bid = process.env.APPLE_BUNDLE_ID || "app.sakin.life";
   if (!kid || !iss || !key) return null;
   const now = Math.floor(Date.now() / 1000);
@@ -157,7 +162,7 @@ async function appleLifetime(host, token, transactionId) {
  * Prod önce denenir; Apple "bulunamadı" derse sandbox'a düşülür (TestFlight/sandbox).
  */
 async function appleEntitlement(transactionId, deadline) {
-  const token = appleToken();
+  const token = await appleToken();
   if (!token || !transactionId) return { status: "unknown", reason: "apple_not_configured" };
 
   for (const host of APPLE_HOSTS) {
@@ -206,9 +211,17 @@ async function appleEntitlement(transactionId, deadline) {
 }
 
 // ── GOOGLE ───────────────────────────────────────────────────────────────────
+// Google: ayrı servis hesabı (GOOGLE_SA_EMAIL + GOOGLE_SA_KEY) ZORUNLU DEĞİL.
+// Tanımlı değilse bildirimlerde zaten kullanılan Firebase servis hesabı
+// (FCM_SA_JSON) kullanılır; o hesabın e-postasını Play Console'a davet edip
+// "finansal verileri görüntüle" izni vermek yeter.
 async function googleAccessToken() {
-  const email = process.env.GOOGLE_SA_EMAIL;
-  const key = pem(process.env.GOOGLE_SA_KEY);
+  let email = process.env.GOOGLE_SA_EMAIL;
+  let key = pem(await secret("GOOGLE_SA_KEY"));
+  if (!email || !key) {
+    const sa = await fcmServiceAccount();
+    if (sa) { email = sa.client_email; key = pem(sa.private_key); }
+  }
   if (!email || !key) return null;
   const now = Math.floor(Date.now() / 1000);
   const assertion = signJwt(
@@ -310,6 +323,8 @@ export const handler = async (event) => {
     return { statusCode: 429, headers, body: JSON.stringify({ status: "unknown", reason: "rate_limited" }) };
   }
 
+  // v1 (Lambda) fonksiyonunda Blobs için bağlam gerekir (gizli anahtarlar orada).
+  try { connectLambda(event); } catch { /* Blobs yoksa ortam değişkenleri kullanılır */ }
   let req = {};
   try { req = JSON.parse(event.body || "{}"); } catch { /* boş bırak */ }
   const platform = req.platform === "android" ? "android" : "ios";

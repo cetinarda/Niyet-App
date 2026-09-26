@@ -135,8 +135,22 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
      `not_entitled`'da `revokeLocalPremium()` çağırır (App.jsx, 6 saat throttle).
      Env yoksa sistem sessizce devre dışı kalır → mevcut davranış (hiç iptal yok).
    - **Gerekli env (Netlify → Environment variables):**
-     `APPLE_KEY_ID` `APPLE_ISSUER_ID` `APPLE_PRIVATE_KEY` (.p8 içeriği) `APPLE_BUNDLE_ID`
-     `GOOGLE_SA_EMAIL` `GOOGLE_SA_KEY` `ANDROID_PACKAGE`
+     `APPLE_KEY_ID` `APPLE_ISSUER_ID` (küçük, env'de) · `APPLE_PRIVATE_KEY` (.p8)
+     artık `secrets-admin` PANELİNDEN (Blobs). Google için ayrı hesap ZORUNLU DEĞİL:
+     `GOOGLE_SA_EMAIL`/`GOOGLE_SA_KEY` yoksa Firebase servis hesabı (`FCM_SA_JSON`)
+     kullanılır; o hesabın e-postası Play Console'a "finansal verileri görüntüle"
+     izniyle davet edilir + Cloud'da "Google Play Android Developer API" açılır.
+   - ⚠️ **4 KB SINIRI (Eyl 2026, yayın durdu):** Netlify fonksiyonları AWS Lambda;
+     fonksiyon kapsamındaki TÜM env değişkenlerinin toplamı 4 KB'ı geçerse yayın
+     "Your environment variables exceed the 4KB limit" ile DURUR (canlı site eski
+     sürümde kalır). Büyük anahtarlar (`FCM_SA_JSON` ~2,3 KB, `APNS_PRIVATE_KEY`,
+     `APPLE_PRIVATE_KEY`, `GOOGLE_SA_KEY`) ARTIK ENV'DE DEĞİL: `netlify/functions/
+     _secrets.mjs` `secret(name)` önce env'e, yoksa Blobs `sakin-secrets` deposuna
+     bakar. Giriş paneli: `https://sakin.life/.netlify/functions/secrets-admin?token=
+     PUSH_ADMIN_TOKEN` (değerleri geri göstermez, kaydederken anahtarı doğrular).
+     YENİ BÜYÜK GİZLİ DEĞER EKLEME İHTİYACI olursa env'e DEĞİL, `SECRET_NAMES`
+     listesine ekle. v1 (`export const handler`) fonksiyonda Blobs için
+     `connectLambda(event)` ŞART (verify-entitlement'ta var).
 7. **App Store onayını riske atan değişiklikler için onay al:**
    - `ios/App/App/Info.plist` (özellikle `UIBackgroundModes`)
    - `ios/App/App/AppDelegate.swift` (AVAudioSession vb.)
