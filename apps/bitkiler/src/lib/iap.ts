@@ -3,9 +3,13 @@ import { Platform } from 'react-native';
 // RevenueCat product / entitlement identifiers.
 // Configure these in App Store Connect, Google Play Console, and RevenueCat dashboard.
 export const ENTITLEMENT_ID = 'premium';
+// Uygulamanın KENDİ paket kimliğine göre (life.sakin.plants). Eskiden Hayvan'dan
+// kopyalanmış life.sakin.animals.* kimlikleri duruyordu; App Store ürünleri
+// uygulamaya özel olduğu için tek başına yayında satın alma hiç çalışmazdı.
+// Sakin içinde (web embed) bu kod devre dışı: satın alma ana uygulamadan geçer.
 export const PRODUCT_IDS = {
-  mikro: 'life.sakin.animals.mikro.monthly',
-  premium: 'life.sakin.animals.premium.yearly',
+  mikro: 'life.sakin.plants.mikro.monthly',
+  premium: 'life.sakin.plants.premium.yearly',
 } as const;
 
 export type PlanKey = keyof typeof PRODUCT_IDS;

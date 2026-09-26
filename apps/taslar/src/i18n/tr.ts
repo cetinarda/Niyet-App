@@ -400,7 +400,7 @@ export const tr = {
     mikroPlan: "Mikro",
     premiumPlan: "Premium",
     mikroCadence: "ay · sadece Taşlar",
-    premiumCadence: "ay · tüm aile",
+    premiumCadence: "yıl",
     mostPopular: "EN POPÜLER",
     iosPrice: "Fiyatlar App Store üzerinden gösterilir.",
     androidPrice: "Fiyatlar Play Store üzerinden gösterilir.",

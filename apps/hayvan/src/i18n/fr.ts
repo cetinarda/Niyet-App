@@ -476,7 +476,7 @@ export const fr = {
     mikroPlan: 'Micro',
     premiumPlan: 'Premium',
     mikroCadence: 'mois · Animal uniquement',
-    premiumCadence: 'mois · toutes les applis',
+    premiumCadence: "an",
     mostPopular: 'LE PLUS POPULAIRE',
     iosPrice: 'Les prix sont affichés via l\'App Store.',
     androidPrice: 'Les prix sont affichés via le Play Store.',

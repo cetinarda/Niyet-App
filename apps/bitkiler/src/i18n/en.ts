@@ -397,7 +397,7 @@ export const en = {
     mikroPlan: "Micro",
     premiumPlan: "Premium",
     mikroCadence: "mo · Plants only",
-    premiumCadence: "mo · all apps",
+    premiumCadence: "yr",
     mostPopular: "MOST POPULAR",
     iosPrice: "Prices shown via the App Store.",
     androidPrice: "Prices shown via the Play Store.",

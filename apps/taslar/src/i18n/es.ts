@@ -397,7 +397,7 @@ export const es = {
     mikroPlan: 'Micro',
     premiumPlan: 'Premium',
     mikroCadence: "mes · solo Piedras",
-    premiumCadence: 'mes · todas las apps',
+    premiumCadence: "año",
     mostPopular: 'MÁS POPULAR',
     iosPrice: 'Los precios se muestran a través de la App Store.',
     androidPrice: 'Los precios se muestran a través de la Play Store.',

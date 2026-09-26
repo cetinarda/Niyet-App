@@ -476,7 +476,7 @@ export const ja = {
     mikroPlan: 'マイクロ',
     premiumPlan: 'プレミアム',
     mikroCadence: '月 · 動物のみ',
-    premiumCadence: '月 · 全アプリ',
+    premiumCadence: "年",
     mostPopular: '一番人気',
     iosPrice: '価格はApp Storeに表示されます。',
     androidPrice: '価格はPlay Storeに表示されます。',
