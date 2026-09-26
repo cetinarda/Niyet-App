@@ -164,10 +164,22 @@ function SectionLabel({ label, color }: { label: string; color: string }) {
   );
 }
 
-function MiniDeck({ deck, label, state }: { deck: typeof DECK_CONFIG[0]; label: string; state: 'done' | 'active' | 'pending' }) {
+// Mini desteler DOKUNULABILIR: acilmis kartlar arasinda serbestce gidip
+// gelinir (kullanici: "bir karti actiktan sonra alttaki diger karta basinca
+// geri donebileyim, sonra tekrar ona"). Kart yeniden cekilmez; o gunun
+// sonucu aynen gosterilir.
+function MiniDeck({ deck, label, state, onPress }: { deck: typeof DECK_CONFIG[0]; label: string; state: 'done' | 'active' | 'pending'; onPress: () => void }) {
   const color = state === 'pending' ? Colors.textMuted : deck.color;
   return (
-    <View style={[ms.wrapper, state === 'active' && { opacity: 1 }, state === 'pending' && { opacity: 0.35 }]}>
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={0.7}
+      hitSlop={8}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ selected: state === 'active' }}
+      style={[ms.wrapper, state === 'active' && { opacity: 1 }, state === 'pending' && { opacity: 0.35 }]}
+    >
       <View style={[ms.card, ms.shadow2, { borderColor: color + '20' }]} />
       <View style={[ms.card, ms.shadow1, { borderColor: color + '40' }]} />
       <View style={[ms.card, ms.front, {
@@ -179,7 +191,7 @@ function MiniDeck({ deck, label, state }: { deck: typeof DECK_CONFIG[0]; label: 
         </Text>
       </View>
       <Text style={[ms.label, { color }]}>{label}</Text>
-    </View>
+    </TouchableOpacity>
   );
 }
 
@@ -231,6 +243,12 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
   const backFade  = useRef(new Animated.Value(_reveal0 ? 0 : 1)).current;
   const frontFade = useRef(new Animated.Value(_reveal0 ? 1 : 0)).current;
   const revealedRef = useRef(readRevealedSteps().includes(0));
+  // Hangi desteler BUGUN acildi (mini destede ✓ ve gecis icin). localStorage
+  // yazilamasa bile (gizli mod) oturum icinde dogru kalsin diye ayrica state.
+  const [openedSteps, setOpenedSteps] = useState<number[]>(() => readRevealedSteps());
+  // Salla dinleyicisi ilk render'da kuruluyor; `step`i closure'dan okursa hep
+  // 0 gorur. Guncel desteyi ref'ten oku.
+  const stepRef = useRef(0);
 
   // GUNDE TEK KART. Depo (store) AsyncStorage'dan yuklemesini `isLoading` ile
   // bildirir. Onceki kod bunu BEKLEMEDEN, `dailyReading` henuz null iken hemen
@@ -334,7 +352,9 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
     if (revealedRef.current) return;
     revealedRef.current = true;
     setRevealed(true);
-    markRevealedStep(step);
+    const cur = stepRef.current;
+    markRevealedStep(cur);
+    setOpenedSteps(s => s.includes(cur) ? s : [...s, cur]);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     Animated.parallel([
       Animated.timing(backFade,  { toValue: 0, duration: 280, useNativeDriver: true }),
@@ -360,20 +380,35 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
     if (spec) { try { await shareCard(spec); } catch (_) { /* iptal/başarısız → sessiz */ } }
   };
 
+  // Desteye gec (ileri, geri, herhangi bir sirayla). Deste BUGUN zaten
+  // acildiysa acik yuzuyle gelir, tekrar "salla" denmez ve kart yeniden
+  // cekilmez; gunun okumasi (reading) hic degismez.
+  const lightHaptic = () => { try { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); } catch {} };
+  const applyStep = (next: number) => {
+    const already = openedSteps.includes(next) || readRevealedSteps().includes(next);
+    stepRef.current = next;
+    setStep(next);
+    setRevealed(already);
+    revealedRef.current = already;
+    backFade.setValue(already ? 0 : 1);
+    frontFade.setValue(already ? 1 : 0);
+  };
+  const goToStep = (next: number) => {
+    if (next < 0 || next >= DECK_CONFIG.length) return;
+    if (done) { lightHaptic(); setDone(false); applyStep(next); return; }
+    if (next === step) return;
+    lightHaptic();
+    frontFade.stopAnimation();
+    Animated.timing(frontFade, { toValue: 0, duration: 160, useNativeDriver: true }).start(({ finished }) => {
+      if (finished) applyStep(next);
+    });
+  };
+
   const handleNext = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     if (step < DECK_CONFIG.length - 1) {
-      Animated.timing(frontFade, { toValue: 0, duration: 200, useNativeDriver: true }).start(() => {
-        const next = step + 1;
-        // Sonraki deste BUGUN zaten acildiysa acik gelsin, tekrar "salla" deme.
-        const already = readRevealedSteps().includes(next);
-        setStep(next);
-        setRevealed(already);
-        revealedRef.current = already;
-        backFade.setValue(already ? 0 : 1);
-        frontFade.setValue(already ? 1 : 0);
-      });
+      goToStep(step + 1);
     } else {
+      lightHaptic();
       setDone(true);
     }
   };
@@ -511,19 +546,22 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
                 </Animated.View>
               </View>
             </View>
-
-            <View style={styles.deckRow}>
-              {DECK_CONFIG.map((d, i) => (
-                <MiniDeck
-                  key={i}
-                  deck={d}
-                  label={t(d.tKey)}
-                  state={i < step ? 'done' : i === step ? 'active' : 'pending'}
-                />
-              ))}
-            </View>
           </>
         )}
+
+        {/* Mini desteler: ilerleme + desteler arasi gecis (tamamlandi
+            ekraninda da gorunur, oradan acilmis kartlara geri donulur). */}
+        <View style={styles.deckRow}>
+          {DECK_CONFIG.map((d, i) => (
+            <MiniDeck
+              key={i}
+              deck={d}
+              label={t(d.tKey)}
+              state={!done && i === step ? 'active' : openedSteps.includes(i) ? 'done' : 'pending'}
+              onPress={() => goToStep(i)}
+            />
+          ))}
+        </View>
       </View>
     </View>
   );

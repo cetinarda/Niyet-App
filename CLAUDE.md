@@ -247,6 +247,15 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
       `src/glossary-starseed.js` tr/en kopyası; biri değişirse diğeri de).
     - **Kahraman kartında Human Design rozeti YOK** (kullanıcı: "burada HD bilgisi
       vermeyeceğiz, burası SoulID"). Karnedeki "Enerji Profili" kartı duruyor.
+    - ⚠️ **AD YOKSA KÖPRÜ ÇALIŞMAZ (Eyl 2026 hatası, kullanıcı: "doğum bilgisi
+      girdiğim halde yeniden soruyor"):** köprü `sakin_name` şart koşuyor (isim
+      numerolojisi + anlatı), Sakin ise adı zorunlu tutmuyor. Artık doğum var ad
+      yoksa (`sakinNeedsNameOnly`) açılışta YALNIZCA "Adın ne?" sorulur, ad
+      `sakin_name`e yazılır (`writeSakinName`), köprü çalışır ve hedefe (`?go=sky`
+      → `/report?to=sky`) gider. Host embed kapanınca adı yeniden okur. "Sakin"
+      adı YER TUTUCU sayılır (Tasarım adı olmayana "Sakin" profili açıyor; web'de
+      bu ad host'a geçip "Günaydın, Sakin" diyordu): `sakinName()` + host
+      `setIfChanged` bu adı yok sayar. ASLA uydurma ad koyma.
     - `?go=attachment` hem `target()`'ta hem doğrudan yönlendirmede olmalı:
       telefonda köprü/karne hidrasyonu da `target()`'a gidiyor, yoksa /profil'e düşer.
     - **Keşfet giriş kapısı:** `SOULID_PREMIUM_GATE` (App.jsx başı) şu an `false` = herkese ücretsiz + "Yeni" rozeti. `true` yapmak kilidi ve Premium rozetini geri getirir (tek satır).
@@ -262,6 +271,11 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
     Host İçsel Harita aynı kuralı `src/quotes-data.js` `pickBalancedQuote` ile
     uygular. Mitler'de kişi kaynaklı söz havuzu YOK (kartın kendi dersi/olumlaması).
     O gün zaten çekilmiş okuma değişmez, yeni denge ertesi günden görünür.
+  - **KART GEZİNMESİ (Eyl 2026, kullanıcı: "söz kartından bitki kartına geçip geri
+    dönebileyim"):** dört uygulamada (`HomeScreen.tsx`) alttaki mini desteler
+    dokunulabilir; açılmış kart aynı sonuçla yeniden gösterilir (yeniden çekilmez),
+    tamamlandı ekranında da sıra görünür. Salla hareketi artık EKRANDAKİ desteyi
+    işaretler (eskiden hep 0. deste). Günlük çekiliş mantığına dokunulmadı.
   - **Bitkiler / Taşlar / Hayvan kaynağı canlı paketi BİREBİR üretir** (Eyl 2026,
     `diff -rq apps/<app>/dist public/embedded/<dir>` boş çıktı). ⚠️ `build-embed.mjs`
     "byte-identical" mesajı YALNIZCA dizindeki İLK .js dosyasına (çoğu zaman
@@ -490,6 +504,9 @@ demek soğutur).
 - **Arka plan süresi sayılmıyor:** dönüşte sayaç sıfırdan başlar. Eski
   ortalamalar (Ayna 11 dk, ödeme 6,6 dk) bu yüzden şişikti. Rapor artık
   kova dağılımından ORTANCA ("Tipik süre") gösterir; ortalama yanında soluk.
+- ⚠️ **Test ortamında `git stash` KULLANMA** (arka planda ajan dosya düzenlerken
+  stash, ajanın değişikliklerini geri alıp çakışma yarattı; kurtarıldı). Taban
+  karşılaştırması için `git show HEAD:dosya` ile ayrı klasöre çıkar.
 - **Huni sırası düzeltildi:** HAZIRIM → Bağlan → özellik → doğum kaydı → nefes.
 - Rapor bölümleri: Tanışma (başladı/bitirdi), Bildirimler, Seçimler.
 - ⚠️ Test ortamında `pkill -f "vite preview"` komutunu BAŞKA komutlarla aynı
@@ -625,6 +642,15 @@ kullanmaya teşvik eden bilgi". Sıra (yukarıdan aşağı), değiştirmeden ön
 4. **Orkestra modu** (Ben'den TAŞINDI, kullanıcı: "karşılamaya al"). pulse
    verisi artık `screen==="bugun"`de çekiliyor. "13 kişi bu hafta" = haftalık
    gerçek veri, "bugün" diye yazma (sahte olur). Akort noktaları + Senin payın.
+⚠️ **KAPSAM ETİKETLERİ (Eyl 2026, kullanıcı: "vurgu ve nelere dikkat değişmiyor,
+bakman gereken yer değişmiyor; kullanıcı bugüne ait şeyler bekliyor"):** Güneş bir
+HD kapısında ~6 gün kalır. Güncel geçiş kartında Güneş/Ay satırları kalır, altındaki
+tema "Bu haftanın teması · 1 Ekim'e kadar" (`SCOPE_TXT`, `untilDateLabel`,
+`computeGateExitDate("Sun")`; çıkış bugünse "bugün değişiyor"; Türkçe ay eki
+`TR_MONTH_UNTIL` tablosundan, ŞABLONLA ÜRETME) etiketiyle, Vurgu/Nelere dikkat
+KAPALI (`transitThemeOpen`). Pusulada YALNIZCA söz + "Ay'ın bu evresi boyunca
+seninle" notu; "Bakman gereken yer" + "Haftaya bakış" Bugün'den KALDIRILDI
+(detay SoulID "Bugünün Gökyüzü"nde). Aşağıdaki madde 5 bu yüzden kısmen tarihsel.
 5. **Günün Pusulası** (ARTIK 1'in hemen altında; kullanıcı isteği, "Yıldızlar bugün sana ne diyor?"
    kartlarının YERİNE; o kartlar "ilk ekranda uzun" bulundu). Ruh Profili
    profil sayfasından TAŞINDI (SoulID ProfileCard'dan kaldırıldı, tekrar yok).

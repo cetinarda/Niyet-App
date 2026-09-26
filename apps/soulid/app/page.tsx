@@ -8,7 +8,7 @@ import { NowSkyChip } from '@/components/NowSkyChip';
 import { StoreBadges } from '@/components/StoreBadges';
 import { IS_CAPACITOR, useNav } from '@/lib/nav';
 import { WEB_APP_OPEN } from '@/lib/feature-flags';
-import { tryAutoConnectFromSakin, sakinBridgeAttempted, markSakinBridgeSkipped } from '@/lib/sakin-bridge';
+import { tryAutoConnectFromSakin, sakinBridgeAttempted, markSakinBridgeSkipped, sakinNeedsNameOnly, writeSakinName } from '@/lib/sakin-bridge';
 import { listReports } from '@/lib/supabase/reports';
 import { useT } from '@/lib/i18n';
 
@@ -25,6 +25,11 @@ export default function Welcome() {
   // yerine pazarlama sayfasına düşüyordu (kullanıcı bildirdi: "ana sayfa
   // açılıyor"). Kayıtlı karne varsa welcome hiç gösterilmeden hedefe geçilir.
   const [resolving, setResolving] = useState(() => IS_CAPACITOR && sakinBridgeAttempted());
+  // AD YOK, DOĞUM VAR: yalnızca adı sor (doğum bilgisini ikinci kez sorma).
+  // Karar effect içinde (statik export hydration uyuşmazlığı olmasın diye).
+  const [askName, setAskName] = useState(false);
+  const [nameDraft, setNameDraft] = useState('');
+  const [nameBusy, setNameBusy] = useState(false);
   // ?go=attachment (Sakin Ben ekranındaki "Bağlanma Profili" kutusu): karne
   // beklenmeden DOĞRUDAN teste gidilir. Test sayfası kayıtlı sonucu kendisi
   // gösterir ve harita merceği için karneyi arka planda kendisi yükler.
@@ -55,6 +60,7 @@ export default function Welcome() {
   useEffect(() => {
     if (!connecting) return;
     let cancelled = false;
+    if (sakinNeedsNameOnly() && !goAttach) { setAskName(true); setConnecting(false); return () => { cancelled = true; }; }
     tryAutoConnectFromSakin().then((res) => {
       if (cancelled) return;
       if (res.ok) { nav.push(target()); return; }
@@ -72,12 +78,60 @@ export default function Welcome() {
       .then((rs) => {
         if (cancelled) return;
         if (rs[0]) { nav.push(target()); return; }
+        if (sakinNeedsNameOnly() && !goAttach) setAskName(true);
         setResolving(false);   // karne yok: normal tanıtım ekranı
       })
       .catch(() => { if (!cancelled) setResolving(false); });
     return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resolving]);
+
+  const submitName = async () => {
+    const n = nameDraft.trim();
+    if (n.length < 2 || nameBusy) return;
+    setNameBusy(true);
+    writeSakinName(n);
+    const res = await tryAutoConnectFromSakin();
+    if (res.ok) { nav.push(target()); return; }
+    // Köprü yine düşerse (çok nadir: bozuk koordinat) normal forma geç.
+    markSakinBridgeSkipped();
+    setNameBusy(false);
+    setAskName(false);
+    nav.push('/birth');
+  };
+
+  if (askName) {
+    const tr = locale === 'tr';
+    return (
+      <div className="relative min-h-screen flex items-center justify-center px-6">
+        <CosmicBackground variant="galaxy" />
+        <div className="relative w-full max-w-sm flex flex-col gap-4 text-center">
+          <div className="text-[10px] font-bold uppercase tracking-[0.5em] text-gold/80">{tr ? 'Ruh Profili' : 'Soul Profile'}</div>
+          <h1 className="font-display text-4xl leading-tight text-ink">{tr ? 'Adın ne?' : "What's your name?"}</h1>
+          <p className="text-[14px] leading-relaxed text-muted">
+            {tr
+              ? "Doğum bilgilerin Sakin'den geldi. İsim numerolojin için yalnızca adına ihtiyacımız var."
+              : 'Your birth details came from Sakin. We only need your name for your name numerology.'}
+          </p>
+          <input
+            value={nameDraft}
+            onChange={(e) => setNameDraft(e.target.value.slice(0, 60))}
+            onKeyDown={(e) => { if (e.key === 'Enter') submitName(); }}
+            placeholder={tr ? 'Adın ve soyadın' : 'Your full name'}
+            autoComplete="name"
+            className="w-full rounded-2xl border border-gold/30 bg-gold/[0.05] px-4 py-3 text-base text-ink outline-none focus:border-gold/70"
+          />
+          <button
+            onClick={submitName}
+            disabled={nameDraft.trim().length < 2 || nameBusy}
+            className="rounded-full bg-gold py-3.5 text-sm font-bold tracking-wide text-[#1a0a40] disabled:opacity-40"
+          >
+            {nameBusy ? (tr ? 'Hazırlanıyor…' : 'Preparing…') : (tr ? 'Devam' : 'Continue')}
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (connecting || resolving || goAttach) {
     return (

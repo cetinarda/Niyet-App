@@ -178,10 +178,22 @@ function StoneContent({ stone, onOpenDetail, detailBtnLabel }: { stone: typeof s
 
 // ─── Mini deck indicator ────────────────────────────────────────────────────────
 type DeckItem = { title: string; short: string; subtitle: string; color: string; motif: string };
-function MiniDeck({ deck, state }: { deck: DeckItem; state: 'done' | 'active' | 'pending' }) {
+// Mini desteler DOKUNULABILIR: acilmis kartlar arasinda serbestce gidip
+// gelinir (kullanici: "soz kartini actiktan sonra alttaki karta basinca geri
+// donebileyim, sonra tekrar soz kartina"). Kart yeniden cekilmez; o gunun
+// sonucu aynen gosterilir.
+function MiniDeck({ deck, state, onPress }: { deck: DeckItem; state: 'done' | 'active' | 'pending'; onPress: () => void }) {
   const color = state === 'pending' ? Colors.textMuted : deck.color;
   return (
-    <View style={[ms.wrapper, state === 'active' && { opacity: 1 }, state === 'pending' && { opacity: 0.35 }]}>
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={0.7}
+      hitSlop={8}
+      accessibilityRole="button"
+      accessibilityLabel={deck.title}
+      accessibilityState={{ selected: state === 'active' }}
+      style={[ms.wrapper, state === 'active' && { opacity: 1 }, state === 'pending' && { opacity: 0.35 }]}
+    >
       <View style={[ms.card, ms.shadow2, { borderColor: color + '20' }]} />
       <View style={[ms.card, ms.shadow1, { borderColor: color + '40' }]} />
       <View style={[ms.card, ms.front, {
@@ -193,7 +205,7 @@ function MiniDeck({ deck, state }: { deck: DeckItem; state: 'done' | 'active' | 
         </Text>
       </View>
       <Text style={[ms.label, { color }]}>{deck.short}</Text>
-    </View>
+    </TouchableOpacity>
   );
 }
 
@@ -255,6 +267,12 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
   const backFade  = useRef(new Animated.Value(_reveal0 ? 0 : 1)).current;
   const frontFade = useRef(new Animated.Value(_reveal0 ? 1 : 0)).current;
   const revealedRef = useRef(readRevealedSteps().includes(0));
+  // Hangi desteler BUGUN acildi (mini destede ✓ ve gecis icin). localStorage
+  // yazilamasa bile (gizli mod) oturum icinde dogru kalsin diye ayrica state.
+  const [openedSteps, setOpenedSteps] = useState<number[]>(() => readRevealedSteps());
+  // Salla dinleyicisi ilk render'da kuruluyor; `step`i closure'dan okursa hep
+  // 0 gorur. Guncel desteyi ref'ten oku.
+  const stepRef = useRef(0);
 
   // HOST KOPRUSU: "kartini ac" ikinci kez tiklandiginda kart ACILIS
   // ANIMASYONUNU tekrar oynatma; o gun cekilmis olan TAM KARTI dogrudan acik
@@ -277,6 +295,7 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
       revealedRef.current = true;           // acilis animasyonunu atla
       setRevealed(true);
       markRevealedStep(0);                  // gun boyu acik kalsin
+      setOpenedSteps(s => s.includes(0) ? s : [...s, 0]);
       // Animasyon degerleri baslangicta arka yuz (1) / on yuz (0). Animasyonu
       // atladigimiz icin bunlari ELLE cevirmek sart, yoksa kart bos gorunur.
       backFade.setValue(0);
@@ -399,7 +418,9 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
     if (revealedRef.current) return;
     revealedRef.current = true;
     setRevealed(true);
-    markRevealedStep(step);
+    const cur = stepRef.current;
+    markRevealedStep(cur);
+    setOpenedSteps(s => s.includes(cur) ? s : [...s, cur]);
     recordReading();
     _bridgeHaptic('medium');
     Animated.parallel([
@@ -408,20 +429,34 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
     ]).start();
   };
 
-  const handleNext = () => {
+  // Desteye gec (ileri, geri, herhangi bir sirayla). Deste BUGUN zaten
+  // acildiysa acik yuzuyle gelir, tekrar "salla" denmez ve kart yeniden
+  // cekilmez; gunun okumasi (reading) hic degismez.
+  const applyStep = (next: number) => {
+    const already = openedSteps.includes(next) || readRevealedSteps().includes(next);
+    stepRef.current = next;
+    setStep(next);
+    setRevealed(already);
+    revealedRef.current = already;
+    backFade.setValue(already ? 0 : 1);
+    frontFade.setValue(already ? 1 : 0);
+  };
+  const goToStep = (next: number) => {
+    if (next < 0 || next >= DECKS.length) return;
+    if (done) { _bridgeHaptic('light'); setDone(false); applyStep(next); return; }
+    if (next === step) return;
     _bridgeHaptic('light');
+    frontFade.stopAnimation();
+    Animated.timing(frontFade, { toValue: 0, duration: 160, useNativeDriver: true }).start(({ finished }) => {
+      if (finished) applyStep(next);
+    });
+  };
+
+  const handleNext = () => {
     if (step < DECKS.length - 1) {
-      Animated.timing(frontFade, { toValue: 0, duration: 200, useNativeDriver: true }).start(() => {
-        const next = step + 1;
-        // Sonraki deste BUGUN zaten acildiysa acik gelsin, tekrar "salla" deme.
-        const already = readRevealedSteps().includes(next);
-        setStep(next);
-        setRevealed(already);
-        revealedRef.current = already;
-        backFade.setValue(already ? 0 : 1);
-        frontFade.setValue(already ? 1 : 0);
-      });
+      goToStep(step + 1);
     } else {
+      _bridgeHaptic('light');
       setDone(true);
     }
   };
@@ -591,19 +626,21 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
                 </Animated.View>
               </View>
             </View>
-
-            {/* ── Mini deck progress ── */}
-            <View style={styles.deckRow}>
-              {DECKS.map((d, i) => (
-                <MiniDeck
-                  key={i}
-                  deck={d}
-                  state={i < step ? 'done' : i === step ? 'active' : 'pending'}
-                />
-              ))}
-            </View>
           </>
         )}
+
+        {/* ── Mini desteler: ilerleme + desteler arasi gecis (tamamlandi
+            ekraninda da gorunur, oradan acilmis kartlara geri donulur) ── */}
+        <View style={styles.deckRow}>
+          {DECKS.map((d, i) => (
+            <MiniDeck
+              key={i}
+              deck={d}
+              state={!done && i === step ? 'active' : openedSteps.includes(i) ? 'done' : 'pending'}
+              onPress={() => goToStep(i)}
+            />
+          ))}
+        </View>
       </View>
     </View>
   );

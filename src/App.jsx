@@ -2000,6 +2000,28 @@ const SET_TXT = {
   surum:    { tr:"Sürüm", en:"Version", de:"Version", es:"Versión", pt:"Versão", fr:"Version", ja:"バージョン" },
 };
 // "Bugün" ekranı metinleri (7 dil, i18n dosyalarına dokunmadan).
+// BUGÜN: çok günlük bilgilerin KAPSAMI (kullanıcı, Eyl 2026: "vurgu ve nelere
+// dikkat değişmiyor; bu bilgilerin birden çok günü kapsadığını söylemek iyi").
+// Güneş bir HD kapısında ~6 gün kalır; tema o süre boyunca aynıdır.
+const SCOPE_TXT = {
+  weekTheme: { tr:"Bu haftanın teması", en:"This week's theme", de:"Thema dieser Woche", es:"Tema de esta semana", pt:"Tema desta semana", fr:"Thème de la semaine", ja:"今週のテーマ" },
+  moonPhase: { tr:"Ay'ın bu evresi boyunca seninle", en:"With you through this phase of the Moon", de:"Begleitet dich durch diese Mondphase", es:"Te acompaña durante esta fase lunar", pt:"Acompanha-te durante esta fase da Lua", fr:"T'accompagne pendant cette phase de la Lune", ja:"この月の満ち欠けのあいだ、あなたと共に" },
+};
+// "1 Ekim'e kadar": Türkçe ek ay adına göre değişir, şablonla ÜRETİLMEZ (tablo).
+const TR_MONTH_UNTIL = ["Ocak'a","Şubat'a","Mart'a","Nisan'a","Mayıs'a","Haziran'a","Temmuz'a","Ağustos'a","Eylül'e","Ekim'e","Kasım'a","Aralık'a"];
+function untilDateLabel(d, lang) {
+  if (!d) return "";
+  // Çıkış BUGÜNSE "bugün değişiyor" (tarih yazmak yerine daha anlaşılır).
+  const now = new Date();
+  if (d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth() && d.getDate() === now.getDate())
+    return ({ tr:"bugün değişiyor", en:"changes today", de:"wechselt heute", es:"cambia hoy", pt:"muda hoje", fr:"change aujourd'hui", ja:"今日切り替わる" })[lang] || "changes today";
+  const day = d.getDate(), m = d.getMonth();
+  if (lang === "tr") return `${day} ${TR_MONTH_UNTIL[m]} kadar`;
+  const loc = { en:"en-US", de:"de-DE", es:"es-ES", pt:"pt-PT", fr:"fr-FR", ja:"ja-JP" }[lang] || "en-US";
+  let md = "";
+  try { md = d.toLocaleDateString(loc, { day:"numeric", month:"long" }); } catch (_) { md = `${day}/${m + 1}`; }
+  return ({ en:`until ${md}`, de:`bis ${md}`, es:`hasta el ${md}`, pt:`até ${md}`, fr:`jusqu'au ${md}`, ja:`${md}まで` })[lang] || `until ${md}`;
+}
 const TODAY_TXT = {
   title:    { tr:"Bugün", en:"Today", de:"Heute", es:"Hoy", pt:"Hoje", fr:"Aujourd'hui", ja:"今日" },
   rehber:   { tr:"Günün rehberleri", en:"Today's guides", de:"Deine Begleiter heute", es:"Guías de hoy", pt:"Guias de hoje", fr:"Tes guides du jour", ja:"今日の導き" },
@@ -8340,7 +8362,12 @@ export default function SakinApp() {
   // yerine tek yerden dinleniyor: yeni bir kapanış yolu eklense de çalışır.
   const prevEmbedRef = useRef(null);
   useEffect(() => {
-    if (prevEmbedRef.current && !embeddedApp) setSoulReloadKey(k => k + 1);
+    if (prevEmbedRef.current && !embeddedApp) {
+      setSoulReloadKey(k => k + 1);
+      // SoulID adı sorup `sakin_name`e yazmış olabilir (ad yokken köprü çalışmıyordu):
+      // selam ve kartlar yeniden yüklemeyi beklemeden güncel adı göstersin.
+      try { const n = (localStorage.getItem("sakin_name") || "").trim(); if (n && n !== userName) setUserName(n); } catch (_) {}
+    }
     prevEmbedRef.current = embeddedApp;
   }, [embeddedApp]);
   const [kozmikData, setKozmikData] = useState(null);
@@ -9395,6 +9422,9 @@ export default function SakinApp() {
   useEffect(() => {
     if (isNative) return;
     const setIfChanged = (key, val) => {
+      // Tasarım adı olmayan kullanıcıya "Sakin" adında profil açıyor (yer tutucu):
+      // o ad Sakin'e AD olarak geçmesin ("Günaydın, Sakin" selamı çıkıyordu).
+      if (key === "sakin_name" && String(val || "").trim().toLowerCase() === "sakin") return;
       if (val && localStorage.getItem(key) !== val) {
         localStorage.setItem(key, val);
         if (key === "sakin_birth_date") setBirthDate(val);
@@ -11072,6 +11102,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   // "Günün Yorumu" kartı Gökyüzü Raporu gibi AÇILIR-KAPANIR (kullanıcı isteği).
   // Kapalı başlar; ilk açılışta yorum yoksa üretilir (AI), varsa cache'ten gelir.
   const [dailyHoroOpen, setDailyHoroOpen] = useState(false);
+  // Güncel geçiş kartındaki haftalık tema: Vurgu/Nelere dikkat kapalı başlar.
+  const [transitThemeOpen, setTransitThemeOpen] = useState(false);
   // ── GÜNLÜK YORUM ("daha fazlası") ───────────────────────────────────────────
   // Gökyüzü raporunun altındaki uzun okuma. Kolektif rapor herkes için aynıyken
   // bu, kullanıcının GÜNEŞ BURCU + günün gerçek gökyüzü ile kişiye özel bir
@@ -11333,6 +11365,8 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
   // (bkz. src/hd-transit.js): ana bundle büyümesin, yalnızca bu ekranda insin.
   const [transit, setTransit] = useState(null);
   const [moonNow, setMoonNow] = useState(null);
+  // Güneş'in şu anki kapıdan ÇIKTIĞI an (haftalık temanın "... kadar" etiketi).
+  const [sunExit, setSunExit] = useState(null);
   useEffect(() => {
     // transit = Bugün ekranının güncel geçiş kutusu; moonNow = gökyüzü raporu
     // başlığındaki ay glifi. İkisi de Bugün ekranında.
@@ -11346,6 +11380,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
         ]);
         if (!alive) return;
         setTransit(tr); setMoonNow(mn);
+        try { const ex = await m.computeGateExitDate("Sun", new Date(), lang); if (alive) setSunExit(ex && ex.exitDate ? ex.exitDate : null); } catch (_) {}
       })
       // Hesap düşerse ekran transitsiz açılır; kart bölümü etkilenmez.
       .catch(e => { console.warn("[bugun] transit hesaplanamadi:", e); });
@@ -17745,9 +17780,10 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
             {transit && (
               <section style={SEC}>
                 {eyebrow(pickLang(TODAY_TXT.transit, lang))}
+                <div style={{ ...SURF,padding:0,overflow:"hidden" }}>
                 <button onClick={()=>{ try{haptic();}catch(_){}
                     handleOpenEmbed({ name:t("ailesi_tasarim_name"), embed:"/embedded/humandesign/index.html", color:"#b4a0d8" }); }}
-                  style={{ ...BTN,...SURF,padding:"16px 18px" }}>
+                  style={{ ...BTN,width:"100%",padding:"16px 18px" }}>
                   <div style={{ display:"flex",flexDirection:"column",gap:12 }}>
                     {[[TODAY_TXT.gunes, transit.sun, GOLD, "☉"], [TODAY_TXT.ay, transit.moon, "#a9c6e8", "☽"]]
                       .filter(([,g]) => g).map(([lbl,g,c,gl]) => (
@@ -17762,18 +17798,29 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                       </div>
                     ))}
                   </div>
-                  {transit.sun && (
-                    <div style={{ borderTop:"1px solid rgba(184,164,216,0.12)",marginTop:14,paddingTop:14 }}>
-                      <div style={{ fontFamily:SERIF,fontSize:21,color:INK,lineHeight:1.3,marginBottom:12 }}>{transit.sun.theme}</div>
-                      <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:14 }}>
+                </button>
+                {/* HAFTALIK TEMA (kullanıcı kararı, Eyl 2026): Güneş kapısının teması
+                    ~6 gün aynı kalır; "Bu haftanın teması · 1 Ekim'e kadar" diye
+                    açıkça etiketlenir. Vurgu / Nelere dikkat kapalı, dokununca açılır. */}
+                {transit.sun && (
+                  <button onClick={()=>{ try{haptic();}catch(_){} setTransitThemeOpen(v => !v); }}
+                    style={{ ...BTN,width:"100%",padding:"13px 18px 15px",borderTop:"1px solid rgba(184,164,216,0.12)" }}>
+                    {label(`${pickLang(SCOPE_TXT.weekTheme, lang)}${sunExit ? " · " + untilDateLabel(sunExit, lang) : ""}`, MUTE)}
+                    <div style={{ display:"flex",alignItems:"center",gap:10 }}>
+                      <span style={{ flex:1,minWidth:0,fontFamily:SERIF,fontSize:20,color:INK,lineHeight:1.3 }}>{transit.sun.theme}</span>
+                      <span style={{ color:MUTE,fontSize:13,transition:"transform .25s",transform: transitThemeOpen ? "rotate(180deg)" : "none" }}>⌄</span>
+                    </div>
+                    {transitThemeOpen && (
+                      <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:14,marginTop:12,animation:"fadeIn .3s ease" }}>
                         <div>{label(pickLang(TODAY_TXT.vurgu, lang), "#8fcfa6")}
                           <div style={{ fontSize:13.5,color:BODY,fontFamily:INTER,lineHeight:1.5 }}>{transit.sun.gift}</div></div>
                         <div>{label(pickLang(TODAY_TXT.dikkat, lang), "#d9a0a0")}
                           <div style={{ fontSize:13.5,color:BODY,fontFamily:INTER,lineHeight:1.5 }}>{transit.sun.shadow}</div></div>
                       </div>
-                    </div>
-                  )}
-                </button>
+                    )}
+                  </button>
+                )}
+                </div>
               </section>
             )}
 
@@ -17790,18 +17837,15 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                 <section style={SEC}>
                   {eyebrow(pickLang(COMPASS_TXT.title, lang))}
                   {cp ? (<>
-                    <div style={{ fontFamily:SERIF,fontWeight:500,fontSize:25,lineHeight:1.3,color:INK,margin:"0 4px 16px" }}>
+                    <div style={{ fontFamily:SERIF,fontWeight:500,fontSize:25,lineHeight:1.3,color:INK,margin:"0 4px 6px" }}>
                       “{cp.advice}”
                     </div>
-                    <div style={{ display:"flex",flexDirection:"column",gap:10 }}>
-                      <div style={{ ...SURF,padding:"15px 18px" }}>
-                        {label(pickLang(COMPASS_TXT.look, lang), GOLD)}
-                        <div style={{ fontSize:14.5,color:BODY,fontFamily:INTER,lineHeight:1.6 }}>{cp.focus}</div>
-                      </div>
-                      <div style={{ ...SURF,padding:"15px 18px" }}>
-                        {label(pickLang(COMPASS_TXT.week, lang), GOLD)}
-                        <div style={{ fontSize:14.5,color:BODY,fontFamily:INTER,lineHeight:1.6 }}>{cp.week}</div>
-                      </div>
+                    {/* Söz Ay evresine bağlı (~3-4 gün): kapsamı açıkça söyle.
+                        "Bakman gereken yer" + "Haftaya bakış" Bugün'den KALDIRILDI
+                        (kullanıcı kararı: bugün yalnızca bugünün değişkenleri;
+                        ikisi de haftalık, detayı SoulID "Bugünün Gökyüzü"nde). */}
+                    <div style={{ fontFamily:INTER,fontSize:12,color:MUTE,margin:"0 4px 4px",fontStyle:"italic" }}>
+                      {pickLang(SCOPE_TXT.moonPhase, lang)}
                     </div>
                   </>) : (
                     <div style={{ height:90 }} />

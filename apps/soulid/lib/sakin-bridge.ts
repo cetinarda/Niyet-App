@@ -28,6 +28,13 @@ function readSakinField(key: string): string {
   }
 }
 
+// Ad: Tasarım embed'i adı olmayan kullanıcıya "Sakin" adında profil açıyor;
+// bu yer tutucu gerçek ad sayılmaz (isim numerolojisi yanlış çıkardı).
+function sakinName(): string {
+  const n = readSakinField('sakin_name');
+  return n.toLowerCase() === 'sakin' ? '' : n;
+}
+
 function sakinLangToLocale(raw: string): Locale {
   return raw === 'en' ? 'en' : 'tr';
 }
@@ -42,7 +49,7 @@ export type BridgeResult = { ok: true; reportId: string } | { ok: false };
  * karşılama/doğum formu akışına devam edilmeli.
  */
 export async function tryAutoConnectFromSakin(): Promise<BridgeResult> {
-  const fullName = readSakinField('sakin_name');
+  const fullName = sakinName();
   const birthDate = readSakinField('sakin_birth_date');
   const birthTime = readSakinField('sakin_birth_time');
   const birthCityRaw = readSakinField('sakin_birth_city');
@@ -151,8 +158,24 @@ async function runBridge(
  * gereken asgari alanlar.) Doğum formunu göstermeden önce buna bakılır:
  * host zaten biliyorsa kullanıcıya İKİNCİ KEZ sormak yanlış.
  */
+/**
+ * Sakin'de doğum tarihi + şehir VAR ama AD YOK mu? (Eyl 2026 hatası: Sakin adı
+ * zorunlu tutmuyor; ad girilmemişse köprü hiç çalışmıyor, kullanıcı doğum
+ * bilgisini ikinci kez soran forma düşüyordu.) Bu durumda yalnızca ad sorulur.
+ */
+export function sakinNeedsNameOnly(): boolean {
+  return !sakinName() && !!readSakinField('sakin_birth_date') && !!readSakinField('sakin_birth_city');
+}
+
+/** Kullanıcının SoulID'de girdiği adı Sakin'e de yaz (aynı origin localStorage). */
+export function writeSakinName(name: string): void {
+  const n = name.trim();
+  if (!n) return;
+  try { localStorage.setItem('sakin_name', n); } catch { /* ignore */ }
+}
+
 export function hasSakinBirthData(): boolean {
-  return !!readSakinField('sakin_name') && !!readSakinField('sakin_birth_date') && !!readSakinField('sakin_birth_city');
+  return !!sakinName() && !!readSakinField('sakin_birth_date') && !!readSakinField('sakin_birth_city');
 }
 
 /**
