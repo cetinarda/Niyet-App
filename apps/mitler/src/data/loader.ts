@@ -106,6 +106,9 @@ for (const table of Object.values(TABLES.myths) as Myth[][]) {
     if (key && m.culture && !(m.culture in TRADITION_ALIAS)) TRADITION_ALIAS[m.culture] = key;
   }
 }
+// Avrupa Portekizcesine geçişte adı değişen gelenek: 1.4.0/1.4.1'de kaydedilmiş
+// eski ad da aynı anahtara bağlanır (istatistik ikiye bölünmesin).
+if (!('Babilônica' in TRADITION_ALIAS)) TRADITION_ALIAS['Babilônica'] = 'Babil';
 
 /** Kararlı gelenek anahtarı (mit id'sinden). */
 export function traditionKeyForMyth(mythId: string, fallback = ''): string {

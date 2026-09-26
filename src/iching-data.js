@@ -35,7 +35,7 @@ export const ICHING = [
 "es": "Comienza con valor. Tiempo fuerte: para crear.",
 "fr": "Commence avec courage. Temps fort: pour la création.",
 "ja": "勇気をもって始めよう。力強い時 、 創造のために。",
-"pt": "Comece com coragem. Tempo forte: para criar."
+"pt": "Começa com coragem. Tempo forte: para criar."
 }
 },
 {
@@ -49,7 +49,7 @@ export const ICHING = [
 "es": "Kūn: Lo Receptivo",
 "fr": "Kūn: Le Réceptif",
 "ja": "坤 (Kūn) 、 受容",
-"pt": "Kūn: O Receptivo"
+"pt": "Kūn: O Recetivo"
 },
 "essence": {
 "tr": "Saf alıcı, besleyici, teslim olan dişil prensip.",
@@ -67,7 +67,7 @@ export const ICHING = [
 "es": "No actúes ahora: recibe. Entregarse es fortaleza.",
 "fr": "N'agis pas maintenant: reçois. S'abandonner est une force.",
 "ja": "今は動かず 、 受け取ろう。明け渡すことは力。",
-"pt": "Não aja agora: receba. Entregar-se é força."
+"pt": "Não ajas agora: recebe. Entregar-se é força."
 }
 },
 {
@@ -99,7 +99,7 @@ export const ICHING = [
 "es": "No triunfes solo: pide ayuda.",
 "fr": "Ne réussis pas seul: demande de l'aide.",
 "ja": "ひとりで成し遂げようとせず 、 助けを求めよう。",
-"pt": "Não vença sozinho: peça ajuda."
+"pt": "Não queiras vencer sozinho: pede ajuda."
 }
 },
 {
@@ -131,7 +131,7 @@ export const ICHING = [
 "es": "Acepta lo que no sabes, ese es el comienzo del aprendizaje.",
 "fr": "Accepte ce que tu ne sais pas, c'est le début de l'apprentissage.",
 "ja": "知らないことを認めよう 、 それが学びの始まり。",
-"pt": "Aceite o que não sabe, esse é o começo do aprendizado."
+"pt": "Aceita o que não sabes; esse é o começo da aprendizagem."
 }
 },
 {
@@ -195,7 +195,7 @@ export const ICHING = [
 "es": "Evita la discusión hoy. Retírate.",
 "fr": "Évite la dispute aujourd'hui. Retire-toi.",
 "ja": "今日は口論を避けよう。退くこと。",
-"pt": "Evite a discussão hoje. Recue."
+"pt": "Evita a discussão hoje. Recua."
 }
 },
 {
@@ -227,7 +227,7 @@ export const ICHING = [
 "es": "Aclara tu rol dentro de un grupo.",
 "fr": "Clarifie ton rôle au sein d'un groupe.",
 "ja": "集団の中での自分の役割を明らかにしよう。",
-"pt": "Esclareça seu papel dentro de um grupo."
+"pt": "Esclarece o teu papel dentro de um grupo."
 }
 },
 {
@@ -323,7 +323,7 @@ export const ICHING = [
 "es": "Ten cuidado: un paso en falso puede causar daño.",
 "fr": "Sois prudent: un faux pas peut causer du tort.",
 "ja": "気をつけよう 、 一歩の誤りが害を招く。",
-"pt": "Tenha cuidado: um passo em falso pode causar dano."
+"pt": "Tem cuidado: um passo em falso pode causar dano."
 }
 },
 {
@@ -355,7 +355,7 @@ export const ICHING = [
 "es": "Gánate esta armonía. Vive con conciencia.",
 "fr": "Mérite cette harmonie. Vis consciemment.",
 "ja": "この調和を得よう。意識して生きよう。",
-"pt": "Conquiste essa harmonia. Viva com consciência."
+"pt": "Conquista essa harmonia. Vive com consciência."
 }
 },
 {
@@ -419,7 +419,7 @@ export const ICHING = [
 "es": "Únete a una comunidad: ahí está el sentido.",
 "fr": "Rejoins une communauté: le sens est là.",
 "ja": "共同体に加わろう 、 そこに意味がある。",
-"pt": "Junte-se a uma comunidade: o sentido está ali."
+"pt": "Junta-te a uma comunidade: o sentido está ali."
 }
 },
 {
@@ -442,7 +442,7 @@ export const ICHING = [
 "es": "Tener mucho: llévalo con humildad.",
 "fr": "Avoir beaucoup: porte-le avec humilité.",
 "ja": "多くを持つこと 、 謙虚に担おう。",
-"pt": "Ter muito: carregue com humildade."
+"pt": "Ter muito: carrega-o com humildade."
 },
 "advice": {
 "tr": "Bolluk var: kibirlenme.",
@@ -451,7 +451,7 @@ export const ICHING = [
 "es": "Hay abundancia: no seas arrogante.",
 "fr": "Il y a de l'abondance: ne sois pas arrogant.",
 "ja": "豊かさがある 、 傲慢になるな。",
-"pt": "Há abundância: não seja arrogante."
+"pt": "Há abundância: não sejas arrogante."
 }
 },
 {
@@ -483,7 +483,7 @@ export const ICHING = [
 "es": "Hoy la humildad es el mayor poder, úsala.",
 "fr": "Aujourd'hui, l'humilité est le plus grand pouvoir, utilise-la.",
 "ja": "今日は謙虚さが最大の力 、 それを用いよう。",
-"pt": "Hoje a humildade é o maior poder, use-a."
+"pt": "Hoje a humildade é o maior poder; usa-a."
 }
 },
 {
@@ -515,7 +515,7 @@ export const ICHING = [
 "es": "Hoy haz espacio para la música. El entusiasmo sana.",
 "fr": "Aujourd'hui, fais de la place pour la musique. L'enthousiasme guérit.",
 "ja": "今日は音楽のために場所を空けよう。熱意は癒し。",
-"pt": "Hoje abra espaço para a música. O entusiasmo cura."
+"pt": "Hoje abre espaço para a música. O entusiasmo cura."
 }
 },
 {
@@ -547,7 +547,7 @@ export const ICHING = [
 "es": "Hoy no te resistas: sigue la buena dirección.",
 "fr": "Aujourd'hui, ne résiste pas, suis la bonne direction.",
 "ja": "今日は抗わず 、 良い方向に従おう。",
-"pt": "Hoje não resista: siga a boa direção."
+"pt": "Hoje não resistas: segue a boa direção."
 }
 },
 {
@@ -602,7 +602,7 @@ export const ICHING = [
 "es": "El tiempo de crecimiento se acerca, ventana de oportunidad.",
 "fr": "Le temps de la croissance approche, fenêtre d'opportunité.",
 "ja": "成長の時が近づく 、 好機の窓。",
-"pt": "O tempo de crescimento se aproxima, janela de oportunidade."
+"pt": "O tempo de crescimento aproxima-se: janela de oportunidade."
 },
 "advice": {
 "tr": "Bugün hareket et: fırsat şu an.",
@@ -611,7 +611,7 @@ export const ICHING = [
 "es": "Muévete hoy: la oportunidad es ahora.",
 "fr": "Agis aujourd'hui: l'opportunité est maintenant.",
 "ja": "今日動こう 、 好機は今。",
-"pt": "Mova-se hoje: a oportunidade é agora."
+"pt": "Move-te hoje: a oportunidade é agora."
 }
 },
 {
@@ -643,7 +643,7 @@ export const ICHING = [
 "es": "Hoy observa en lugar de actuar. Da un paso atrás para comprender.",
 "fr": "Aujourd'hui, observe au lieu d'agir. Recule pour comprendre.",
 "ja": "今日は行動より観察を。理解するために一歩退こう。",
-"pt": "Hoje observe em vez de agir. Dê um passo atrás para compreender."
+"pt": "Hoje observa em vez de agir. Dá um passo atrás para compreender."
 }
 },
 {
@@ -675,7 +675,7 @@ export const ICHING = [
 "es": "Hoy di un 'sí' o un 'no' decisivo a una decisión aplazada.",
 "fr": "Aujourd'hui, dis un 'oui' ou un 'non' décisif à une décision repoussée.",
 "ja": "今日は先送りした決断に決然と『はい』か『いいえ』を言おう。",
-"pt": "Hoje diga um 'sim' ou 'não' decisivo a uma decisão adiada."
+"pt": "Hoje diz um 'sim' ou um 'não' decisivo a uma decisão adiada."
 }
 },
 {
@@ -730,7 +730,7 @@ export const ICHING = [
 "es": "La vieja estructura se disuelve, acepta en vez de resistir.",
 "fr": "L'ancienne structure se dissout: accepte plutôt que résister.",
 "ja": "古い構造が解体される 、 抗わず受け入れる。",
-"pt": "A velha estrutura se dissolve, aceite em vez de resistir."
+"pt": "A velha estrutura dissolve-se; aceita em vez de resistir."
 },
 "advice": {
 "tr": "Bugün dağılan bir alanı kabul et. Yenisi gelecek.",
@@ -739,7 +739,7 @@ export const ICHING = [
 "es": "Hoy acepta un área que se disuelve. Lo nuevo llegará.",
 "fr": "Aujourd'hui, accepte un domaine qui se dissout. Le nouveau viendra.",
 "ja": "今日は解体されゆく領域を受け入れよう。新しいものが来る。",
-"pt": "Hoje aceite uma área que se dissolve. O novo virá."
+"pt": "Hoje aceita uma área que se dissolve. O novo virá."
 }
 },
 {
@@ -771,7 +771,7 @@ export const ICHING = [
 "es": "Hoy es el momento de 'empezar de nuevo': saca una lección de un error, comienza.",
 "fr": "Aujourd'hui est le moment de 'recommencer': tire une leçon d'une erreur, commence.",
 "ja": "今日は『やり直し』の瞬間 、 過ちから学び、始めよう。",
-"pt": "Hoje é o momento de 'recomeçar': tire uma lição de um erro, comece."
+"pt": "Hoje é o momento de 'recomeçar': tira uma lição de um erro e começa."
 }
 },
 {
@@ -803,7 +803,7 @@ export const ICHING = [
 "es": "Hoy actúa sin cálculo, desde lo que hay dentro.",
 "fr": "Aujourd'hui, agis sans calcul, depuis ce qui est à l'intérieur.",
 "ja": "今日は計算せず、内にあるものから行動しよう。",
-"pt": "Hoje aja sem cálculo, a partir do que há dentro."
+"pt": "Hoje age sem cálculo, a partir do que há dentro."
 }
 },
 {
@@ -835,7 +835,7 @@ export const ICHING = [
 "es": "Hoy guarda tu energía: para algo grande.",
 "fr": "Aujourd'hui, économise ton énergie, pour une grande chose.",
 "ja": "今日はエネルギーを蓄えよう 、 大きなことのために。",
-"pt": "Hoje guarde sua energia: para algo grande."
+"pt": "Hoje guarda a tua energia: para algo grande."
 }
 },
 {
@@ -858,7 +858,7 @@ export const ICHING = [
 "es": "¿Cómo estás nutriendo tu cuerpo, tu mente y tu espíritu?",
 "fr": "Comment nourris-tu ton corps, ton esprit et ton âme ?",
 "ja": "あなたは体・心・魂をどう養っているか？",
-"pt": "Como você está nutrindo seu corpo, sua mente e seu espírito?"
+"pt": "Como estás a nutrir o teu corpo, a tua mente e o teu espírito?"
 },
 "advice": {
 "tr": "Bugün ne tükettiğini bilinçle gözden geçir, yiyecek, içerik, ilişki.",
@@ -867,7 +867,7 @@ export const ICHING = [
 "es": "Hoy revisa conscientemente lo que consumes, comida, contenido, relación.",
 "fr": "Aujourd'hui, examine consciemment ce que tu consommes, nourriture, contenu, relation.",
 "ja": "今日は取り入れるものを意識して見直そう 、 食べ物、情報、関係。",
-"pt": "Hoje revise conscientemente o que consome, comida, conteúdo, relação."
+"pt": "Hoje revê conscientemente o que consomes: comida, conteúdos, relações."
 }
 },
 {
@@ -890,7 +890,7 @@ export const ICHING = [
 "es": "La carga supera la capacidad, se necesita acción rápida.",
 "fr": "La charge dépasse la capacité, il faut agir vite.",
 "ja": "荷が許容量を超えている 、 速やかな行動が必要。",
-"pt": "A carga ultrapassa a capacidade, é preciso agir rápido."
+"pt": "A carga ultrapassa a capacidade, é preciso de agir rápido."
 },
 "advice": {
 "tr": "Bugün taşıdığın yüklerden 1'ini bırak: anında.",
@@ -899,7 +899,7 @@ export const ICHING = [
 "es": "Hoy suelta 1 de las cargas que llevas, de inmediato.",
 "fr": "Aujourd'hui, dépose 1 des fardeaux que tu portes, immédiatement.",
 "ja": "今日は担う重荷を一つ降ろそう 、 ただちに。",
-"pt": "Hoje largue 1 dos fardos que você carrega, imediatamente."
+"pt": "Hoje larga já um dos fardos que carregas."
 }
 },
 {
@@ -931,7 +931,7 @@ export const ICHING = [
 "es": "Hoy acepta la 'continuidad' de la dificultad. Sigue fluyendo.",
 "fr": "Aujourd'hui, accepte la 'continuité' de la difficulté. Continue de couler.",
 "ja": "今日は困難の『継続』を受け入れよう。流れ続けよ。",
-"pt": "Hoje aceite a 'continuidade' da dificuldade. Continue a fluir."
+"pt": "Hoje aceita a 'continuidade' da dificuldade. Continua a fluir."
 }
 },
 {
@@ -986,7 +986,7 @@ export const ICHING = [
 "es": "Dos cosas se atraen: se abre un área común.",
 "fr": "Deux choses s'attirent: un domaine commun s'ouvre.",
 "ja": "二つのものが引き合う 、 共通の領域が開く。",
-"pt": "Duas coisas se atraem: abre-se uma área comum."
+"pt": "Duas coisas atraem-se: abre-se uma área comum."
 },
 "advice": {
 "tr": "Bugün çekim hissettiğin bir şeye yönel, sebep aramadan.",
@@ -995,7 +995,7 @@ export const ICHING = [
 "es": "Hoy gírate hacia algo que te atrae, sin buscar razón.",
 "fr": "Aujourd'hui, tourne-toi vers quelque chose qui t'attire: sans chercher de raison.",
 "ja": "今日は惹かれるものへ向かおう 、 理由を求めずに。",
-"pt": "Hoje volte-se para algo que o atrai, sem procurar razão."
+"pt": "Hoje volta-te para algo que te atrai, sem procurar razão."
 }
 },
 {
@@ -1082,7 +1082,7 @@ export const ICHING = [
 "es": "Eres muy fuerte: lleva el poder con conciencia.",
 "fr": "Tu es très fort: porte la puissance consciemment.",
 "ja": "あなたは非常に強い 、 その力を意識して担え。",
-"pt": "Você é muito forte: carregue o poder com consciência."
+"pt": "És muito forte: carrega o poder com consciência."
 },
 "advice": {
 "tr": "Bugün gücünü dikkatle kullan: kötü bir hareket büyük zarar.",
@@ -1091,7 +1091,7 @@ export const ICHING = [
 "es": "Hoy usa tu poder con cuidado, un movimiento erróneo causa gran daño.",
 "fr": "Aujourd'hui, use de ta puissance avec soin, un geste erroné cause un grand tort.",
 "ja": "今日は力を慎重に使おう 、 一手の誤りが大きな害を招く。",
-"pt": "Hoje use seu poder com cuidado, um movimento errado causa grande dano."
+"pt": "Hoje usa o teu poder com cuidado; um movimento errado causa grande dano."
 }
 },
 {
@@ -1114,7 +1114,7 @@ export const ICHING = [
 "es": "El sol se alza: tiempo de progreso.",
 "fr": "Le soleil se lève: temps du progrès.",
 "ja": "太陽が昇る 、 前進の時。",
-"pt": "O sol se ergue: tempo de progresso."
+"pt": "O sol ergue-se: tempo de progresso."
 },
 "advice": {
 "tr": "Bugün bir alanda görünür ol, ilerle.",
@@ -1123,7 +1123,7 @@ export const ICHING = [
 "es": "Hoy hazte visible en alguna área, avanza.",
 "fr": "Aujourd'hui, sois visible dans un domaine, avance.",
 "ja": "今日はある領域で姿を見せよう 、 進め。",
-"pt": "Hoje torne-se visível em alguma área, avance."
+"pt": "Hoje torna-te visível nalguma área; avança."
 }
 },
 {
@@ -1146,7 +1146,7 @@ export const ICHING = [
 "es": "Luz bajo la oscuridad: guarda la luz interior, ocúltate por fuera.",
 "fr": "Lumière sous l'obscurité: garde la lumière intérieure, dissimule-toi au-dehors.",
 "ja": "闇の下の光 、 内なる光を守り、外には隠す。",
-"pt": "Luz sob a escuridão: guarde a luz interior, oculte-se por fora."
+"pt": "Luz sob a escuridão: guarda a luz interior, oculta-te por fora."
 },
 "advice": {
 "tr": "Bugün iç ışığını dışarıdan koru, herkesle paylaşma.",
@@ -1155,7 +1155,7 @@ export const ICHING = [
 "es": "Hoy protege tu luz interior, no la compartas con todos.",
 "fr": "Aujourd'hui, protège ta lumière intérieure, ne la partage pas avec tout le monde.",
 "ja": "今日は内なる光を守ろう 、 誰彼かまわず分かち合わない。",
-"pt": "Hoje proteja sua luz interior, não a compartilhe com todos."
+"pt": "Hoje protege a tua luz interior, não a partilhes com todos."
 }
 },
 {
@@ -1178,7 +1178,7 @@ export const ICHING = [
 "es": "Presta atención al orden de la familia, el rol de cada uno claro.",
 "fr": "Prête attention à l'ordre de la famille: le rôle de chacun clair.",
 "ja": "家族の秩序に目を向けよ 、 各自の役割を明確に。",
-"pt": "Preste atenção à ordem da família, o papel de cada um claro."
+"pt": "Presta atenção à ordem da família: o papel de cada um claro."
 },
 "advice": {
 "tr": "Bugün ev/aile düzenini gözden geçir, bir küçük şey düzelt.",
@@ -1187,7 +1187,7 @@ export const ICHING = [
 "es": "Hoy revisa el orden del hogar / familia, arregla una pequeña cosa.",
 "fr": "Aujourd'hui, revois l'ordre du foyer / de la famille, arrange une petite chose.",
 "ja": "今日は家／家族の秩序を見直そう 、 小さなことを一つ直す。",
-"pt": "Hoje revise a ordem do lar / família, conserte uma pequena coisa."
+"pt": "Hoje revê a ordem do lar ou da família e conserta uma pequena coisa."
 }
 },
 {
@@ -1210,7 +1210,7 @@ export const ICHING = [
 "es": "Dos lados se han alejado, pequeños pasos para construir el vínculo.",
 "fr": "Deux côtés se sont éloignés, de petits pas pour bâtir le lien.",
 "ja": "二つの側が離れた 、 絆を築く小さな一歩。",
-"pt": "Dois lados se afastaram: pequenos passos para construir o vínculo."
+"pt": "Dois lados afastaram-se: pequenos passos para construir o vínculo."
 },
 "advice": {
 "tr": "Bugün uzaklaşmış birine küçük bir mesaj, köprü kur.",
@@ -1219,7 +1219,7 @@ export const ICHING = [
 "es": "Hoy envía un pequeño mensaje a alguien distante, tiende un puente.",
 "fr": "Aujourd'hui, envoie un petit message à quelqu'un de lointain: bâtis un pont.",
 "ja": "今日は遠ざかった誰かに小さなメッセージを送ろう 、 橋を架けよう。",
-"pt": "Hoje envie uma pequena mensagem a alguém distante, construa uma ponte."
+"pt": "Hoje envia uma pequena mensagem a alguém distante; constrói uma ponte."
 }
 },
 {
@@ -1251,7 +1251,7 @@ export const ICHING = [
 "es": "Hoy pide ayuda en un área en la que estás atascado.",
 "fr": "Aujourd'hui, demande de l'aide dans un domaine où tu es bloqué.",
 "ja": "今日は行き詰まった領域で助けを求めよう。",
-"pt": "Hoje peça ajuda numa área em que você está travado."
+"pt": "Hoje pede ajuda numa área em que estás bloqueado."
 }
 },
 {
@@ -1274,7 +1274,7 @@ export const ICHING = [
 "es": "Una tensión se libera: después de la tormenta.",
 "fr": "Une tension se relâche: après la tempête.",
 "ja": "一つの緊張がほどける 、 嵐のあとに。",
-"pt": "Uma tensão se libera: depois da tempestade."
+"pt": "Uma tensão liberta-se: depois da tempestade."
 },
 "advice": {
 "tr": "Bugün geçmiş bir gerilimi resmi olarak bırak.",
@@ -1283,7 +1283,7 @@ export const ICHING = [
 "es": "Hoy libera oficialmente una tensión del pasado.",
 "fr": "Aujourd'hui, relâche officiellement une tension passée.",
 "ja": "今日は過去の緊張を正式に手放そう。",
-"pt": "Hoje libere oficialmente uma tensão do passado."
+"pt": "Hoje liberta oficialmente uma tensão do passado."
 }
 },
 {
@@ -1315,7 +1315,7 @@ export const ICHING = [
 "es": "Hoy suelta algo innecesario: abre espacio.",
 "fr": "Aujourd'hui, lâche une chose inutile, fais de la place.",
 "ja": "今日は不要なものを手放そう 、 場所を空ける。",
-"pt": "Hoje solte algo desnecessário: abra espaço."
+"pt": "Hoje solta algo desnecessário: abre espaço."
 }
 },
 {
@@ -1338,7 +1338,7 @@ export const ICHING = [
 "es": "La abundancia fluye: compartir multiplica.",
 "fr": "L'abondance coule: partager multiplie.",
 "ja": "豊かさが流れる 、 分かち合いは増やす。",
-"pt": "A abundância flui: compartilhar multiplica."
+"pt": "A abundância flui: partilhar multiplica."
 },
 "advice": {
 "tr": "Bugün bir başkasına bir şey ver, bolluk paylaşıldığında büyür.",
@@ -1347,7 +1347,7 @@ export const ICHING = [
 "es": "Hoy da algo a alguien, la abundancia crece al compartirse.",
 "fr": "Aujourd'hui, donne quelque chose à quelqu'un: l'abondance grandit quand on la partage.",
 "ja": "今日は誰かに何かを与えよう 、 豊かさは分かち合うと育つ。",
-"pt": "Hoje dê algo a alguém, a abundância cresce quando compartilhada."
+"pt": "Hoje dá algo a alguém; a abundância cresce quando partilhada."
 }
 },
 {
@@ -1379,7 +1379,7 @@ export const ICHING = [
 "es": "Hoy di 'sí' o 'no' a una decisión largamente pendiente.",
 "fr": "Aujourd'hui, dis 'oui' ou 'non' à une décision longtemps en suspens.",
 "ja": "今日は長く保留した決断に『はい』か『いいえ』を言おう。",
-"pt": "Hoje diga 'sim' ou 'não' a uma decisão há muito pendente."
+"pt": "Hoje diz 'sim' ou 'não' a uma decisão há muito pendente."
 }
 },
 {
@@ -1411,7 +1411,7 @@ export const ICHING = [
 "es": "Hoy mira con cuidado a alguien que aparece ante ti, ¿vale la pena o es tentación?",
 "fr": "Aujourd'hui, regarde attentivement quelqu'un qui apparaît devant toi, en vaut-il la peine, ou est-ce une tentation ?",
 "ja": "今日は目の前に現れた誰かをよく見よう 、 価値あるものか、誘惑か？",
-"pt": "Hoje observe com cuidado alguém que aparece diante de você, vale a pena ou é tentação?"
+"pt": "Hoje observa com cuidado alguém que te aparece à frente: vale a pena ou é tentação?"
 }
 },
 {
@@ -1434,7 +1434,7 @@ export const ICHING = [
 "es": "Una comunidad se reúne: por un propósito común.",
 "fr": "Une communauté se rassemble: pour un but commun.",
 "ja": "共同体が集う 、 共通の目的のために。",
-"pt": "Uma comunidade se reúne: por um propósito comum."
+"pt": "Uma comunidade reúne-se: por um propósito comum."
 },
 "advice": {
 "tr": "Bugün bir topluluğa katıl: küçük olabilir.",
@@ -1443,7 +1443,7 @@ export const ICHING = [
 "es": "Hoy únete a una comunidad, pequeña está bien.",
 "fr": "Aujourd'hui, rejoins une communauté, petite suffit.",
 "ja": "今日は共同体に加わろう 、 小さくてもよい。",
-"pt": "Hoje junte-se a uma comunidade, pequena já basta."
+"pt": "Hoje junta-te a uma comunidade; uma pequena já basta."
 }
 },
 {
@@ -1475,7 +1475,7 @@ export const ICHING = [
 "es": "Hoy da un pequeño paso hacia una meta a largo plazo.",
 "fr": "Aujourd'hui, fais un petit pas vers un objectif à long terme.",
 "ja": "今日は長期の目標へ小さな一歩を踏み出そう。",
-"pt": "Hoje dê um pequeno passo rumo a uma meta de longo prazo."
+"pt": "Hoje dá um pequeno passo rumo a uma meta de longo prazo."
 }
 },
 {
@@ -1498,7 +1498,7 @@ export const ICHING = [
 "es": "Recursos externos agotados: hay que volver al poder interior.",
 "fr": "Ressources extérieures épuisées: il faut revenir au pouvoir intérieur.",
 "ja": "外的な資源が尽きた 、 内なる力へ戻る必要がある。",
-"pt": "Recursos externos esgotados: é preciso voltar ao poder interior."
+"pt": "Recursos externos esgotados: é preciso de voltar ao poder interior."
 },
 "advice": {
 "tr": "Bugün dışarıdan beklemeyi bırak. İçeriden ne var?",
@@ -1507,7 +1507,7 @@ export const ICHING = [
 "es": "Hoy deja de esperar de fuera. ¿Qué hay dentro?",
 "fr": "Aujourd'hui, cesse d'attendre de l'extérieur. Qu'y a-t-il à l'intérieur ?",
 "ja": "今日は外から期待するのをやめよう。内には何があるか？",
-"pt": "Hoje pare de esperar de fora. O que há dentro?"
+"pt": "Hoje deixa de esperar de fora. O que há dentro?"
 }
 },
 {
@@ -1539,7 +1539,7 @@ export const ICHING = [
 "es": "Hoy riega tu 'pozo' (talento, área) con regularidad.",
 "fr": "Aujourd'hui, arrose ton 'puits' (talent, domaine) régulièrement.",
 "ja": "今日はあなたの『井戸』（才能・領域）に定期的に水をやろう。",
-"pt": "Hoje regue seu 'poço' (talento, área) com regularidade."
+"pt": "Hoje rega o teu 'poço' (talento, área) com regularidade."
 }
 },
 {
@@ -1571,7 +1571,7 @@ export const ICHING = [
 "es": "Hoy suelta conscientemente un patrón viejo. Lo nuevo llegará.",
 "fr": "Aujourd'hui, lâche consciemment un ancien schéma. Le nouveau viendra.",
 "ja": "今日は意識して古いパターンを手放そう。新しいものが来る。",
-"pt": "Hoje solte conscientemente um padrão antigo. O novo virá."
+"pt": "Hoje solta conscientemente um padrão antigo. O novo virá."
 }
 },
 {
@@ -1603,7 +1603,7 @@ export const ICHING = [
 "es": "Hoy algo se 'cocina' dentro de ti: dale tiempo.",
 "fr": "Aujourd'hui, quelque chose 'mijote' en toi: donne-lui du temps.",
 "ja": "今日はあなたの内で何かが『煮え立っている』 、 時を与えよう。",
-"pt": "Hoje algo 'cozinha' dentro de você: dê-lhe tempo."
+"pt": "Hoje algo 'está a cozinhar' dentro de ti: dá-lhe tempo."
 }
 },
 {
@@ -1635,7 +1635,7 @@ export const ICHING = [
 "es": "Hoy si llegó una 'sacudida': es la llamada a despertar.",
 "fr": "Aujourd'hui, si un 'ébranlement' est venu: c'est l'appel à l'éveil.",
 "ja": "今日『揺さぶり』が来たなら 、 それは目覚めへの呼びかけ。",
-"pt": "Hoje se veio um 'abalo': é o chamado para despertar."
+"pt": "Se hoje veio um 'abalo', é o chamado para despertar."
 }
 },
 {
@@ -1667,7 +1667,7 @@ export const ICHING = [
 "es": "Hoy siéntate inmóvil 10 minutos. El pensamiento también quieto.",
 "fr": "Aujourd'hui, assieds-toi immobile 10 minutes. La pensée aussi immobile.",
 "ja": "今日は10分間、微動だにせず座ろう。思考もまた静かに。",
-"pt": "Hoje sente-se imóvel por 10 minutos. O pensamento também quieto."
+"pt": "Hoje senta-te imóvel durante 10 minutos. O pensamento também quieto."
 }
 },
 {
@@ -1699,7 +1699,7 @@ export const ICHING = [
 "es": "Hoy practica la paciencia. No aceleres.",
 "fr": "Aujourd'hui, exerce la patience. N'accélère pas.",
 "ja": "今日は忍耐を実践しよう。急がないこと。",
-"pt": "Hoje pratique a paciência. Não acelere."
+"pt": "Hoje pratica a paciência. Não aceleres."
 }
 },
 {
@@ -1722,7 +1722,7 @@ export const ICHING = [
 "es": "Un vínculo en el momento equivocado o con la persona equivocada, mira con cuidado.",
 "fr": "Un lien au mauvais moment ou avec la mauvaise personne, regarde attentivement.",
 "ja": "間違った時、あるいは間違った相手との結びつき 、 よく見よ。",
-"pt": "Um vínculo na hora errada ou com a pessoa errada, olhe com cuidado."
+"pt": "Um vínculo na hora errada ou com a pessoa errada: olha com cuidado."
 },
 "advice": {
 "tr": "Bugün bir bağı sorgula: gerçekten doğru mu?",
@@ -1731,7 +1731,7 @@ export const ICHING = [
 "es": "Hoy cuestiona un vínculo: ¿realmente correcto?",
 "fr": "Aujourd'hui, questionne un lien, vraiment juste ?",
 "ja": "今日はある結びつきを問おう 、 本当に正しいか？",
-"pt": "Hoje questione um vínculo: realmente certo?"
+"pt": "Hoje questiona um vínculo: é mesmo o certo?"
 }
 },
 {
@@ -1795,7 +1795,7 @@ export const ICHING = [
 "es": "Hoy compórtate como un 'huésped' en algún lugar: flexibilidad.",
 "fr": "Aujourd'hui, comporte-toi comme un 'invité' quelque part: souplesse.",
 "ja": "今日はどこかで『客人』のように振る舞おう 、 柔軟さ。",
-"pt": "Hoje comporte-se como um 'hóspede' em algum lugar: flexibilidade."
+"pt": "Hoje comporte-se como um 'hóspede' nalgum lugar: flexibilidade."
 }
 },
 {
@@ -1827,7 +1827,7 @@ export const ICHING = [
 "es": "Hoy sé suave pero continuo, no hace falta dureza.",
 "fr": "Aujourd'hui, sois doux mais continu, pas besoin de dureté.",
 "ja": "今日は柔らかく、しかし絶え間なくあろう 、 硬さは要らない。",
-"pt": "Hoje seja suave mas contínuo, não é preciso dureza."
+"pt": "Hoje sê suave mas contínuo; não é precisa dureza."
 }
 },
 {
@@ -1850,7 +1850,7 @@ export const ICHING = [
 "es": "Doble lago: la alegría se multiplica al compartirse.",
 "fr": "Double lac: la joie se multiplie quand on la partage.",
 "ja": "二重の沢 、 喜びは分かち合うと増える。",
-"pt": "Lago duplo: a alegria se multiplica quando compartilhada."
+"pt": "Lago duplo: a alegria multiplica-se quando partilhada."
 },
 "advice": {
 "tr": "Bugün bir sevinci paylaş: bir kişiyle.",
@@ -1859,7 +1859,7 @@ export const ICHING = [
 "es": "Hoy comparte una alegría: con una persona.",
 "fr": "Aujourd'hui, partage une joie, avec une personne.",
 "ja": "今日は喜びを分かち合おう 、 一人と。",
-"pt": "Hoje compartilhe uma alegria: com uma pessoa."
+"pt": "Hoje partilha uma alegria com uma pessoa."
 }
 },
 {
@@ -1891,7 +1891,7 @@ export const ICHING = [
 "es": "Hoy suaviza una 'dureza': hacia ti mismo o hacia otro.",
 "fr": "Aujourd'hui, adoucis une 'dureté': envers toi-même ou un autre.",
 "ja": "今日は一つの『硬さ』を和らげよう 、 自分自身か、他者に対して。",
-"pt": "Hoje suavize uma 'dureza': em relação a si mesmo ou a outro."
+"pt": "Hoje suaviza uma 'dureza', em relação a ti mesmo ou a outro."
 }
 },
 {
@@ -1923,7 +1923,7 @@ export const ICHING = [
 "es": "Hoy pon un límite claro en un área, comer, gastar, tiempo.",
 "fr": "Aujourd'hui, fixe une limite claire dans un domaine, manger, dépenser, temps.",
 "ja": "今日はある領域に明確な境界を設けよう 、 食、支出、時間。",
-"pt": "Hoje estabeleça um limite claro numa área, comer, gastar, tempo."
+"pt": "Hoje estabelece um limite claro numa área: comer, gastar, tempo."
 }
 },
 {
@@ -1955,7 +1955,7 @@ export const ICHING = [
 "es": "Hoy haz de verdad algo que dijiste. Alinéate.",
 "fr": "Aujourd'hui, fais vraiment quelque chose que tu as dit. Aligne-toi.",
 "ja": "今日は言ったことを実際に行おう。一致させよ。",
-"pt": "Hoje faça de fato algo que você disse. Alinhe-se."
+"pt": "Hoje faz de facto algo que disseste. Alinha-te."
 }
 },
 {
@@ -2019,7 +2019,7 @@ export const ICHING = [
 "es": "Hoy celebra una culminación: pero no te duermas.",
 "fr": "Aujourd'hui, célèbre un achèvement, mais ne t'endors pas.",
 "ja": "今日は一つの完成を祝おう 、 だが眠り込むな。",
-"pt": "Hoje celebre uma conclusão: mas não adormeça."
+"pt": "Hoje celebra uma conclusão, mas não adormeças."
 }
 },
 {
@@ -2051,7 +2051,7 @@ export const ICHING = [
 "es": "Hoy lleva un asunto hasta el final, no lo dejes a medias.",
 "fr": "Aujourd'hui, mène une affaire jusqu'au bout: ne la laisse pas à moitié faite.",
 "ja": "今日は一つの事を最後までやり遂げよう 、 中途で放り出すな。",
-"pt": "Hoje leve um assunto até o fim, não o deixe pela metade."
+"pt": "Hoje leva um assunto até ao fim; não o deixes a meio."
 }
 }
 ];

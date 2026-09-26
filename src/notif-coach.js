@@ -199,7 +199,7 @@ const COACH_BASE = {
       chakraGap: ["You haven't checked in with your chakras for {n} days. Give one of them a few minutes today.", "The energy centers in your body are waiting. Do a short chakra listening today."],
       aynaNever: ["You haven't tried the Inner Mirror yet. Start with just one question on your mind.", "A problem, a curiosity or a dream: the Mirror is ready to listen."],
       aynaGap: ["You haven't asked the Mirror anything for {n} days. Ask about something on your mind today.", "It's been {n} days since your last question. Would you like to return to the Mirror today?"],
-      letterSoon: ["Your intention letter opens in {n} days. Remember that intention today.", "Your sealed letter is waiting patiently: it opens in {n} days."],
+      letterSoon: ["Days until your intention letter opens: {n}. Remember that intention today.", "Your sealed letter is waiting patiently. Days left: {n}."],
       letterReady: ["Your intention letter is ready to open. Open it today and receive your gift.", "21 days have passed. The letter you wrote to yourself is waiting."],
       noLetter: ["Would you like to write a letter to yourself 21 days from now? Seal an intention today.", "Write an intention, seal it, open it in 21 days. A small ritual, a big reminder."],
       streak: ["Your streak is {n} days. Keep the chain going with one small step today.", "You've made time for yourself for {n} days. Keep that effort going today."],
@@ -269,11 +269,13 @@ export function bagPick(arr, key, k) {
 
 // TAZE SEÇİM: torbadaki sıradan başlayıp YAKIN ZAMANDA GİTMİŞ cümleleri atlar
 // (recent = son günlerde planlanan metinler). Hepsi yakın zamanda gittiyse null.
-export function bagPickFresh(arr, key, k, recent) {
+// fill: kalıbı gönderilecek metne çevirir ("{n}" doldurulur); tazelik DOLU metne
+// bakılarak ölçülür (denetim: "{n} gün" kalıpları hiç tekrar sayılmıyordu).
+export function bagPickFresh(arr, key, k, recent, fill) {
   const n = arr.length;
   for (let i = 0; i < n; i++) {
     const t = bagPick(arr, key, k + i);
-    if (!recent || !recent.has(t)) return t;
+    if (!recent || !recent.has(fill ? fill(t) : t)) return t;
   }
   return null;
 }
@@ -353,7 +355,8 @@ export function usageSnapshot() {
 // Uygulamayı en sık açtığı saat (son 40 açılış): koç mesajı o saate yakın gelir.
 export function recordOpenHour() {
   try {
-    const arr = JSON.parse(_ls("sakin_open_hours") || "[]");
+    let arr = JSON.parse(_ls("sakin_open_hours") || "[]");
+    if (!Array.isArray(arr)) arr = [];
     arr.push(new Date().getHours());
     localStorage.setItem("sakin_open_hours", JSON.stringify(arr.slice(-40)));
   } catch (_) {}
@@ -361,6 +364,8 @@ export function recordOpenHour() {
 export function preferredHour() {
   let arr = [];
   try { arr = JSON.parse(_ls("sakin_open_hours") || "[]"); } catch (_) {}
+  if (!Array.isArray(arr)) return null;
+  arr = arr.filter(h => Number.isInteger(h) && h >= 0 && h < 24);
   if (arr.length < 5) return null;
   const c = {}; arr.forEach(h => { c[h] = (c[h] || 0) + 1; });
   const h = +Object.keys(c).reduce((a, k) => (c[k] > (c[a] || 0) ? k : a), Object.keys(c)[0]);
@@ -405,13 +410,14 @@ export function coachMessage({ lang, birthDate, day, d, dn, usage, seed, prevCat
     const dayArr = pdn ? ((T.day || E.day)[pdn > 9 ? reduceNum(pdn) : pdn]) : null;
     if (dayArr) add("day", 2.8, dayArr, { screen: "bugun" });
   }
-  add("moon", 1.6, (T.moon || E.moon)[moonIndex(day)], { screen: "bugun" });
+  // Doğum yoksa Bugün doğum kapısına düşer: Bağlan'a gider.
+  add("moon", 1.6, (T.moon || E.moon)[moonIndex(day)], { screen: birthDate ? "bugun" : "mandala" });
   add("ask", 1.5, T.ask || E.ask, { screen: "mandala" });
 
   // Her aday için TAZE metin: yakın zamanda gitmiş cümleler atlanır; taze
   // metni kalmayan kategori o gün geri çekilir (neredeyse hiç seçilmez).
   for (const c of cands) {
-    c.text = bagPickFresh(c.arr, `${seed}|${c.cat}`, dn, recent);
+    c.text = bagPickFresh(c.arr, `${seed}|${c.cat}`, dn, recent, (t) => String(t).replace("{n}", String(c.n != null ? c.n : "")));
     if (!c.text) { c.text = bagPick(c.arr, `${seed}|${c.cat}`, dn); c.w *= 0.08; }
   }
   // Önceki günün kategorisi dinlenir (yalnızca başka aday varsa).

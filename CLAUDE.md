@@ -535,6 +535,15 @@ bir yaşam koçu asistanı gibi"):**
   AI kişisel mesajı ya da 16:00 yedeği son 14 günde gittiyse yerine koç mesajı.
   Tarot sabah havuzu 3'ten 8 cümleye çıktı (7 dil).
 - Analitik: `notif_open` k="koc", `notif_pref` c 1-5 + off "koc" (track/report).
+- **1.4.2 DENETİMİ (Eyl 2026):** damga `v5_` + KULLANIM PARMAK İZİ (bugün nefes/ses/
+  çakra, Ayna sayısı, mektup durumu): değişince plan yeniden kurulur; planlayıcı artık
+  her `visibilitychange`'de de çağrılır (damga aynıysa hemen çıkar), yani uygulamayı hiç
+  kapatmayan da her gün yeni plan alır. "Yaşam koçu" KAPALIYSA koç hiçbir slota
+  (akşam karışımı, 10:00/16:00 yedekleri) girmez. Hızlı ardışık çağrıda yalnızca en
+  sonuncusu planlar (`_notifGen`). Tazelik DOLU metne bakar ("{n}" doldurulmuş).
+  Doğumsuz sıra `aksam, koc, ogle` (Ayarlar ekranıyla aynı). AI kişisel metni yalnızca
+  kisisel/hatirlatici açıksa üretilir, çıktıdaki uzun çizgiler temizlenir. Mektup
+  bildirimi açılışta da yeniden kurulur. Test düzeneği: denetim ajanının Node harness'ı.
 - Doğrulama: planlayıcı esbuild ile paketlenip Node'da sahte LocalNotifications ile
   çalıştırıldı (3/4/5, doğumlu/doğumsuz, tr/en/de/ja): 7 günde 33/34 benzersiz metin.
   Cihazda test EDİLMEDİ.
@@ -1192,6 +1201,11 @@ onay ister" yalnızca 5 özellik için). Yeni onay kapısı EKLEME.
   (`life.sakin.plants.*` / `life.sakin.stones.*`), yıllık plan etiketi "yıl/yr/ano...",
   gömülü uygulamaların pt metinleri tamamen Avrupa Portekizcesi "tu", Mitler testi
   dilden bağımsız puanlama (`apps/mitler/src/utils/finder.ts` + `finder.verify.ts`).
+- **Host'taki kopyalar da pt (1.4.2 denetimi):** `src/tarot-data.js`, `src/iching-data.js`,
+  `src/quotes-data.js` pt alanları Mitler/Bitkiler kaynağından EŞİTLENDİ, `public/daily-index/
+  pt.json` yeniden üretildi (`node scripts/build-daily-index.mjs`). Gömülü veride pt metni
+  değişirse bu dördünü de yenile. Mitler `loader.ts`: eski "Babilônica" adı "Babil"
+  anahtarına bağlı (istatistik bölünmesin).
 - **HÂLÂ AÇIK:** gömülü uygulamalarda `APP_IS_FREE = true` (satın alma ekranı şu
   an hiç görünmüyor); ja kaynak verisinde 地/土 tutarsızlığı.
   Abonelik doğrulama env'leri (`APPLE_*`, `GOOGLE_*`) canlıda TANIMLI DEĞİL:
@@ -1242,6 +1256,10 @@ Yani prompt değişikliği = App.jsx değişikliği = 4 branch'a sync.
 - **Ham veri sızıntısı (Eyl 2026):** "Güneş 64.6" gibi yorumlanmamış derece
   değeri metne girdi. Çözüm: ham sayı yasağı, veri ancak anlamına çevrilerek
   kullanılabilir.
+
+**SINIFLANDIRICI DİLİ (1.4.2 denetimi):** `aynaSoruTipi` Türkçe anahtar kelimeleri
+YALNIZCA `lang==="tr"`de arar (İspanyolca "hasta" = "-e kadar" beden sanılıyordu),
+küçük harf dile göre, "tired" listede YOK ("tired of this relationship" duygu).
 
 **YARIM SORU SÜRER (Eyl 2026):** doğum bilgisi yokken sorulan soru "__needbirth__"
 davetinde bekler; bilgi kaydedilip Ayna'ya dönülünce `aynaResumeRef` etkisi aynı

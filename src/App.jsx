@@ -5265,8 +5265,10 @@ async function _genPersonalNotifAI(lang, birthDate) {
     for (let i = 1; i <= 7; i++) {
       const fm = text.match(new RegExp(`\\[${i}F\\]\\s*([^\\[]+)`));
       const rm = text.match(new RegExp(`\\[${i}R\\]\\s*([^\\[]+)`));
-      const f = fm && fm[1].trim();
-      const r = rm && rm[1].trim();
+      // Uzun çizgi yasağı yalnızca prompt'ta değil, çıktıda da uygulanır.
+      const clean = (x) => x && x.replace(/\s*[\u2013\u2014\u2015]\s*/g, ", ").trim();
+      const f = fm && clean(fm[1]);
+      const r = rm && clean(rm[1]);
       days.push({ f: f || null, r: r || null });
     }
     // En az 5 günün ikisi de doluysa AI'yı kabul et; yoksa şablona düş.
@@ -5355,7 +5357,7 @@ function _notifDayPlan(dn, dayDate, hasBirth, hasEm, prefs) {
   // Doğum yoksa koç yalnızca kullanım + Ay + koç sorularıyla çalışır.
   const order = hasBirth
     ? [hasEm ? "kozmik" : null, "kisisel", "aksam", "tarot", "koc", "hatirlatici", "ogle"]
-    : ["aksam", "ogle", "koc"];
+    : ["aksam", "koc", "ogle"];  // Ayarlar ekranındaki sırayla AYNI (sayı 2 seçilince koç gelir)
   return order.filter(k => k && pr.on[k]).slice(0, pr.count);
 }
 // Gün ortası slotu: Salı ve Cuma sabah 08:00 "günaydın", diğer günler 13:00.
@@ -5371,8 +5373,12 @@ const PROMO_TARGETS = [
   { screen: "harita" },         // haftalık içsel rapor Ben ekranında
   { screen: "ses" }, { screen: "mandala" }, { screen: "ses" },
 ];
+// Üst üste çağrılarda (1-5 düğmelerine hızlı dokunma) YALNIZCA en son çağrı plan kurar;
+// eskiler ağ/AI beklerken geride kalırsa iptal+planlama yapmadan çıkar.
+let _notifGen = 0;
 async function scheduleAllNotifications(lang, birthDate, opts = {}) {
   if (!isNative) return;
+  const gen = ++_notifGen;
   try {
     const perm = opts.ask ? await LocalNotifications.requestPermissions() : await LocalNotifications.checkPermissions();
     if (perm.display !== "granted") return;
@@ -5380,7 +5386,11 @@ async function scheduleAllNotifications(lang, birthDate, opts = {}) {
     const prefs = readNotifPrefs();
     const week = _isoWeekStamp();
     const contentStamp = hasBirth ? `${week}_${lang}_${birthDate}` : "-";
-    const stamp = `v4_${sakinDayKey()}_${lang}_${JSON.stringify(prefs)}_${contentStamp}`;
+    // Kullanım parmak izi: bugün nefes/ses/çakra yapıldı mı, Ayna sayısı, mektup durumu.
+    // Değişince plan yeniden kurulur ("3 gündür nefes yapmadın" bayat kalmasın).
+    const _u = usageSnapshot();
+    const usageFp = [_u.breath === 0 ? 1 : 0, _u.sound === 0 ? 1 : 0, _u.chakra === 0 ? 1 : 0, _u.aynaCount, _u.letter ? (_u.letter.openedAt ? "o" : "s") : "-"].join("");
+    const stamp = `v5_${sakinDayKey()}_${lang}_${JSON.stringify(prefs)}_${contentStamp}_${usageFp}`;
     if (!opts.force && localStorage.getItem("sakin_notif_plan") === stamp) return;
 
     // Kişisel içerik: haftada bir (AI birincil, şablon yedek), cache'li.
@@ -5393,7 +5403,8 @@ async function scheduleAllNotifications(lang, birthDate, opts = {}) {
       // pazartesinin ay evresi mesajı perşembeye düşüyordu (6 güne kadar kayma, hata
       // avı Eyl 2026). Artık gün farkıyla okunur; 2 günden eski içerik yenilenir.
       const _age = content && content.start ? _dayDiff(content.start, _ymd(new Date())) : 99;
-      if (!content || content.stamp !== contentStamp || !Array.isArray(content.days) || _age > 2 || _age < 0) {
+      const needPersonal = prefs.on.kisisel || prefs.on.hatirlatici;
+      if (needPersonal && (!content || content.stamp !== contentStamp || !Array.isArray(content.days) || _age > 2 || _age < 0)) {
         const ai = await _genPersonalNotifAI(lang, birthDate);
         const days = ai || _genPersonalNotifTemplate(lang, birthDate);
         content = { stamp: contentStamp, start: _ymd(new Date()), source: ai ? "ai" : "tpl", days };
@@ -5433,8 +5444,8 @@ async function scheduleAllNotifications(lang, birthDate, opts = {}) {
     const seed = (() => { try { return localStorage.getItem("sakin_anon_id") || birthDate || "sakin"; } catch (_) { return "sakin"; } })();
     // Son 14 günde gönderilen metinler (bugünün planından kaydedilir) + bu turda
     // önceki günlere planlananlar: aynı cümle iki hafta içinde tekrar gitmez.
-    const recentLog = (() => { try { return JSON.parse(localStorage.getItem("sakin_notif_recent") || "[]"); } catch (_) { return []; } })()
-      .filter(x => x && x.day && _dayDiff(x.day, _ymd(new Date())) <= 14 && x.day !== _ymd(new Date()));
+    const recentLog = (() => { try { const a = JSON.parse(localStorage.getItem("sakin_notif_recent") || "[]"); return Array.isArray(a) ? a : []; } catch (_) { return []; } })()
+      .filter(x => x && typeof x.day === "string" && typeof x.t === "string" && _dayDiff(x.day, _ymd(new Date())) <= 14 && x.day !== _ymd(new Date()));
     const recent = new Set(recentLog.map(x => x.t));
     const todayBodies = [];
     // Öğe düz metin ya da { body, extra } olabilir; tazelik METNE bakılarak ölçülür.
@@ -5446,12 +5457,13 @@ async function scheduleAllNotifications(lang, birthDate, opts = {}) {
       if (txt(r)) recent.add(txt(r));
       return r;
     };
-    const usage = usageSnapshot();
+    const usage = _u;
     const prefH = preferredHour();
     let lastCoachCat = (() => { try { const x = JSON.parse(localStorage.getItem("sakin_notif_lastcoach") || "null"); return x && x.day === _ymd(_daysAgo(1)) ? x.cat : null; } catch (_) { return null; } })();
     const tarotArr = TAROT_NOTIF[lang] || TAROT_NOTIF.en;
     const drawnToday = localStorage.getItem("sakin_tarot_drawn") === sakinDayKey();
 
+    if (gen !== _notifGen) return; // daha yeni bir çağrı başladı
     await LocalNotifications.cancel({ notifications: [
       ...Array.from({ length: 100 }, (_, i) => ({ id: 9000 + i })), { id: 9100 }, { id: 9101 },
       ...Array.from({ length: 100 }, (_, i) => ({ id: 9200 + i })),
@@ -5489,7 +5501,10 @@ async function scheduleAllNotifications(lang, birthDate, opts = {}) {
         if (d === 0) { try { localStorage.setItem("sakin_notif_lastcoach", JSON.stringify({ day: _ymd(day), cat: coach.cat })); } catch (_) {} }
       }
       // Varsayılan (3) kullanıcıda koç, AKŞAM slotuna gün aşırı karışır (sayı artmaz).
-      const coachInEvening = !!coach && !plan.includes("koc") && ((ichingHash(`${seed}|ev|${dn}`) % 2) === 0);
+      // "Yaşam koçu" KAPALIYSA koç hiçbir slotta gitmez (denetim: kapalıyken de akşama karışıyordu).
+      const coachOn = prefs.on.koc;
+      const coachInEvening = coachOn && !!coach && !plan.includes("koc") && ((ichingHash(`${seed}|ev|${dn}`) % 2) === 0);
+      let fbCat = coach && coach.cat;
       // Koç saati: kişinin uygulamayı en sık açtığı saat (yoksa 15:00), diğer
       // slotlarla çakışırsa bir saat kaydırılır; 09:00-21:00 aralığında.
       const coachHour = (() => {
@@ -5514,15 +5529,17 @@ async function scheduleAllNotifications(lang, birthDate, opts = {}) {
           // AI yoksa yedek şablon iki hafta içinde tekrar edebiliyordu: son
           // gönderilenlerdeyse yerine ikinci bir koç mesajı (farklı tohum) gider.
           if (pd.f && !recent.has(pd.f)) add(9200 + d, at(10), pd.f, { screen: "bugun" });
+          else if (!coachOn) { const e = pick(eveningPool, dn, "k2"); add(9200 + d, at(10), e.body, e.extra); }
           else {
-            const c2 = coachMessage({ lang, birthDate: hasBirth ? birthDate : null, day, d, dn, usage, seed: seed + "|k2", prevCat: coach && coach.cat, pdFn: personalDayNumber, recent });
-            if (c2) add(9200 + d, at(10), c2.body, c2.extra);
+            const c2 = coachMessage({ lang, birthDate: hasBirth ? birthDate : null, day, d, dn, usage, seed: seed + "|k2", prevCat: fbCat, pdFn: personalDayNumber, recent });
+            if (c2) { fbCat = c2.cat; add(9200 + d, at(10), c2.body, c2.extra); }
           }
         }
         else if (slot === "hatirlatici") {
           if (pd.r && !recent.has(pd.r)) add(9210 + d, at(16), pd.r, { screen: "mandala" });
+          else if (!coachOn) { const e = pick(eveningPool, dn, "k3"); add(9210 + d, at(16), e.body, e.extra); }
           else {
-            const c3 = coachMessage({ lang, birthDate: hasBirth ? birthDate : null, day, d, dn, usage, seed: seed + "|k3", prevCat: coach && coach.cat, pdFn: personalDayNumber, recent });
+            const c3 = coachMessage({ lang, birthDate: hasBirth ? birthDate : null, day, d, dn, usage, seed: seed + "|k3", prevCat: fbCat, pdFn: personalDayNumber, recent });
             if (c3) add(9210 + d, at(16), c3.body, c3.extra);
           }
         }
@@ -5532,6 +5549,7 @@ async function scheduleAllNotifications(lang, birthDate, opts = {}) {
         else if (slot === "tarot" && !(d === 0 && drawnToday)) add(_tarotNotifId(day), at(8, 30), pick(tarotArr, dn, "ta"), { screen: "bugun" });
       }
     }
+    if (gen !== _notifGen) return;
     if (out.length) await LocalNotifications.schedule({ notifications: out });
     localStorage.setItem("sakin_notif_plan", stamp);
     try {
@@ -9702,6 +9720,14 @@ export default function SakinApp() {
     let opens = 0; try { opens = parseInt(localStorage.getItem("sakin_open_count") || "0", 10) || 0; } catch (_) {}
     if (!notifAskedAlready() && opens >= 2) { askNotifPermissionOnce(lang, birthDate); return; }
     scheduleAllNotifications(lang, birthDate);
+    // Mektup bildirimi de (izin sonradan Ayarlar'dan verilmiş ya da dil değişmiş olabilir).
+    rescheduleLetterNotif(lang);
+    // Arka plana geçerken ve dönüşte plan tazelenir: damga (gün + kullanım parmak izi)
+    // aynıysa hemen çıkar. Uygulamayı hiç kapatmadan kullanan da her gün yeni plan alır,
+    // "N gündür nefes yapmadın" gibi metinler yapılan pratikten sonra bayat kalmaz.
+    const onVis = () => { scheduleAllNotifications(lang, birthDate); };
+    document.addEventListener("visibilitychange", onVis);
+    return () => document.removeEventListener("visibilitychange", onVis);
   }, [lang, birthDate]);
   // Geri dönüş bildirimleri: her açılışta ve arka plandan her dönüşte yeniden
   // kurulur (son açılış tarihine göre kaydırılır).
