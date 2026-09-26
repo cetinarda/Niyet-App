@@ -1128,7 +1128,7 @@ function letterChest(ready, anim) {
 // ref ile), kök bileşen saniyede bir yeniden çizilmez.
 const MEDITATION = { id: "chakra_balance", src: API_BASE + "/audio/chakra_balance.m4a", min: 12 };
 const MED_TXT = {
-  eyebrow: { tr:"Günlük pratik", en:"Daily practice", de:"Tägliche Praxis", es:"Práctica diaria", pt:"Prática diária", fr:"Pratique du jour", ja:"今日のプラクティス" },
+  eyebrow: { tr:"Meditasyon pratiği", en:"Meditation practice", de:"Meditationspraxis", es:"Práctica de meditación", pt:"Prática de meditação", fr:"Pratique de méditation", ja:"瞑想のプラクティス" },
   title:   { tr:"Çakra Dengeleme Meditasyonu", en:"Chakra Balancing Meditation", de:"Chakra-Ausgleichs-Meditation", es:"Meditación de equilibrio de chakras", pt:"Meditação de equilíbrio dos chakras", fr:"Méditation d'équilibrage des chakras", ja:"チャクラ・バランス瞑想" },
   sub:     { tr:"12 dk · 7 çakrayı dengele", en:"12 min · balance your 7 chakras", de:"12 Min. · deine 7 Chakren ausgleichen", es:"12 min · equilibra tus 7 chakras", pt:"12 min · equilibra os teus 7 chakras", fr:"12 min · équilibre tes 7 chakras", ja:"12分・7つのチャクラを整える" },
   err:     { tr:"Ses yüklenemedi. İnternet bağlantını kontrol et.", en:"The audio couldn't load. Check your internet connection.", de:"Der Ton konnte nicht geladen werden. Prüfe deine Internetverbindung.", es:"No se pudo cargar el audio. Revisa tu conexión a internet.", pt:"Não foi possível carregar o áudio. Verifica a tua ligação à internet.", fr:"Le son n'a pas pu se charger. Vérifie ta connexion internet.", ja:"音声を読み込めませんでした。インターネット接続を確認してください。" },
@@ -18186,9 +18186,6 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
               )}
             </section>
 
-            {/* ── 9a) GÜNLÜK PRATİK: meditasyon denemesi (denenene kadar görünür). */}
-            {medVisible() && <MeditationCard lang={lang} S={{ SEC, SURF, BTN, eyebrow, SERIF, INTER, INK, MUTE, GOLD }} />}
-
             {/* ── 9b) GÜNÜN ŞÜKRANI: akşam kapanışının şükür alanına satır olarak eklenir. */}
             {(() => {
               const lines = String(sukur || "").split("\n").map(x => x.trim()).filter(Boolean);
@@ -18220,7 +18217,6 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                       ))}
                     </div>
                   )}
-                  <div style={{ fontFamily:INTER,fontSize:11.5,color:MUTE,margin:"8px 4px 0" }}>{pickLang(GRATITUDE_TXT.note, lang)}</div>
                 </section>
               );
             })()}
@@ -18499,6 +18495,10 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                 {chevron()}
               </button>
             </section>
+
+            {/* ── 7b) MEDİTASYON PRATİĞİ (kullanıcı: "I Ching'den öğüt alın altına taşı";
+                şimdilik tek meditasyon, o yüzden "günlük" değil). Denenene kadar görünür. */}
+            {medVisible() && <MeditationCard lang={lang} S={{ SEC, SURF, BTN, eyebrow, SERIF, INTER, INK, MUTE, GOLD }} />}
 
             {/* ── 8) İKİLİ UYUM ── (I Ching ile yer değiştirdi, kullanıcı isteği) iki halka: sen (burcun) + boş halka "?".
                 Eksik ikinci kişi görsel olarak duruyor; SoulID eşleşmesini açar. */}

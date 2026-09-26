@@ -669,11 +669,13 @@ kullanmaya teşvik eden bilgi". Sıra (yukarıdan aşağı), değiştirmeden ön
    gerçek veri, "bugün" diye yazma (sahte olur). Akort noktaları + Senin payın.
 ⚠️ **GÜNCEL SIRA (Eyl 2026, kullanıcı: "üst aynı kalsın; tarot ve günün şükranı
 kişisel günün altına, sonra orkestra; meditasyon şükranın üstüne"):** Karşılama →
-Güncel geçiş → Pusula → Kişisel gün → **Tarot → Günlük pratik (meditasyon) → Günün
-şükranı** → Pazar özeti → Orkestra (+Çember) → Günün yorumu → Gökyüzü → Rehberler
-→ I Ching → İkili uyum → Bugünün ilk adımı. Aşağıdaki numaralar tarihsel.
+Güncel geçiş → Pusula → Kişisel gün → **Tarot → Günün şükranı** → Pazar özeti →
+Orkestra (+Çember) → Günün yorumu → Gökyüzü → Rehberler → I Ching → **Meditasyon
+pratiği** (kullanıcı: "I Ching'in altına taşı"; tek meditasyon olduğu için "günlük"
+DEĞİL) → İkili uyum → Bugünün ilk adımı. Aşağıdaki numaralar tarihsel.
 - **Günün şükranı** (`GRATITUDE_TXT`): her giriş akşam kapanışının `sukur` alanına
   (sakin_sukur_<gün>) YENİ SATIR olarak eklenir; son 5 satır kartta görünür.
+  "Akşam kapanışına da eklenir" notu KALDIRILDI (kullanıcı: "sadelik gerekiyor").
 - **Günlük pratik / meditasyon** (`MeditationCard`, MODÜL bileşeni, `MED_TXT`): ses
   SUNUCUDAN çalınır `API_BASE + "/audio/chakra_balance.m4a"` (96 kbps AAC, 8,6 MB;
   orijinal 256 kbps 23 MB'tı, ffmpeg ile sıkıştırıldı). `public/audio` telefon
