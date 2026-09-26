@@ -676,7 +676,8 @@ DEĞİL) → İkili uyum → Bugünün ilk adımı. Aşağıdaki numaralar tarih
 - **Günün şükranı** (`GRATITUDE_TXT`): her giriş akşam kapanışının `sukur` alanına
   (sakin_sukur_<gün>) YENİ SATIR olarak eklenir; son 5 satır kartta görünür.
   "Akşam kapanışına da eklenir" notu KALDIRILDI (kullanıcı: "sadelik gerekiyor").
-- **Meditasyon pratiği** (`MeditationCard`, MODÜL bileşeni, `MED_TXT`). Oynat → TAM
+- **Meditasyon pratiği** (`MeditationCard`, MODÜL bileşeni, `MED_TXT`). YALNIZCA `lang==="tr"`
+  (kayıt Türkçe seslendirmeli, kullanıcı kararı; başka dilde kayıt gelince kapıyı aç). Oynat → TAM
   EKRAN oynatıcı (`createPortal`, süzülen katmanlı sinüs dalgaları `MED_WAVES` +
   `medWave/medBreath/medGlow` keyframe'leri, duraklatınca durur, hareketi azalt'ta
   sabit), kurumsal yuvarlak geri düğmesi, Android geri tuşu `window.__sakinOverlayBack`;
@@ -917,12 +918,15 @@ temizliği (App.jsx ~5594, geçmiş iOS OOM fix'i) korunuyor.
   Doğrulanamayan iddia ("reklamsız", "veri satmıyoruz") EKLEME.
 - **SAKİN AİLESİ KOTASI ORTAK (Eyl 2026, kullanıcı: "toplam 3 olsun, hepsi için ayrı
   ayrı değil"):** Hayvan/Bitkiler/Taşlar/Mitler BİRLİKTE günde 3 açılış
-  (`sakin_ailesi_opens_all_<gün>`, `AILESI_FREE_OPENS`). Tasarım ve SoulID SAYILMAZ
-  (`AILESI_QUOTA_EXEMPT`: Bugün/Ben'deki temel özellikler onları açıyor). Keşfet
-  başlığında kalan hak rozeti YOK (kullanıcı: "tedirgin etmeye gerek yok", kaldırıldı,
-  geri koyma). Hak dolunca YUMUŞAK KAPI (`AILESI_GATE_TXT`, 7 dil): üstte eski zarif
-  başlık (✦, "Sakin Ailesi", "Devam etmek için Premium gerekli"), altında "Bugün Sakin
-  Ailesi'ni 3 kez kullandın", 3 premium kazanımı, "Premium'u incele" (fiyat ekranı
+  (`sakin_ailesi_opens_all_<gün>`, `AILESI_FREE_OPENS`). SoulID hiç SAYILMAZ; Tasarım
+  yalnızca Bugün/Ben'deki temel özelliklerden açılınca sayılmaz, KEŞFET kartından
+  açılınca (`fromKesfet`) SAYILIR (kullanıcı: "Hayvan'da hak bitti ama Tasarım'a
+  girebiliyorum" hata saydı). Keşfet başlığında kalan hak rozeti YOK (kullanıcı:
+  "tedirgin etmeye gerek yok", geri koyma). Hak dolunca YUMUŞAK KAPI, YARIM SAYFA
+  (alttan panel; üst yarı BOŞ, bitki/yıldız YOK, alttaki Bağlan/Bağlantı/Keşfet
+  kısayolları YOK, boşluğa dokununca kapanır; `AILESI_GATE_TXT`, 7 dil):
+  "Bugünkü ücretsiz hakların doldu", 3 nokta, "Bugün Sakin Ailesi'ni 3 kez
+  kullandın", 3 premium kazanımı, "Premium'u incele" (fiyat ekranı
   YALNIZCA buradan) / "Yarın devam ederim", yenilenmeye kalan süre.
 - **Özellik listesi DÜRÜST (Eyl 2026, `PREMIUM_LIST_TXT` + `premiumFeatureList`,
   7 dil):** eski `paid_app_features` nefes, doğum haritası, Gökyüzü Raporu gibi

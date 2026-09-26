@@ -2774,6 +2774,7 @@ function innerReflectTemplate(lang, moon, gate, niyet, hasEvening) {
 // temel özellikler onları açıyor). Hak dolunca yumuşak kart: ne olduğu, ne zaman
 // yenileneceği, premium'un getirdikleri; fiyat ekranına yalnızca istenirse gidilir.
 const AILESI_GATE_TXT = {
+  title:  { tr:"Bugünkü ücretsiz hakların doldu", en:"Today's free opens are used up", de:"Deine freien Öffnungen für heute sind aufgebraucht", es:"Has usado tus aperturas gratis de hoy", pt:"Usaste as aberturas gratuitas de hoje", fr:"Tes ouvertures gratuites du jour sont utilisées", ja:"今日の無料オープンを使い切りました" },
   body:   { tr:"Bugün Sakin Ailesi'ni {t} kez kullandın. Yarın sabah yine {t} hakkın olacak.", en:"You've used the Sakin Family {t} times today. You'll have {t} again tomorrow morning.", de:"Du hast die Sakin-Familie heute {t}-mal genutzt. Morgen früh hast du wieder {t}.", es:"Hoy usaste la Familia Sakin {t} veces. Mañana por la mañana tendrás {t} de nuevo.", pt:"Hoje usaste a Família Sakin {t} vezes. Amanhã de manhã terás {t} de novo.", fr:"Tu as utilisé la Famille Sakin {t} fois aujourd'hui. Demain matin, tu en auras à nouveau {t}.", ja:"今日はSakinファミリーを{t}回使いました。明日の朝また{t}回使えます。" },
   perks:  { tr:["Sakin Ailesi uygulamalarına sınırsız giriş","15 ileri çakra ve üç kartlık tarot","Galaktik Kimlik yorumu ve haftalık rapor"],
             en:["Unlimited access to the Sakin Family apps","15 advanced chakras and the three-card tarot","Your Galactic ID reading and the weekly report"],
@@ -2786,7 +2787,6 @@ const AILESI_GATE_TXT = {
   later:  { tr:"Yarın devam ederim", en:"I'll continue tomorrow", de:"Ich mache morgen weiter", es:"Sigo mañana", pt:"Continuo amanhã", fr:"Je continue demain", ja:"明日また続ける" },
   reset:  { tr:"Yenilenmeye: {h} sa {m} dk", en:"Resets in {h} h {m} min", de:"Neu in {h} Std. {m} Min.", es:"Se renueva en {h} h {m} min", pt:"Renova-se em {h} h {m} min", fr:"Renouvelé dans {h} h {m} min", ja:"リセットまで {h}時間{m}分" },
 };
-const AILESI_QUOTA_EXEMPT = ["humandesign", "soulid"];
 const ailesiOpensKey = () => "sakin_ailesi_opens_all_" + sakinDayKey();
 function ailesiOpensUsed() { try { return parseInt(localStorage.getItem(ailesiOpensKey()) || "0", 10) || 0; } catch (_) { return 0; } }
 const GRATITUDE_TXT = {
@@ -7932,7 +7932,11 @@ export default function SakinApp() {
     const m = (app.embed || "").match(/\/embedded\/([^/]+)/);
     const appKey = m ? m[1] : "unknown";
     let exceeded = false;
-    if (!isPremium && !AILESI_QUOTA_EXEMPT.includes(appKey)) {
+    // Tasarım yalnızca Bugün/Ben'deki temel özelliklerden açılınca muaf; Keşfet
+    // kartından açılınca ortak 3 hakka sayılır (kullanıcı: "Hayvan'da 3 hak bitti,
+    // uyarı çıktı ama Tasarım'a girebiliyorum"). SoulID her yerden ücretsiz (Yeni).
+    const quotaExempt = appKey === "soulid" || (appKey === "humandesign" && !app.fromKesfet);
+    if (!isPremium && !quotaExempt) {
       // GÜNLÜK ORTAK kota (Hayvan/Bitkiler/Taşlar/Mitler birlikte): anahtarda
       // tarih var, her gün sıfırdan başlar. Eskiden uygulama başına ayrı 3'tü.
       const next = ailesiOpensUsed() + 1;
@@ -12041,7 +12045,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                 onMouseEnter={e=>e.currentTarget.style.borderColor=app.color+"66"}
                 onMouseLeave={e=>e.currentTarget.style.borderColor=app.premium?"rgba(232,192,122,0.5)":"rgba(255,255,255,0.08)"}>
                 <button
-                  onClick={()=>handleOpenEmbed(app)}
+                  onClick={()=>handleOpenEmbed({ ...app, fromKesfet: true })}
                   style={{ background:"none",border:"none",padding:0,cursor:"pointer",display:"flex",alignItems:"center",gap:14,textAlign:"left",color:"inherit",width:"100%" }}>
                   <div style={{ width:48,height:48,borderRadius:"50%",background:`radial-gradient(circle,${app.color}44,${app.color}11)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0 }}>{app.icon}</div>
                   <div style={{ flex:1,minWidth:0 }}>
@@ -13062,65 +13066,55 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
               </div>
             );
           })()}
-          {/* Hayvan/Mitler kotası dolduysa frost gate: iframe yüklendikten sonra üstüne biner */}
+          {/* SAKİN AİLESİ ORTAK KOTASI dolduysa YUMUŞAK KAPI: YARIM SAYFA (alttan panel).
+              Kullanıcı kararı (Eyl 2026): üst yarı BOŞ (bitki/yıldız yok), altta panel:
+              başlık, 3 nokta, ne zaman yenileneceği, premium kazanımları, iki düğme.
+              Alttaki Bağlan/Bağlantı/Keşfet kısayolları KALDIRILDI ("yorucu"). */}
           {embeddedApp && embedQuotaExceeded && embedLoaded && (() => {
-            const rgb = (embeddedApp.color || "#b4a0d8").replace('#','').match(/.{2}/g).map(h=>parseInt(h,16)).join(',');
+            const closeGate = () => { setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); };
             return (
-              <div style={{ position:"fixed", inset:0, zIndex:10002, backdropFilter:"blur(14px)", WebkitBackdropFilter:"blur(14px)",
-                background:`radial-gradient(ellipse 80% 60% at 50% 40%, rgba(${rgb},0.22) 0%, rgba(15,8,30,0.88) 70%, rgba(0,0,0,0.95) 100%)`,
-                display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center",
-                padding:"40px 28px", gap:18, animation:"fadeIn 0.5s ease" }}>
-                <div style={{ fontSize:38, lineHeight:1, opacity:0.85, filter:`drop-shadow(0 0 18px rgba(${rgb},0.5))` }}>✦</div>
-                <div style={{ fontSize:11, letterSpacing:5, color:`rgba(${rgb},0.85)`, textTransform:"uppercase", fontFamily:"'Jost',sans-serif" }}>
-                  {t("ailesi_title")}
-                </div>
-                {/* YUMUŞAK KAPI: üst kısım ESKİ tasarımın zarif başlığı (kullanıcı:
-                    "yıldız, Sakin Ailesi, Devam etmek için Premium gerekli kalsın"),
-                    altı yeni bilgilendirme: ne zaman yenileneceği, premium'un getirdikleri. */}
-                <div style={{ fontSize:22, color:"#fff", fontFamily:"'Jost',sans-serif", fontWeight:300, lineHeight:1.4, letterSpacing:1, textAlign:"center", maxWidth:330 }}>
-                  {t("ailesi_premium_needed_title")}
-                </div>
-                <div style={{ display:"flex", gap:8 }} aria-hidden="true">
-                  {Array.from({ length: AILESI_FREE_OPENS }, (_, i) => <span key={i} style={{ width:9, height:9, borderRadius:"50%", background:"#e8c07a", boxShadow:"0 0 8px rgba(232,192,122,0.55)" }} />)}
-                </div>
-                <div style={{ fontSize:13.5, color:"#cfc7e0", lineHeight:1.6, textAlign:"center", maxWidth:320, fontFamily:"'Inter',sans-serif" }}>
-                  {pickLang(AILESI_GATE_TXT.body, lang).split("{t}").join(String(AILESI_FREE_OPENS))}
-                </div>
-                <div style={{ width:"100%", maxWidth:330, display:"flex", flexDirection:"column", gap:7, padding:"12px 14px", borderRadius:14,
-                  background:"rgba(232,192,122,0.05)", border:"1px solid rgba(232,192,122,0.18)", boxSizing:"border-box" }}>
-                  {pickLang(AILESI_GATE_TXT.perks, lang).map((pk, i) => (
-                    <div key={i} style={{ fontSize:13, color:"#cfc7e0", fontFamily:"'Inter',sans-serif", display:"flex", gap:8 }}><span style={{ color:"#e8c07a" }}>✦</span>{pk}</div>
-                  ))}
-                </div>
-                <button onClick={()=>{ setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); setScreen("fiyat"); }}
-                  style={{ WebkitAppearance:"none", appearance:"none", width:"100%", maxWidth:330, marginTop:4, background:"linear-gradient(135deg,#e8c07a,#c9a060)",
-                    border:"none", borderRadius:100, padding:"14px 20px", color:"#1a1030", fontSize:13, letterSpacing:2, cursor:"pointer",
-                    fontFamily:"'Jost',sans-serif", textTransform:"uppercase", fontWeight:500 }}>
-                  {pickLang(AILESI_GATE_TXT.cta, lang)}
-                </button>
-                <button onClick={()=>{ setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); }}
-                  style={{ WebkitAppearance:"none", appearance:"none", width:"100%", maxWidth:330, background:"none", border:"1px solid rgba(255,255,255,0.16)",
-                    borderRadius:100, padding:"13px 20px", color:"#b8aed0", fontSize:12, letterSpacing:1.8, cursor:"pointer",
-                    fontFamily:"'Jost',sans-serif", textTransform:"uppercase" }}>
-                  {pickLang(AILESI_GATE_TXT.later, lang)}
-                </button>
-                <div style={{ fontSize:12, color:"#8f88a3", fontFamily:"'Inter',sans-serif" }}>
-                  {(() => { const n = new Date(), mid = new Date(n.getFullYear(), n.getMonth(), n.getDate() + 1); const mins = Math.max(0, Math.round((mid - n) / 60000));
-                    return pickLang(AILESI_GATE_TXT.reset, lang).replace("{h}", String(Math.floor(mins / 60))).replace("{m}", String(mins % 60)); })()}
-                </div>
-                {/* Sakin menüleri: free kullanıcı kotası dolunca embed'den çıkıp Sakin'in
-                    ana bölümlerine 1 tıkla geçebilsin (yoksa ana sayfaya dönüp soğuyor). */}
-                <div style={{ display:"flex", gap:8, marginTop:18, flexWrap:"wrap", justifyContent:"center" }}>
-                  {SIDEBAR_ITEMS.filter(n=>!n.iconOnly).map(n=>(
-                    <button key={n.id}
-                      onClick={()=>{ setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false);
-                        if(n.id==="ailesi"){ kesfetSourceRef.current = "ailesi"; setShowAilesi(true); return; } setScreen(n.id); }}
-                      style={{ background:`${n.color}18`, border:`1px solid ${n.color}44`, borderRadius:100,
-                        padding:"8px 16px", color:n.color, fontSize:11, letterSpacing:1.5, cursor:"pointer",
-                        fontFamily:"'Jost',sans-serif", display:"flex", alignItems:"center", gap:5 }}>
-                      <span style={{ fontSize:13 }}>{n.icon}</span>{n.label}
-                    </button>
-                  ))}
+              <div onClick={closeGate}
+                style={{ position:"fixed", inset:0, zIndex:10002, backdropFilter:"blur(16px)", WebkitBackdropFilter:"blur(16px)",
+                  background:"linear-gradient(180deg, rgba(6,5,14,0.9) 0%, rgba(6,5,14,0.96) 100%)",
+                  display:"flex", flexDirection:"column", justifyContent:"flex-end", animation:"fadeIn 0.4s ease" }}>
+                <div onClick={e=>e.stopPropagation()}
+                  style={{ width:"100%", maxWidth:520, margin:"0 auto", boxSizing:"border-box",
+                    background:"linear-gradient(180deg,#141027 0%,#0d0a1a 100%)", borderTop:"1px solid rgba(184,164,216,0.18)",
+                    borderRadius:"28px 28px 0 0", boxShadow:"0 -18px 60px rgba(0,0,0,0.55)",
+                    padding:"12px 24px calc(24px + env(safe-area-inset-bottom, 0px))",
+                    display:"flex", flexDirection:"column", alignItems:"center", gap:16, animation:"fadeUp 0.45s ease-out" }}>
+                  <div aria-hidden="true" style={{ width:40, height:4, borderRadius:4, background:"rgba(255,255,255,0.16)", marginBottom:6 }} />
+                  <div style={{ fontSize:26, color:"#f1ecf9", fontFamily:"'Cormorant Garamond',Georgia,serif", textAlign:"center", maxWidth:340, lineHeight:1.2 }}>
+                    {pickLang(AILESI_GATE_TXT.title, lang)}
+                  </div>
+                  <div style={{ display:"flex", gap:8 }} aria-hidden="true">
+                    {Array.from({ length: AILESI_FREE_OPENS }, (_, i) => <span key={i} style={{ width:9, height:9, borderRadius:"50%", background:"#e8c07a", boxShadow:"0 0 8px rgba(232,192,122,0.55)" }} />)}
+                  </div>
+                  <div style={{ fontSize:13.5, color:"#cfc7e0", lineHeight:1.6, textAlign:"center", maxWidth:330, fontFamily:"'Inter',sans-serif" }}>
+                    {pickLang(AILESI_GATE_TXT.body, lang).split("{t}").join(String(AILESI_FREE_OPENS))}
+                  </div>
+                  <div style={{ width:"100%", maxWidth:360, display:"flex", flexDirection:"column", gap:7, padding:"12px 14px", borderRadius:14,
+                    background:"rgba(232,192,122,0.05)", border:"1px solid rgba(232,192,122,0.18)", boxSizing:"border-box" }}>
+                    {pickLang(AILESI_GATE_TXT.perks, lang).map((pk, i) => (
+                      <div key={i} style={{ fontSize:13, color:"#cfc7e0", fontFamily:"'Inter',sans-serif", display:"flex", gap:8 }}><span style={{ color:"#e8c07a" }}>✦</span>{pk}</div>
+                    ))}
+                  </div>
+                  <button onClick={()=>{ closeGate(); setScreen("fiyat"); }}
+                    style={{ WebkitAppearance:"none", appearance:"none", width:"100%", maxWidth:360, marginTop:2, background:"linear-gradient(135deg,#e8c07a,#c9a060)",
+                      border:"none", borderRadius:100, padding:"14px 20px", color:"#1a1030", fontSize:13, letterSpacing:2, cursor:"pointer",
+                      fontFamily:"'Jost',sans-serif", textTransform:"uppercase", fontWeight:500 }}>
+                    {pickLang(AILESI_GATE_TXT.cta, lang)}
+                  </button>
+                  <button onClick={closeGate}
+                    style={{ WebkitAppearance:"none", appearance:"none", width:"100%", maxWidth:360, background:"none", border:"1px solid rgba(255,255,255,0.16)",
+                      borderRadius:100, padding:"13px 20px", color:"#b8aed0", fontSize:12, letterSpacing:1.8, cursor:"pointer",
+                      fontFamily:"'Jost',sans-serif", textTransform:"uppercase" }}>
+                    {pickLang(AILESI_GATE_TXT.later, lang)}
+                  </button>
+                  <div style={{ fontSize:12, color:"#8f88a3", fontFamily:"'Inter',sans-serif" }}>
+                    {(() => { const n = new Date(), mid = new Date(n.getFullYear(), n.getMonth(), n.getDate() + 1); const mins = Math.max(0, Math.round((mid - n) / 60000));
+                      return pickLang(AILESI_GATE_TXT.reset, lang).replace("{h}", String(Math.floor(mins / 60))).replace("{m}", String(mins % 60)); })()}
+                  </div>
                 </div>
               </div>
             );
@@ -18631,7 +18625,8 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
 
             {/* ── 7b) MEDİTASYON PRATİĞİ (kullanıcı: "I Ching'den öğüt alın altına taşı";
                 şimdilik tek meditasyon, o yüzden "günlük" değil). Denenene kadar görünür. */}
-            {medVisible() && <MeditationCard lang={lang} S={{ SEC, SURF, BTN, eyebrow, SERIF, INTER, INK, MUTE, GOLD }} />}
+            {/* Meditasyon şimdilik YALNIZCA Türkçe (kayıt Türkçe seslendirmeli, kullanıcı kararı). */}
+            {lang === "tr" && medVisible() && <MeditationCard lang={lang} S={{ SEC, SURF, BTN, eyebrow, SERIF, INTER, INK, MUTE, GOLD }} />}
 
             {/* ── 8) İKİLİ UYUM ── (I Ching ile yer değiştirdi, kullanıcı isteği) iki halka: sen (burcun) + boş halka "?".
                 Eksik ikinci kişi görsel olarak duruyor; SoulID eşleşmesini açar. */}
