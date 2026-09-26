@@ -11410,6 +11410,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   // Güncel geçiş kartındaki haftalık tema: Vurgu/Nelere dikkat kapalı başlar.
   const [transitThemeOpen, setTransitThemeOpen] = useState(false);
   const [gratDraft, setGratDraft] = useState("");
+  const [gratEdit, setGratEdit] = useState(false); // şükran yazılmışken yeni satır ekleme modu
+  const [gratOpen, setGratOpen] = useState(false);  // uzun şükranın tamamı açık mı
   // ── GÜNLÜK YORUM ("daha fazlası") ───────────────────────────────────────────
   // Gökyüzü raporunun altındaki uzun okuma. Kolektif rapor herkes için aynıyken
   // bu, kullanıcının GÜNEŞ BURCU + günün gerçek gökyüzü ile kişiye özel bir
@@ -18326,7 +18328,9 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
               )}
             </section>
 
-            {/* ── 9b) GÜNÜN ŞÜKRANI: akşam kapanışının şükür alanına satır olarak eklenir. */}
+            {/* ── 9b) GÜNÜN ŞÜKRANI: akşam kapanışının şükür alanına satır olarak eklenir.
+                Yazılınca giriş kutusunun YERİNE geçer (kullanıcı, Eyl 2026): uzunsa 2 satır
+                görünür, dokununca tamamı; en yeni şükran üstte; sağdaki + yeni bir şükran ekler. */}
             {(() => {
               const lines = String(sukur || "").split("\n").map(x => x.trim()).filter(Boolean);
               const addGrat = () => {
@@ -18334,27 +18338,37 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                 if (!v) return;
                 try { haptic(); } catch (_) {}
                 setSukur(prev => (String(prev || "").trim() ? String(prev).trim() + "\n" + v : v));
-                setGratDraft("");
+                setGratDraft(""); setGratEdit(false); setGratOpen(false);
               };
+              const showInput = lines.length === 0 || gratEdit;
+              const plusBtn = (onClick, active) => (
+                <button onClick={onClick} aria-label={pickLang(GRATITUDE_TXT.add, lang)}
+                  style={{ ...BTN,width:34,height:34,flexShrink:0,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",
+                    border:`1px solid ${active ? GOLD + "99" : "rgba(255,255,255,0.18)"}`,color: active ? GOLD : MUTE,fontSize:18,lineHeight:1 }}>+</button>
+              );
               return (
                 <section style={SEC}>
                   {eyebrow(pickLang(GRATITUDE_TXT.title, lang))}
-                  <div style={{ ...SURF,padding:"12px 12px 12px 16px",display:"flex",alignItems:"center",gap:10 }}>
-                    <input value={gratDraft} onChange={e => setGratDraft(e.target.value.slice(0, 160))}
-                      onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); addGrat(); } }}
-                      placeholder={pickLang(GRATITUDE_TXT.ph, lang)} aria-label={pickLang(GRATITUDE_TXT.title, lang)}
-                      style={{ flex:1,minWidth:0,background:"transparent",border:"none",outline:"none",color:INK,fontFamily:INTER,fontSize:16,padding:"6px 0" }} />
-                    <button onClick={addGrat} aria-label={pickLang(GRATITUDE_TXT.add, lang)}
-                      style={{ ...BTN,width:34,height:34,flexShrink:0,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",
-                        border:`1px solid ${gratDraft.trim() ? GOLD + "99" : "rgba(255,255,255,0.18)"}`,color: gratDraft.trim() ? GOLD : MUTE,fontSize:18,lineHeight:1 }}>+</button>
-                  </div>
-                  {lines.length > 0 && (
-                    <div style={{ display:"flex",flexDirection:"column",gap:6,margin:"10px 4px 0" }}>
-                      {lines.slice(-5).map((l, i) => (
-                        <div key={i} style={{ display:"flex",gap:8,alignItems:"baseline",fontFamily:SERIF,fontSize:17,lineHeight:1.4,color:BODY }}>
-                          <span style={{ color:GOLD,fontSize:11 }}>✦</span><span style={{ minWidth:0,overflowWrap:"anywhere" }}>{l}</span>
-                        </div>
-                      ))}
+                  {showInput ? (
+                    <div style={{ ...SURF,padding:"12px 12px 12px 16px",display:"flex",alignItems:"center",gap:10 }}>
+                      <input value={gratDraft} onChange={e => setGratDraft(e.target.value.slice(0, 300))} autoFocus={gratEdit}
+                        onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); addGrat(); } if (e.key === "Escape") setGratEdit(false); }}
+                        onBlur={() => { if (!gratDraft.trim()) setGratEdit(false); }}
+                        placeholder={pickLang(GRATITUDE_TXT.ph, lang)} aria-label={pickLang(GRATITUDE_TXT.title, lang)}
+                        style={{ flex:1,minWidth:0,background:"transparent",border:"none",outline:"none",color:INK,fontFamily:INTER,fontSize:16,padding:"6px 0" }} />
+                      {plusBtn(addGrat, !!gratDraft.trim())}
+                    </div>
+                  ) : (
+                    <div style={{ ...SURF,padding:"12px 12px 12px 16px",display:"flex",alignItems:"center",gap:10 }}>
+                      <button onClick={() => setGratOpen(o => !o)} aria-expanded={gratOpen}
+                        style={{ ...BTN,flex:1,minWidth:0,padding:"4px 0",textAlign:"left",display:"flex",gap:8,alignItems:"baseline",color:BODY }}>
+                        <span style={{ color:GOLD,fontSize:11,flexShrink:0 }}>✦</span>
+                        <span style={{ minWidth:0,fontFamily:SERIF,fontSize:17,lineHeight:1.4,overflowWrap:"anywhere",whiteSpace:"pre-line",
+                          ...(gratOpen ? {} : { display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden" }) }}>
+                          {lines.slice().reverse().join("\n")}
+                        </span>
+                      </button>
+                      {plusBtn(() => { setGratEdit(true); setGratOpen(false); }, false)}
                     </div>
                   )}
                 </section>

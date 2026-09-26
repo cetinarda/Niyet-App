@@ -674,7 +674,9 @@ Orkestra (+Çember) → Günün yorumu → Gökyüzü → Rehberler → I Ching 
 pratiği** (kullanıcı: "I Ching'in altına taşı"; tek meditasyon olduğu için "günlük"
 DEĞİL) → İkili uyum → Bugünün ilk adımı. Aşağıdaki numaralar tarihsel.
 - **Günün şükranı** (`GRATITUDE_TXT`): her giriş akşam kapanışının `sukur` alanına
-  (sakin_sukur_<gün>) YENİ SATIR olarak eklenir; son 5 satır kartta görünür.
+  (sakin_sukur_<gün>) YENİ SATIR olarak eklenir. Yazılınca giriş kutusunun YERİNE
+  geçer (kullanıcı): en yeni üstte, kapalıyken 2 satır, dokununca tamamı; sağdaki +
+  yeni şükran için kutuyu geri açar (`gratEdit`/`gratOpen`). Sınır 300 harf.
   "Akşam kapanışına da eklenir" notu KALDIRILDI (kullanıcı: "sadelik gerekiyor").
 - **Meditasyon pratiği** (`MeditationCard`, MODÜL bileşeni, `MED_TXT`). YALNIZCA `lang==="tr"`
   (kayıt Türkçe seslendirmeli, kullanıcı kararı; başka dilde kayıt gelince kapıyı aç). Oynat → TAM
