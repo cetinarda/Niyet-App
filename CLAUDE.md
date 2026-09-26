@@ -579,6 +579,14 @@ günde 4, yeni kullanıcıya 5 bildirim gidiyordu. Artık TEK fonksiyon:
   açıyordu; artık `PROMO_TARGETS` ile metne uygun ekran (ses/nefes/çakra/gün/
   harita/Hayvan/Mitler). Bildirim hedefi eklerken ekran adının GERÇEKTEN
   render edildiğini kontrol et (`screen==="..."`).
+- **İzin KAPALIYSA (Eyl 2026):** Ayarlar'daki "Bildirim izni kapalı" satırı + "Ayarları
+  aç" düğmesi telefonun bildirim ayarlarını açar (`openNotifSettings`). iOS: "app-settings:
+  notifications" (16+) / "app-settings:" adresi, Capacitor sisteme devrediyor, yerel kod
+  YOK. Android: YEREL eklenti `android/.../SakinSettingsPlugin.java` (MainActivity'de
+  `registerPlugin`, proguard'da `app.sakin.life.**` keep). Dönüşte izin yeniden okunur,
+  verildiyse bildirimler + push + mektup hemen kurulur. ⚠️ iOS'taki `SakinNowPlaying.swift`
+  capacitor.config `packageClassList`'te YOK, yani hiç kaydedilmiyor (kilit ekranı
+  kontrolleri çalışmıyor olabilir; bilinen, dokunulmadı).
 - **İzin zamanı:** artık ilk açılışta SORULMUYOR. `askNotifPermissionOnce`: ilk
   nefes bitince, tanışma bitince ya da en geç ikinci açılışta, bir kez
   (`sakin_notif_asked`).

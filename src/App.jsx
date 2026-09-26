@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { makeTrans, LANGUAGES } from "./i18n";
 import { CHAKRA_TRANS, FREQ_TRANS, ASTRO_TRANS, NOTIF_TRANS } from "./i18n-data";
 import { getGlossary } from "./glossary";
-import { Capacitor } from "@capacitor/core";
+import { Capacitor, registerPlugin } from "@capacitor/core";
 import { SplashScreen } from "@capacitor/splash-screen";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { StatusBar, Style } from "@capacitor/status-bar";
@@ -838,12 +838,13 @@ const NOTIF_SET_TXT = {
   order:   { tr:"Sayı dolana kadar yukarıdan aşağı sırayla gönderilir.", en:"Sent from top to bottom until the daily number is reached.", de:"Von oben nach unten gesendet, bis die Tageszahl erreicht ist.", es:"Se envían de arriba abajo hasta llegar al número diario.", pt:"Enviadas de cima para baixo até atingir o número diário.", fr:"Envoyées de haut en bas jusqu'au nombre du jour.", ja:"1日の数に達するまで上から順に送られます。" },
   needBirth: { tr:"Doğum bilgisi gerekir", en:"Needs your birth details", de:"Benötigt Geburtsdaten", es:"Necesita tus datos de nacimiento", pt:"Precisa dos dados de nascimento", fr:"Nécessite tes données de naissance", ja:"出生情報が必要です" },
   permOff: { tr:"Bildirim izni kapalı", en:"Notifications are off", de:"Benachrichtigungen sind aus", es:"Las notificaciones están desactivadas", pt:"As notificações estão desligadas", fr:"Les notifications sont désactivées", ja:"通知がオフになっています" },
-  permNote:{ tr:"Telefonunun Ayarlar > Sakin > Bildirimler bölümünden açabilirsin.", en:"You can turn them on in your phone's Settings > Sakin > Notifications.", de:"Du kannst sie in den Einstellungen deines Telefons > Sakin > Mitteilungen einschalten.", es:"Puedes activarlas en Ajustes del teléfono > Sakin > Notificaciones.", pt:"Podes ativá-las nas Definições do telemóvel > Sakin > Notificações.", fr:"Tu peux les activer dans Réglages du téléphone > Sakin > Notifications.", ja:"スマートフォンの設定 > Sakin > 通知 からオンにできます。" },
+  permNote:{ tr:"Dokun, telefonunun bildirim ayarları açılsın. Oradan Sakin'e izin ver.", en:"Tap to open your phone's notification settings and allow Sakin.", de:"Tippe, um die Mitteilungseinstellungen deines Telefons zu öffnen und Sakin zu erlauben.", es:"Toca para abrir los ajustes de notificaciones del teléfono y permitir Sakin.", pt:"Toca para abrir as definições de notificações do telemóvel e permitir o Sakin.", fr:"Touche pour ouvrir les réglages de notifications du téléphone et autoriser Sakin.", ja:"タップするとスマートフォンの通知設定が開きます。Sakinを許可してください。" },
   perDay:  { tr:"Günde {n} bildirim", en:"{n} notifications a day", de:"{n} Benachrichtigungen pro Tag", es:"{n} notificaciones al día", pt:"{n} notificações por dia", fr:"{n} notifications par jour", ja:"1日{n}件の通知" },
   pushOn:  { tr:"Anlık mesajlar açık", en:"Instant messages on", de:"Sofortnachrichten an", es:"Mensajes al instante activos", pt:"Mensagens instantâneas ativas", fr:"Messages instantanés activés", ja:"お知らせメッセージ オン" },
   pushOff: { tr:"Anlık mesajlar kapalı", en:"Instant messages off", de:"Sofortnachrichten aus", es:"Mensajes al instante desactivados", pt:"Mensagens instantâneas desativadas", fr:"Messages instantanés désactivés", ja:"お知らせメッセージ オフ" },
   typesOn: { tr:"{a}/{b} tür açık", en:"{a} of {b} types on", de:"{a} von {b} Arten an", es:"{a} de {b} tipos activos", pt:"{a} de {b} tipos ativos", fr:"{a} types sur {b} activés", ja:"{b}種類中{a}種類オン" },
   permAsk: { tr:"İzin ver", en:"Allow", de:"Erlauben", es:"Permitir", pt:"Permitir", fr:"Autoriser", ja:"許可する" },
+  permOpen:{ tr:"Ayarları aç", en:"Open settings", de:"Einstellungen", es:"Abrir ajustes", pt:"Abrir definições", fr:"Ouvrir réglages", ja:"設定を開く" },
   types: {
     kozmik:      { icon:"☄", l:{ tr:"Gökyüzü uyarısı", en:"Sky alert", de:"Himmelshinweis", es:"Aviso del cielo", pt:"Aviso do céu", fr:"Alerte du ciel", ja:"空のお知らせ" },
                    n:{ tr:"12:00 · yalnızca jeomanyetik hareketli günlerde", en:"12:00 · only on geomagnetically active days", de:"12:00 · nur an geomagnetisch aktiven Tagen", es:"12:00 · solo en días de actividad geomagnética", pt:"12:00 · só em dias de atividade geomagnética", fr:"12:00 · seulement les jours d'activité géomagnétique", ja:"12:00 · 地磁気が活発な日だけ" } },
@@ -1023,6 +1024,23 @@ function readLetterJson(k, fb) { try { const v = JSON.parse(localStorage.getItem
 // Açılış bildirimi: gece yarısı yazılan mektup gece yarısı çalmasın, 10:00-21:00 arasına çekilir.
 // Mektup mühürlendiğinde bildirim izni YOKSA açılış bildirimi hiç kurulmuyordu;
 // izin sonradan verilince burası çağrılır ve mühürlü mektubun bildirimi kurulur.
+// TELEFONUN BİLDİRİM AYARLARI (kullanıcı, Eyl 2026: "izin kapalıysa dokununca doğrudan
+// bildirim ayarlarına gitsin"). iOS: "app-settings:" adresi Capacitor'da sisteme
+// devredilir, iOS 16+ doğrudan Bildirimler sayfasını açar (eskide uygulamanın ayar
+// sayfası). Android: yerel SakinSettingsPlugin (android/.../SakinSettingsPlugin.java).
+const SakinSettings = registerPlugin("SakinSettings");
+async function openNotifSettings() {
+  if (!isNative) return false;
+  try {
+    if (Capacitor.getPlatform() === "ios") {
+      const m = /OS (\d+)_/.exec(navigator.userAgent || "");
+      window.location.href = m && +m[1] >= 16 ? "app-settings:notifications" : "app-settings:";
+      return true;
+    }
+    await SakinSettings.openNotificationSettings();
+    return true;
+  } catch (_) { return false; }
+}
 function rescheduleLetterNotif(lang) {
   try {
     const l = JSON.parse(localStorage.getItem(LETTER_KEY) || "null");
@@ -8553,6 +8571,7 @@ export default function SakinApp() {
   const [notifPrefs, setNotifPrefsState] = useState(() => readNotifPrefs());
   // Ayarlar > Bildirimler açılır kutusu (kullanıcı: "çok uzun oldu, açılabilir yap"). Kapalı başlar.
   const [notifSetOpen, setNotifSetOpen] = useState(false);
+  const notifSettingsOpenedRef = useRef(false); // telefon ayarlarına gönderildi mi
   const [notifPerm, setNotifPerm] = useState(null);   // "granted" | "denied" | "prompt" | null
   // Anlık bildirim (push) onayı: null = henüz sorulmadı, true/false = karar verildi.
   const [pushOptin, setPushOptinState] = useState(() => readPushOptin());
@@ -9481,8 +9500,19 @@ export default function SakinApp() {
   }, [soulWarm]);
   useEffect(() => {
     if ((screen !== "ayarlar" && screen !== "bugun") || !isNative) return;
-    LocalNotifications.checkPermissions().then(p => setNotifPerm(p.display)).catch(() => {});
-  }, [screen]);
+    const check = () => LocalNotifications.checkPermissions().then(p => {
+      setNotifPerm(p.display);
+      // Telefonun ayarlarından izin verip dönen kullanıcı: bildirimler HEMEN kurulur.
+      if (p.display === "granted" && notifSettingsOpenedRef.current) {
+        notifSettingsOpenedRef.current = false;
+        scheduleAllNotifications(lang, birthDate, { force: true }); scheduleWinBack(lang); ensurePushRegistered(); rescheduleLetterNotif(lang);
+      }
+    }).catch(() => {});
+    check();
+    const onVis = () => { if (document.visibilityState === "visible") check(); };
+    document.addEventListener("visibilitychange", onVis);
+    return () => document.removeEventListener("visibilitychange", onVis);
+  }, [screen, lang, birthDate]);
   const hiddenAtRef = useRef(0);
   useEffect(() => {
     const onVis = () => {
@@ -18940,9 +18970,10 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                           tek satır özet; açılınca günlük sayı, 7 tür ve anlık mesajlar AYNI kartta. */}
                       <div style={cardSt}>
                         {notifPerm && notifPerm !== "granted" && (
-                          <Row icon="⚠" label={pickLang(NOTIF_SET_TXT.permOff, lang)} note={pickLang(NOTIF_SET_TXT.permNote, lang)}
-                            onClick={notifPerm === "prompt" ? () => { LocalNotifications.requestPermissions().then(p => { setNotifPerm(p.display); if (p.display === "granted") { try { localStorage.setItem("sakin_notif_asked","1"); } catch(_){} scheduleAllNotifications(lang, birthDate, { force:true }); scheduleWinBack(lang); ensurePushRegistered(); rescheduleLetterNotif(lang); } }).catch(()=>{}); } : undefined}
-                            right={notifPerm === "prompt" ? <span style={{ flexShrink:0,fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:1.2,textTransform:"uppercase",color:"#c9b4ef" }}>{pickLang(NOTIF_SET_TXT.permAsk, lang)}</span> : null} />
+                          <Row icon="⚠" label={pickLang(NOTIF_SET_TXT.permOff, lang)} note={notifPerm === "prompt" ? undefined : pickLang(NOTIF_SET_TXT.permNote, lang)}
+                            onClick={notifPerm === "prompt" ? () => { LocalNotifications.requestPermissions().then(p => { setNotifPerm(p.display); if (p.display === "granted") { try { localStorage.setItem("sakin_notif_asked","1"); } catch(_){} scheduleAllNotifications(lang, birthDate, { force:true }); scheduleWinBack(lang); ensurePushRegistered(); rescheduleLetterNotif(lang); } }).catch(()=>{}); }
+                              : () => { try { haptic(); } catch(_){} notifSettingsOpenedRef.current = true; openNotifSettings(); }}
+                            right={<span style={{ flexShrink:0,fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:1.2,textTransform:"uppercase",color:"#c9b4ef" }}>{pickLang(notifPerm === "prompt" ? NOTIF_SET_TXT.permAsk : NOTIF_SET_TXT.permOpen, lang)}</span>} />
                         )}
                         <Row icon="◌" label={headLabel} note={summary}
                           last={!notifSetOpen}

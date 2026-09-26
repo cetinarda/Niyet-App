@@ -53,6 +53,8 @@
 -keep interface com.capacitorjs.** { *; }
 -keep public class * extends com.getcapacitor.Plugin { *; }
 -keep @com.getcapacitor.annotation.CapacitorPlugin public class * { *; }
+# Uygulamanın kendi yerel eklentileri (SakinSettingsPlugin: bildirim ayarlarını açar).
+-keep class app.sakin.life.** { *; }
 -dontwarn com.getcapacitor.**
 -dontwarn com.capacitorjs.**
 # Anotasyonlar çalışma anında OKUNABİLİR kalmalı (yukarıdaki NPE'nin özü).

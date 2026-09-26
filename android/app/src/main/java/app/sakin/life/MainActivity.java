@@ -9,6 +9,8 @@ import com.facebook.appevents.AppEventsLogger;
 public class MainActivity extends BridgeActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        // Yerel eklentiler super.onCreate'ten ÖNCE kaydedilmeli (Capacitor kuralı).
+        registerPlugin(SakinSettingsPlugin.class);
         super.onCreate(savedInstanceState);
         // Samsung/One UI'da sistem gezinme çubuğu varsayılan beyaz kalıyordu.
         // Uygulamanın koyu tonuna (#080C14) sabitle + koyu zeminde açık ikonlar.
