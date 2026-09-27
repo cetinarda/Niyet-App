@@ -17907,9 +17907,9 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
           {/* ── YOL HARİTASI ── */}
           {hakkindaTab==="yolculuk" && (
           <div style={{ marginBottom:48 }}>
-            {/* BAĞLANTI NASIL KURULUR: 7 adım + 3 seviye (kullanıcı: "bu bağlantı
-                şartlarını yolculuk sekmesine yedir; kısa bir üst açıklama yap,
-                adımları yaz 7 + 3'ü açıkla"). */}
+            {/* BAĞLANTI NASIL KURULUR: 7 adım + dört evrim aşaması (kullanıcı: "bu
+                bağlantı şartlarını yolculuk sekmesine yedir; kısa bir üst açıklama
+                yap"). Metinler STEP_MIN ve 3 adımlık bağlantı kuralıyla aynı. */}
             <div style={{ marginBottom:30,paddingBottom:26,borderBottom:"1px solid rgba(255,255,255,0.06)" }}>
               <div style={{ textAlign:"center",marginBottom:12 }}>
                 <div style={{ fontSize:15,fontWeight:400,letterSpacing:1.5,color:"#82d9a3",fontFamily:"'Jost',sans-serif",marginBottom:8 }}>
@@ -17952,24 +17952,25 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                 {t("conn_levels_title")}
               </div>
               <div style={{ display:"flex",flexDirection:"column",gap:7 }}>
-                {[[1,t("conn_lv1")],[2,t("conn_lv2")],[3,t("conn_lv3")]].map(([lv, label]) => {
-                  const active = streakLevel === lv;
+                {/* DÖRT AŞAMA (1.4.3, kullanıcı: "evrimin kısmını yeni sisteme göre
+                    düzenle, tohum fidan..."): eski x1/x2/x4 seviye satırları yerine Ben
+                    ekranındaki büyüme aşamaları, AYNI eşikler (0/3/7/21) ve Çember
+                    rozetleriyle aynı çizim + metin (CEMBER_BADGE_TXT). */}
+                {[0,1,2,3].map((st) => {
+                  const cur = cemberStageOf(streakData.current || 0);
+                  const active = cur === st, reached = st < cur;
                   return (
-                    <div key={lv} style={{ display:"flex",alignItems:"center",gap:10,padding:"9px 12px",
+                    <div key={st} style={{ display:"flex",alignItems:"center",gap:10,padding:"9px 12px",
                       background: active ? "rgba(126,200,126,0.10)" : "rgba(255,255,255,0.02)",
                       border:`1px solid ${active ? "rgba(126,200,126,0.35)" : "rgba(255,255,255,0.05)"}`, borderRadius:12 }}>
-                      {/* ⚠️ ESKİDEN burada bitki adları vardı (Tohum/Fidan/Ağaç)
-                          ve seviyelerle eşleştiriliyordu. Büyüme göstergesi dört
-                          aşamaya çıkıp eşikleri değişince (Ağaç artık 7. günde)
-                          bu satır çelişmeye başladı: "Ağaç = 3. Seviye, 21 gün"
-                          diyordu. Seviye/çarpan SİSTEMİ büyüme aşamasından AYRI
-                          bir eksen; artık kendi numarasıyla gösteriliyor. */}
-                      <span style={{ fontSize:11,flexShrink:0,width:20,height:20,borderRadius:"50%",
-                        display:"inline-flex",alignItems:"center",justifyContent:"center",
-                        fontFamily:"'Jost',sans-serif",
-                        background: active ? "rgba(126,200,126,0.18)" : "rgba(255,255,255,0.05)",
-                        color: active ? "#7ec87e" : "#8e8e99" }}>{lv}</span>
-                      <span style={{ fontSize:12.5,color: active ? "#7ec87e" : "#9a94a8",lineHeight:1.55,fontFamily:"'Inter',sans-serif" }}>{label}</span>
+                      <span style={{ flexShrink:0,width:24,height:24,borderRadius:"50%",display:"inline-flex",alignItems:"center",justifyContent:"center",
+                        background: active ? "rgba(126,200,126,0.14)" : "rgba(255,255,255,0.04)", opacity: active || reached ? 1 : 0.55 }}>
+                        {cemberStageGlyph(st, 14, pickLang(CEMBER_BADGE_TXT.names[st], lang))}
+                      </span>
+                      <span style={{ fontSize:12.5,color: active ? "#7ec87e" : "#9a94a8",lineHeight:1.55,fontFamily:"'Inter',sans-serif" }}>
+                        <span style={{ color: active ? "#7ec87e" : "#cfc8dd" }}>{pickLang(CEMBER_BADGE_TXT.names[st], lang)}</span>
+                        {" · "}{pickLang(CEMBER_BADGE_TXT.descs[st], lang)}
+                      </span>
                     </div>
                   );
                 })}

@@ -440,10 +440,14 @@ yazıyordu, yani zaten olduğun şey sıradaki gibi gösteriliyordu. Şimdi herk
 Türkçe "Fide" → "Fidan" (kullanıcı tercihi, `evo_sapling`). "Orman" 7 dilde
 `EVO2_TXT.forest` içinde. Orman aşamasında ana ağacın yanına iki küçük ağaç
 çizilir, yoksa "orman" adıyla tek ağaç görmek tutarsız kalıyordu.
-⚠️ **Yolculuk sekmesindeki SEVİYE satırları artık bitki adı KULLANMIYOR**
-(sadece 1/2/3 numarası): seviye/çarpan sistemi (x1/x2/x4, 7 ve 21 gün) büyüme
-aşamasından AYRI bir eksen ve dört aşamaya geçince "Ağaç = 3. Seviye, 21 gün"
-diye çelişiyordu.
+✅ **"Sakin nedir > Yolculuk" EVRİM bölümü = DÖRT AŞAMA (1.4.3, kullanıcı: "evrimin
+kısmını yeni sisteme göre düzenle"):** eski "1. Seviye x1 / 2. Seviye 7 gün x2 / 3.
+Seviye 21 gün x4" satırları (`conn_lv1-3`, silindi) yerine Tohum/Fidan/Ağaç/Orman,
+Çember rozetleriyle AYNI çizim + metin (`CEMBER_BADGE_TXT`), şu anki aşama yeşil.
+Aynı bölümdeki adım metinleri de güncellendi (7 dil): bağlantı 3 adımla (Sabah,
+Nefes, Ayna) kurulur, eşikler `STEP_MIN` ile aynı (5 nefes / 30 sn / 1 dk / 1 görev),
+Ayna = soru sor, cevap al, yedisi = tam akort. `STEP_MIN` ya da adım kuralı
+değişirse `conn_s_*` + `conn_how_intro` metinlerini de değiştir.
 
 **DÖRT AŞAMA KUTUSU (1.4.3, kullanıcı: "hangi seviyedeyse o kutu yansın, diğerleri
 sönük"):** bitkinin altında Tohum · Fidan · Ağaç · Orman kutuları; bulunulan aşama element
