@@ -1061,7 +1061,7 @@ async function scheduleLetterNotif(opensAt, lang) {
     if (at.getHours() < 10) at.setHours(10, 0, 0, 0);
     else if (at.getHours() >= 21) { at.setDate(at.getDate() + 1); at.setHours(10, 0, 0, 0); }
     await LocalNotifications.schedule({ notifications: [{
-      id: LETTER_NOTIF_ID, title: pickLang(LETTER_TXT.title, lang), body: pickLang(LETTER_TXT.notif, lang),
+      id: LETTER_NOTIF_ID, title: pickLang(LETTER_TXT.title, lang), body: pickLang(LETTER_TXT.notif, lang), largeBody: pickLang(LETTER_TXT.notif, lang),
       schedule: { at, allowWhileIdle: true }, extra: { screen: "harita" },
       smallIcon: "ic_stat_icon_config_sample", iconColor: "#e8c07a",
     }] });
@@ -2650,7 +2650,7 @@ async function scheduleWinBack(lang) {
     // Doğum bilgisi yoksa Bugün kapıya açılır: o kişiyi Bağlan'a yönlendir.
     let hasBirth = false; try { hasBirth = !!localStorage.getItem("sakin_birth_date"); } catch (_) {}
     const out = WINBACK_DAYS.map((n, i) => ({
-      id: 9400 + i, title: "Sakin", body: hasBirth ? arr[i] : WINBACK_TXT_NOBIRTH(arr, i),
+      id: 9400 + i, title: "Sakin", body: hasBirth ? arr[i] : WINBACK_TXT_NOBIRTH(arr, i), largeBody: hasBirth ? arr[i] : WINBACK_TXT_NOBIRTH(arr, i),
       schedule: { at: new Date(now.getFullYear(), now.getMonth(), now.getDate() + n, 19, 30, 0), allowWhileIdle: true },
       extra: { screen: (!hasBirth && WINBACK_SCREENS[i] === "bugun") ? "mandala" : WINBACK_SCREENS[i] },
       smallIcon: "ic_stat_icon_config_sample", iconColor: "#b8a4d8",
@@ -5473,7 +5473,9 @@ async function scheduleAllNotifications(lang, birthDate, opts = {}) {
     ].filter(x => hasBirth || !x.extra.embed);
     // Sözler ARALIKLI dizilir (bir söz, bir davet...): pick() günü sırayla
     // ilerlettiği için sona eklenselerdi 32 gün üst üste yalnızca söz gelirdi.
-    const sozArr = (NOTIF_SOZ[lang] || NOTIF_SOZ.en).map(b => ({ body: b, extra: { screen: "mandala" } }));
+    // note:1 = İÇERİK bildirimi (bir özelliğe götürmüyor): dokununca uygulama açılır ve
+    // metnin tamamı kartta görünür (NotifNoteCard). Özelliğe götürenlerde note YOK.
+    const sozArr = (NOTIF_SOZ[lang] || NOTIF_SOZ.en).map(b => ({ body: b, extra: { screen: "mandala", note: 1 } }));
     const eveningPool = [];
     for (let i = 0; i < Math.max(basePool.length, sozArr.length); i++) {
       if (i < basePool.length) eveningPool.push(basePool[i]);
@@ -5526,7 +5528,9 @@ async function scheduleAllNotifications(lang, birthDate, opts = {}) {
       if (!body) return;
       recent.add(body);
       if (at.toDateString() === now.toDateString()) todayBodies.push(body);
-      if (at > now) out.push({ id, title: "Sakin", body, schedule: { at, ...SCHED }, extra, ...icon });
+      // largeBody: Android bildirim çekmecesinde genişletince metnin TAMAMI görünür
+      // (kullanıcı: "önizlemeden taşan metin okunamıyor"). iOS yok sayar.
+      if (at > now) out.push({ id, title: "Sakin", body, largeBody: body, schedule: { at, ...SCHED }, extra, ...icon });
     };
     for (let d = 0; d < 7; d++) {
       const day = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d);
@@ -5570,7 +5574,7 @@ async function scheduleAllNotifications(lang, birthDate, opts = {}) {
         else if (slot === "kisisel") {
           // AI yoksa yedek şablon iki hafta içinde tekrar edebiliyordu: son
           // gönderilenlerdeyse yerine ikinci bir koç mesajı (farklı tohum) gider.
-          if (pd.f && !recent.has(pd.f)) add(9200 + d, at(10), pd.f, { screen: "bugun" });
+          if (pd.f && !recent.has(pd.f)) add(9200 + d, at(10), pd.f, { screen: "bugun", note: 1 });
           else if (!coachOn) { const e = pick(eveningPool, dn, "k2"); add(9200 + d, at(10), e.body, e.extra); }
           else {
             const c2 = coachMessage({ lang, birthDate: hasBirth ? birthDate : null, day, d, dn, usage, seed: seed + "|k2", prevCat: fbCat, pdFn: personalDayNumber, recent });
@@ -5578,7 +5582,7 @@ async function scheduleAllNotifications(lang, birthDate, opts = {}) {
           }
         }
         else if (slot === "hatirlatici") {
-          if (pd.r && !recent.has(pd.r)) add(9210 + d, at(16), pd.r, { screen: "mandala" });
+          if (pd.r && !recent.has(pd.r)) add(9210 + d, at(16), pd.r, { screen: "mandala", note: 1 });
           else if (!coachOn) { const e = pick(eveningPool, dn, "k3"); add(9210 + d, at(16), e.body, e.extra); }
           else {
             const c3 = coachMessage({ lang, birthDate: hasBirth ? birthDate : null, day, d, dn, usage, seed: seed + "|k3", prevCat: fbCat, pdFn: personalDayNumber, recent });
@@ -5587,7 +5591,7 @@ async function scheduleAllNotifications(lang, birthDate, opts = {}) {
         }
         // ⚠️ Eskiden { screen: "ben" } idi: uygulamada "ben" adlı EKRAN YOK
         // (Ben sekmesinin ekranı "harita"), dokunan boş ekran görüyordu.
-        else if (slot === "kozmik") add(9220 + d, at(12), em, { screen: "harita" });
+        else if (slot === "kozmik") add(9220 + d, at(12), em, { screen: "harita", note: 1 });
         else if (slot === "tarot" && !(d === 0 && drawnToday)) add(_tarotNotifId(day), at(8, 30), pick(tarotArr, dn, "ta"), { screen: "bugun" });
       }
     }
@@ -5746,6 +5750,28 @@ if (pushSupported()) {
   } catch (_) {}
 }
 // Push'la gelen hedef ekran BEYAZ LİSTEDEN olmalı (panelle aynı liste).
+// BİLDİRİMİN TAMAMI (kullanıcı, Eyl 2026: "önizlemeden taşan bildirim okunamıyor;
+// özelliğe yönlendirmeyen bildirime dokununca uygulamada tamamı görünsün").
+const NOTIF_NOTE_TXT = {
+  close: { tr:"Tamam", en:"OK", de:"OK", es:"Vale", pt:"OK", fr:"D'accord", ja:"閉じる" },
+};
+function NotifNoteCard({ note, lang, onClose }) {
+  if (!note || !note.body) return null;
+  return createPortal(
+    <div onClick={onClose} style={{ position:"fixed",inset:0,zIndex:100020,background:"rgba(6,5,14,0.72)",backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",
+      display:"flex",alignItems:"center",justifyContent:"center",padding:"calc(24px + var(--sat)) 20px calc(24px + var(--sab))",animation:"fadeIn 0.35s ease" }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ width:"100%",maxWidth:380,boxSizing:"border-box",padding:"26px 22px 20px",borderRadius:22,
+        background:"linear-gradient(180deg,#151029 0%,#0d0a1a 100%)",border:"1px solid rgba(184,164,216,0.2)",boxShadow:"0 18px 60px rgba(0,0,0,0.55)",
+        display:"flex",flexDirection:"column",alignItems:"center",gap:14,maxHeight:"80vh",overflowY:"auto",animation:"fadeUp 0.4s ease-out" }}>
+        <div style={{ fontSize:20,color:"#e8c07a",lineHeight:1 }}>✦</div>
+        <div style={{ fontFamily:"'Jost',sans-serif",fontSize:11,letterSpacing:4,textTransform:"uppercase",color:"#b8a4d8" }}>{note.title || "Sakin"}</div>
+        <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:21,lineHeight:1.45,color:"#f1ecf9",textAlign:"center",whiteSpace:"pre-line",overflowWrap:"anywhere" }}>{note.body}</div>
+        <button onClick={onClose} style={{ WebkitAppearance:"none",appearance:"none",marginTop:4,alignSelf:"stretch",padding:"12px 18px",borderRadius:100,cursor:"pointer",
+          fontFamily:"'Jost',sans-serif",fontSize:13,letterSpacing:1.8,textTransform:"uppercase",color:"#f6dfb0",background:"rgba(232,192,122,0.12)",
+          border:"1px solid rgba(232,192,122,0.45)",display:"flex",alignItems:"center",justifyContent:"center" }}>{pickLang(NOTIF_NOTE_TXT.close, lang)}</button>
+      </div>
+    </div>, document.body);
+}
 const PUSH_SCREENS = ["bugun", "mandala", "nefes", "ses", "chakra", "harita", "gun"];
 const PUSH_TXT = {
   label: { tr:"Sakin'den anlık mesajlar", en:"Occasional messages from Sakin", de:"Gelegentliche Nachrichten von Sakin", es:"Mensajes ocasionales de Sakin", pt:"Mensagens ocasionais do Sakin", fr:"Messages ponctuels de Sakin", ja:"Sakinからのときどきのメッセージ" },
@@ -7823,6 +7849,14 @@ export default function SakinApp() {
   // Ayarlar'a dönemiyordu (kullanıcı bildirdi). Alt bardan başka bir sekmeye
   // geçildiğinde temizlenir, yoksa alakasız bir ekranda dönüş butonu kalırdı.
   const [fromSettings, setFromSettings] = useState(false);
+  const [notifNote, setNotifNote] = useState(null); // { title, body }: dokunulan içerik bildiriminin tamamı
+  // Kart açıkken Android geri tuşu yalnızca kartı kapatır.
+  useEffect(() => {
+    if (!notifNote) return;
+    const back = () => setNotifNote(null);
+    window.__sakinOverlayBack = back;
+    return () => { if (window.__sakinOverlayBack === back) window.__sakinOverlayBack = null; };
+  }, [notifNote]);
   // Bildirim tıklaması → ilgili ekrana yönlendir (Sprint 2). schedule'daki extra.screen
   // okunur; yoksa eski davranış (sadece uygulama açılır). iOS-only: webde no-op.
   useEffect(() => {
@@ -7850,6 +7884,8 @@ export default function SakinApp() {
         bitkiler:{ name: t("ailesi_bitkiler_name"),embed: "/embedded/sakinbitkiler/index.html", color: "#7BA05B" },
       };
       clearEntryLayers();
+      // İçerik bildirimi (note): metnin tamamı kartta, hedef ekran yine açılır (arkada).
+      if (x.note && a?.notification?.body) setNotifNote({ title: a.notification.title || "Sakin", body: a.notification.body });
       if (x.embed) {
         const target = EMBEDS[x.embed];
         if (target && handleOpenEmbedRef.current) {
@@ -7888,6 +7924,10 @@ export default function SakinApp() {
       const d = (a && a.notification && a.notification.data) || {};
       try { track("notif_open", { k: "anlik" }); } catch(_) {}
       clearEntryLayers();
+      // Anlık mesajlar yalnızca İÇERİK (Apple 4.5.4): metnin tamamı kartta gösterilir.
+      // Android'de uygulama kapalıyken title/body gelmeyebilir; sunucu data'ya da koyuyor.
+      const nb = (typeof d.body === "string" && d.body) || (a && a.notification && a.notification.body) || "";
+      if (nb) setNotifNote({ title: (typeof d.title === "string" && d.title) || (a && a.notification && a.notification.title) || "Sakin", body: nb });
       if (typeof d.screen === "string" && PUSH_SCREENS.includes(d.screen)) { try { setShowAilesi(false); } catch(_){} setScreen(d.screen); }
     };
     __pushActionHandler = pushHandler;
@@ -13248,6 +13288,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
         style={{ position:"fixed", left:-9999, top:0, width:390, height:844, opacity:0, pointerEvents:"none" }}
       />}
 
+      <NotifNoteCard note={notifNote} lang={lang} onClose={() => setNotifNote(null)} />
       {/* ÇEMBER: canlı oda (tam ekran, alt barın üstünde). Kapı: bugünkü bağlantı. */}
       {showCember && (
         <CemberScreen lang={lang} unlocked={allStepsComplete} minor={isCemberMinor(birthDate)}

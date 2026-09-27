@@ -579,6 +579,15 @@ günde 4, yeni kullanıcıya 5 bildirim gidiyordu. Artık TEK fonksiyon:
   açıyordu; artık `PROMO_TARGETS` ile metne uygun ekran (ses/nefes/çakra/gün/
   harita/Hayvan/Mitler). Bildirim hedefi eklerken ekran adının GERÇEKTEN
   render edildiğini kontrol et (`screen==="..."`).
+- **BİLDİRİMİN TAMAMI (1.4.3, kullanıcı: "Android'de önizlemeden taşan metin okunamıyor"):**
+  (1) Tüm yerel bildirimlerde `largeBody: body` (günlük plan, geri dönüş, mektup): Android
+  çekmecede genişletince tam metin. Yeni `LocalNotifications.schedule` eklersen largeBody
+  EKLE. (2) Bir özelliğe GÖTÜRMEYEN içerik bildirimleri `extra.note: 1` taşır (söz havuzu,
+  kişisel 10:00, hatırlatıcı 16:00, jeomanyetik, koçun `CONTENT_CATS` = ask/moon/day);
+  dokununca hedef ekran açılır + üstünde `NotifNoteCard` (modül bileşeni, portal, zIndex
+  100020, Android geri tuşu kapatır) metnin tamamını gösterir. Anlık mesajlar (push) hep
+  içerik: sunucu `fcmPayload` metni `data.title/data.body`'ye de koyar (Android'de uygulama
+  kapalıyken Capacitor yalnızca data iletir). Özelliğe götüren bildirime note KOYMA.
 - **İzin KAPALIYSA (Eyl 2026):** Ayarlar'daki "Bildirim izni kapalı" satırı + "Ayarları
   aç" düğmesi telefonun bildirim ayarlarını açar (`openNotifSettings`). iOS: "app-settings:
   notifications" (16+) / "app-settings:" adresi, Capacitor sisteme devrediyor, yerel kod

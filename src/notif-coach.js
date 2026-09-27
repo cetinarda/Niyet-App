@@ -238,6 +238,7 @@ const EL_TARGET = {
   hava:   { dom: { screen: "nefes" }, lack: { screen: "rehber" } },
   su:     { dom: { screen: "ses" },   lack: { screen: "rehber" } },
 };
+const CONTENT_CATS = ["ask", "moon", "day"];
 const USE_TARGET = {
   breathGap: { screen: "nefes" }, soundGap: { screen: "ses" }, chakraGap: { screen: "chakra" },
   aynaNever: { screen: "rehber" }, aynaGap: { screen: "rehber" },
@@ -429,5 +430,8 @@ export function coachMessage({ lang, birthDate, day, d, dn, usage, seed, prevCat
   if (!ch) return null;
   const text = ch.text;
   if (!text) return null;
-  return { cat: ch.cat, body: String(text).replace("{n}", String(ch.n != null ? ch.n : "")), extra: ch.extra };
+  // Soru, Ay ve günün sayısı İÇERİK mesajı (bir pratiğe götürmüyor): note:1 ile
+  // dokununca uygulama metnin tamamını kartta gösterir. Diğerleri özelliğe gider.
+  const extra = CONTENT_CATS.includes(ch.cat) ? { ...ch.extra, note: 1 } : ch.extra;
+  return { cat: ch.cat, body: String(text).replace("{n}", String(ch.n != null ? ch.n : "")), extra };
 }

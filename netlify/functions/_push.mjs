@@ -182,7 +182,9 @@ export async function sendFcmBatch(sa, items, concurrency = 10) {
 export function fcmPayload(title, body, screen) {
   return {
     notification: { title, body },
-    data: screen ? { screen } : {},
+    // Metin data'da da gider: Android'de uygulama kapalıyken dokunulan bildirimde
+    // Capacitor yalnızca data'yı iletir; uygulama tam metni kartta gösterir.
+    data: { ...(screen ? { screen } : {}), title: String(title || ""), body: String(body || "") },
     android: { priority: "high", notification: { color: "#b8a4d8", sound: "default" } },
   };
 }
