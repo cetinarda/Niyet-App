@@ -1241,6 +1241,32 @@ koruma sunucuda.
   + presence çalışıyor, sahte broadcast dinleyiciye ULAŞMIYOR; kullanıcı iki
   cihazda canlı mesajlaşmayı doğruladı (Eyl 2026).
 
+## 🏓 PONG (1.4.3, kullanıcı: "iki kullanıcı karşılıklı oynayabilsin; biri oda açar diğeri boş tarafa geçer ya da tek oyuncu; Bugün'de ikili uyumun altına, tam ekran")
+
+- Kod `src/pong.jsx` (TEMBEL parça, `lazy(() => import("./pong.jsx"))`, ~8 KB gzip; açılış
+  paketi büyümez). Bugün'de İkili uyumun altında "Oyun" kartı (`PONG_CARD_TXT`) → tam ekran
+  portal (zIndex 100010, Android geri tuşu bir adım geri / menüde kapatır). Metinler 7 dil.
+- Saha dikey (1 x 1,6), HERKES kendini ALTTA görür (konuk ekranı çevrilir). 7 sayıya ilk
+  ulaşan kazanır, top yavaş başlar (0,62) ve her vuruşta %5 hızlanır (tavan 1,45). Parmağı
+  kaydır = raket; web'de ok tuşları. İz = topun son konumları (yarı saydam boyama
+  "hayalet" çizgi bırakıyordu, KULLANMA). Hareketi azalt'ta iz yok.
+- TEK OYUNCU cihazda, yapay rakip yavaş ve yenilebilir (hızı skorla hafif artar).
+- İKİ KİŞİ: Supabase Realtime, Çember'den AYRI istemci (eventsPerSecond 25). `pong:lobby`
+  yalnızca presence (oda sahibi {rid, nick}), `pong:r:<rid>` oyun kanalı. ODA SAHİBİ
+  YETKİLİ (fizik, vuruş, sayı onda); konuk topu son anlık görüntüden sürer. Trafik az:
+  raket ~15/sn yalnızca değişince, top yalnızca servis/vuruş + 0,8 sn'de bir. İkinci
+  konuk "full" alır. Ayrılan (presence/bye) → "Rakibin ayrıldı".
+- ⚠️ **SUPABASE POLİTİKASI ŞART:** `supabase/cember.sql` sonundaki `pong_listen` /
+  `pong_write` (yalnızca `pong:%` kanallarında anon broadcast+presence). Çalıştırılmadan
+  kanal CHANNEL_ERROR verir, ekran "İki kişilik oyun şu an kapalı" der, tek oyuncu çalışır.
+  Çember odaları (room:*) bu politikalardan ETKİLENMEZ.
+- Bilinen sınır: oda sahibinin uygulaması arka plana giderse oyun donar (fizik onda).
+- Test: iki sekme + `window.__pongFakeClient` (BroadcastChannel ile sahte Realtime, yalnızca
+  testte tanımlı) ile lobi, katılma, skorun iki ekranda ayna olması, ayrılma doğrulandı.
+  ⚠️ Headless'ta arka plan sekmesinin rAF'ı durur: oda sahibi sekmesini `bringToFront` et.
+- Analitik `pong` {a: open/single/host/join/end}. Gizlilik metinleri (3 yer, 7 dil):
+  takma ad + oyun hareketleri anlık iletilir, saklanmaz.
+
 ## 🌐 SAKIN.LIFE TANITIM SİTESİ (public/home, site.css/js/i18n, Eyl 2026)
 
 - **Varsayılan tema KOYU** (kullanıcı kararı; eskiden açıktı). `site.js readTheme`

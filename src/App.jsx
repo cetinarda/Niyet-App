@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo, memo } from "react";
+import { useState, useEffect, useRef, useMemo, memo, lazy, Suspense } from "react";
 import { createPortal } from "react-dom";
 import { makeTrans, LANGUAGES } from "./i18n";
 import { CHAKRA_TRANS, FREQ_TRANS, ASTRO_TRANS, NOTIF_TRANS } from "./i18n-data";
@@ -1696,6 +1696,13 @@ const CEMBER_BLOCK_KEY = "sakin_cember_blocked";      // ESKİ: takma ad listesi
 const CEMBER_BLOCK_TAG_KEY = "sakin_cember_blocked_a";
 const CEMBER_MINE_KEY = "sakin_cember_mine";
 
+// Pong (1.4.3): ayrı parça, yalnızca açılınca iner (src/pong.jsx).
+const PongOverlay = lazy(() => import("./pong.jsx"));
+const PONG_CARD_TXT = {
+  section: { tr:"Oyun", en:"Play", de:"Spiel", es:"Juego", pt:"Jogo", fr:"Jeu", ja:"ゲーム" },
+  title:   { tr:"Pong", en:"Pong", de:"Pong", es:"Pong", pt:"Pong", fr:"Pong", ja:"ポン" },
+  sub:     { tr:"Tek başına ya da biriyle, sakin bir oyun", en:"On your own or with someone, a calm game", de:"Allein oder zu zweit, ein ruhiges Spiel", es:"Solo o con alguien, un juego tranquilo", pt:"Sozinho ou com alguém, um jogo calmo", fr:"Seul ou à deux, un jeu paisible", ja:"ひとりでも、だれかとでも。静かなゲーム" },
+};
 // Supabase istemcisi + ayarlar: oturum başına bir kez. Dinamik import: kütüphane
 // yalnızca Çember/sayaç gerektiğinde yüklenir, açılış paketini büyütmez.
 let __cemberPromise = null;
@@ -4772,6 +4779,10 @@ const GLOBAL_CSS = `
   .sakin-chord-badge { animation: chordTwinkle 3.2s ease-in-out infinite; transform-origin:center; }
   @keyframes chordTwinkle { 0%,100% { filter:drop-shadow(0 0 1px rgba(255,217,122,0.5)); opacity:0.9; } 50% { filter:drop-shadow(0 0 4px rgba(255,217,122,0.95)); opacity:1; } }
   @media (prefers-reduced-motion: reduce) { .sakin-chord-badge { animation:none; filter:drop-shadow(0 0 2px rgba(255,217,122,0.7)); } }
+  /* Pong: rakip beklerken nefes gibi büyüyüp küçülen ışık topu. */
+  .pong-wait { display:inline-block; animation: pongWait 2.4s ease-in-out infinite; }
+  @keyframes pongWait { 0%,100% { transform:scale(0.75); opacity:0.55; } 50% { transform:scale(1.25); opacity:1; } }
+  @media (prefers-reduced-motion: reduce) { .pong-wait { animation:none; } }
   /* TAM AKORT (7/7, kullanıcı: "7/7 tamamlanınca tünelde bir şey değişsin, özel hissettirsin;
      yukarıdan beyaz-altın bir enerji insin, renkler değişsin"). Tünel altın-beyaza döner,
      ekranın tepesinden taca doğru bir huzme iner (günün ilk görüşünde tören: descend + flash),
@@ -8258,6 +8269,7 @@ export default function SakinApp() {
   const [showAilesi, setShowAilesi] = useState(false);
   // ÇEMBER (canlı oda) tam ekran katmanı + Bugün kartındaki "şu an N kişi" sayacı.
   const [showCember, setShowCember] = useState(false);
+  const [showPong, setShowPong] = useState(false);
   const [cemberCount, setCemberCount] = useState(null);
   // İlk giriş serbest: hiç girmemiş kişi bağlantısını tamamlamadan da BİR KEZ girer.
   // Hak açılışta harcanır (oturum boyunca açık kalır, sonraki girişte temel görevler şart).
@@ -13936,6 +13948,12 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
       {inboxOpen && <InboxSheet lang={lang} items={inboxItems} seenAt={inboxSeenAtOpen} onClose={() => setInboxOpen(false)}
         onGo={(scr) => { setInboxOpen(false); if (PUSH_SCREENS.includes(scr)) { try { setShowAilesi(false); } catch (_) {} setScreen(scr); } }} />}
       {/* ÇEMBER: canlı oda (tam ekran, alt barın üstünde). Kapı: bugünkü bağlantı. */}
+      {showPong && (
+        <Suspense fallback={null}>
+          <PongOverlay lang={lang} getCember={getCember} haptic={haptic} track={track}
+            onClose={() => setShowPong(false)} />
+        </Suspense>
+      )}
       {showCember && (
         <CemberScreen lang={lang} unlocked={allStepsComplete || cemberFreeSession} minor={isCemberMinor(birthDate)}
           streakDays={streakData.current || 0} chord={fullChord}
@@ -19623,6 +19641,25 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                 <span style={{ flex:1,minWidth:0 }}>
                   <span style={{ display:"block",fontSize:16,color:INK,fontFamily:JOST,fontWeight:300,marginBottom:3 }}>{pickLang(SOUL_TXT.pair, lang)}</span>
                   <span style={{ display:"block",fontSize:12.5,color:MUTE,fontFamily:INTER,lineHeight:1.45 }}>{pickLang(SOUL_TXT.pairSub, lang)}</span>
+                </span>
+                {chevron()}
+              </button>
+            </section>
+
+            {/* ── 9) PONG (1.4.3, kullanıcı: "ikili uyumun altına; tıklanınca tam ekran") ──
+                Tek oyuncu ya da iki kişi (oda aç / boş odaya katıl). src/pong.jsx. */}
+            <section style={SEC}>
+              {eyebrow(pickLang(PONG_CARD_TXT.section, lang))}
+              <button onClick={()=>{ try{haptic();}catch(_){} setShowPong(true); }}
+                style={{ ...BTN,...SURF,padding:"15px 16px",display:"flex",alignItems:"center",gap:14 }}>
+                <span aria-hidden="true" style={{ position:"relative",width:42,height:42,flexShrink:0,borderRadius:12,border:`1px solid ${LAV}55`,background:"rgba(12,9,26,0.85)",overflow:"hidden" }}>
+                  <span style={{ position:"absolute",left:12,top:6,width:18,height:3,borderRadius:2,background:LAV }} />
+                  <span style={{ position:"absolute",left:17,top:18,width:6,height:6,borderRadius:"50%",background:"#fff4d6",boxShadow:`0 0 8px ${GOLD}` }} />
+                  <span style={{ position:"absolute",left:10,bottom:6,width:18,height:3,borderRadius:2,background:GOLD }} />
+                </span>
+                <span style={{ flex:1,minWidth:0 }}>
+                  <span style={{ display:"block",fontSize:16,color:INK,fontFamily:JOST,fontWeight:300,marginBottom:3 }}>{pickLang(PONG_CARD_TXT.title, lang)}</span>
+                  <span style={{ display:"block",fontSize:12.5,color:MUTE,fontFamily:INTER,lineHeight:1.45 }}>{pickLang(PONG_CARD_TXT.sub, lang)}</span>
                 </span>
                 {chevron()}
               </button>

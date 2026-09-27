@@ -86,3 +86,19 @@ alter table public.chat_messages add column if not exists ip_hash text;
 -- mesaj metni dışında kişisel bilgi taşımaz.
 alter table public.chat_messages add column if not exists stage smallint;
 alter table public.chat_messages add column if not exists chord boolean not null default false;
+
+-- ── PONG: İKİ KİŞİLİK OYUN (1.4.3) ────────────────────────────────────────────
+-- Oyun Çember'in Realtime projesini kullanır ama AYRI kanallarda: `pong:lobby`
+-- (açık odalar, yalnızca presence) ve `pong:r:<oda>` (raket/top/skor broadcast).
+-- Çember kanallarından farklı olarak burada uygulama (anon) broadcast YAZABİLİR:
+-- oyunun kendisi iki cihaz arasında akmak zorunda. Kapsam yalnızca `pong:` ile
+-- başlayan kanallar; Çember odaları (room:*) bundan ETKİLENMEZ. Mesajlarda kişisel
+-- veri yok (takma ad, raket konumu, top, skor).
+drop policy if exists "pong_listen" on realtime.messages;
+create policy "pong_listen" on realtime.messages for select to anon, authenticated
+  using ( (select realtime.topic()) like 'pong:%'
+          and realtime.messages.extension in ('broadcast', 'presence') );
+drop policy if exists "pong_write" on realtime.messages;
+create policy "pong_write" on realtime.messages for insert to anon, authenticated
+  with check ( (select realtime.topic()) like 'pong:%'
+               and realtime.messages.extension in ('broadcast', 'presence') );

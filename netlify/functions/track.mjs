@@ -131,6 +131,7 @@ export function mergeBatch(rec, body, now) {
       if (k) { bump("notif_" + k); setMilestone("notif_open", ts); }
     }
     // Deep link ile açılış (App Store etkinliği vb.): hedef ekran sayılır.
+    else if (e === "pong") { if (["open", "single", "host", "join", "end"].includes(it.a)) bump("pong_" + it.a); }
     else if (e === "inbox") { if (it.a === "open") bump("inbox_open"); }
     else if (e === "deeplink_open") {
       const s = ["mandala", "bugun", "nefes", "ses", "chakra", "soulid"].includes(it.s) ? it.s : null;
