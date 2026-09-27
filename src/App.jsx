@@ -319,45 +319,45 @@ const APP_VERSION = "1.4.3";
 const WHATS_NEW = {
   version: "1.4.3",
   // `since`: bu notların anlattığı özellikler hangi sürümde geldi. O sürümü
-  // (ya da sonrasını) zaten görmüş kullanıcıya kart TEKRAR çıkmaz. 1.4.2 notları
-  // 1.4.1'den SONRA gelen görünür özellikler: Çember, Niyet Mektubu, bildirim
-  // ayarları. Yeni görünür özellik gelince notları yaz, `since`i güncelle.
-  since: "1.4.2",
+  // (ya da sonrasını) zaten görmüş kullanıcıya kart TEKRAR çıkmaz. 1.4.3 notları:
+  // Ayna devam sohbeti, 7/7 tam akort, Çember rozetleri + Ben'deki bildirim zili
+  // (1.4.2'nin Çember/Niyet Mektubu notları git geçmişinde). Yeni görünür özellik
+  // gelince notları yaz, `since`i güncelle. Bildirim merkezinde de bu not görünür.
+  since: "1.4.3",
   // KISA TUT (kullanıcı tercihi, CLAUDE.md çalışma tarzı #3): başlık + en fazla
   // 3 madde. Değişen her şeyi saymak yerine sürümün "başlığı" ne ise onu söyle.
   headline: {
-    tr:"Çember ve Niyet Mektubu",
-    en:"The Circle and the Intention Letter",
-    de:"Der Kreis und der Absichtsbrief",
-    es:"El Círculo y la Carta de intención",
-    pt:"O Círculo e a Carta de intenção",
-    fr:"Le Cercle et la Lettre d'intention",
-    ja:"サークルと意図の手紙",
+    tr:"Ayna'yla sohbet ve tam akort",
+    en:"Talk with the Mirror, and the full chord",
+    de:"Gespräch mit dem Spiegel und der volle Akkord",
+    es:"Conversa con el Espejo y el acorde pleno",
+    pt:"Conversa com o Espelho e o acorde pleno",
+    fr:"Converser avec le Miroir, et l'accord parfait",
+    ja:"鏡との対話と、完全な和音",
   },
   items: {
-    tr:["Çember: günün bağlantısını tamamlayanların buluştuğu canlı, sakin bir oda",
-        "Niyet Mektubu: niyetini yaz, 21 gün mühürlü kalsın, sonra açıp yeniden oku",
-        "Bildirimlerini kendin ayarla: günde kaç tane ve hangi türler"],
-    en:["The Circle: a calm live room for those who completed today's connection",
-        "Intention Letter: write your intention, keep it sealed for 21 days, then open it and read it again",
-        "Set your own notifications: how many a day and which kinds"],
-    de:["Der Kreis: ein ruhiger Live-Raum für alle, die die heutige Verbindung abgeschlossen haben",
-        "Absichtsbrief: schreib deine Absicht, sie bleibt 21 Tage versiegelt, dann öffnest du sie und liest sie neu",
-        "Stell deine Benachrichtigungen selbst ein: wie viele am Tag und welche Arten"],
-    es:["El Círculo: una sala en vivo y tranquila para quienes completaron la conexión de hoy",
-        "Carta de intención: escribe tu intención, queda sellada 21 días y luego la abres y la vuelves a leer",
-        "Ajusta tus notificaciones: cuántas al día y de qué tipo"],
-    pt:["O Círculo: uma sala ao vivo e tranquila para quem completou a ligação de hoje",
-        "Carta de intenção: escreve a tua intenção, fica selada 21 dias e depois abres e voltas a lê-la",
-        "Ajusta as tuas notificações: quantas por dia e de que tipo"],
-    fr:["Le Cercle : une salle en direct, paisible, pour celles et ceux qui ont terminé la connexion du jour",
-        "Lettre d'intention : écris ton intention, elle reste scellée 21 jours, puis tu l'ouvres et la relis",
-        "Règle tes notifications : combien par jour et de quel type"],
-    ja:["サークル：今日のつながりを終えた人が集う、静かなライブルーム",
-        "意図の手紙：意図を書いて21日間封をし、そのあと開いて読み返す",
-        "通知を自分で設定：1日の回数と種類"],
+    tr:["Ayna: cevabına doğrudan yanıt ver, sohbet orada sürsün",
+        "Yedi adımın hepsini tamamla, tünel altına dönsün",
+        "Çember'de rozetler, Ben'de bildirim zili"],
+    en:["Mirror: reply to its answer and keep the conversation going",
+        "Complete all seven steps and the tunnel turns gold",
+        "Badges in the Circle, a notification bell in Me"],
+    de:["Spiegel: antworte direkt auf seine Antwort, das Gespräch geht weiter",
+        "Schließe alle sieben Schritte ab, dann wird der Tunnel golden",
+        "Abzeichen im Kreis, eine Mitteilungsglocke unter Ich"],
+    es:["Espejo: responde a su respuesta y la conversación continúa",
+        "Completa los siete pasos y el túnel se vuelve dorado",
+        "Insignias en el Círculo y una campana de avisos en Yo"],
+    pt:["Espelho: responde à resposta dele e a conversa continua",
+        "Completa os sete passos e o túnel fica dourado",
+        "Insígnias no Círculo e um sino de notificações em Eu"],
+    fr:["Miroir : réponds à sa réponse, la conversation continue",
+        "Termine les sept étapes et le tunnel devient doré",
+        "Des badges dans le Cercle, une cloche de notifications dans Moi"],
+    ja:["鏡：答えにそのまま返信して、対話を続けられます",
+        "7つのステップをすべて終えると、トンネルが金色に",
+        "サークルにバッジ、「わたし」にお知らせのベル"],
   },
-
 };
 // Tam (canonical) adres kullanılıyor: kısa /app/id... adresi /us/.../slug/...'a
 // 301 yönlendirme yapıyor, Instagram gibi uygulama-içi tarayıcılar bu
@@ -6057,10 +6057,104 @@ if (pushSupported()) {
     });
     PushNotifications.addListener("registrationError", (e) => console.warn("[Push] kayıt hatası", e));
     PushNotifications.addListener("pushNotificationActionPerformed", (a) => {
+      // Dokunulan mesaj tam metin kartında okundu: bildirim merkezine OKUNMUŞ yazılır.
+      try { addToInbox(a && a.notification, true); } catch (_) {}
       if (__pushActionHandler) __pushActionHandler(a); else __pendingPushAction = a;
     });
+    // Uygulama açıkken gelen mesaj: bildirim merkezine (okunmamış).
+    PushNotifications.addListener("pushNotificationReceived", (n) => { try { addToInbox(n, false); } catch (_) {} });
   } catch (_) {}
 }
+// ── BİLDİRİM MERKEZİ (1.4.3, kullanıcı: "Ben'in köşesinde küçük bir zil, zarif, appin
+// ruhuna uygun; sadece app ile ilgili önemli gelişmeler") ──────────────────────────
+// İki kaynak, başka hiçbir şey: (1) panelden bildirim merkezine eklenen duyurular
+// (news.mjs; "yalnızca merkez" seçeneği push GÖNDERMEZ, uygulama içi kutu Apple 4.5.4
+// kapsamında değil) + o duyurularla ya da tek başına gelen anlık mesajlar (cihazda
+// `sakin_inbox`), (2) bu sürümün "Ne yeni" notu. Günlük yerel hatırlatmalar BİLEREK
+// girmez: listede birikip görev gibi durmasın. Okunmamış = sayı DEĞİL, küçük altın nokta.
+const INBOX_KEY = "sakin_inbox";
+const INBOX_SEEN_KEY = "sakin_inbox_seen";
+const INBOX_TXT = {
+  title:   { tr:"Bildirimler", en:"Notifications", de:"Mitteilungen", es:"Notificaciones", pt:"Notificações", fr:"Notifications", ja:"お知らせ" },
+  fresh:   { tr:"Yeni", en:"New", de:"Neu", es:"Nuevo", pt:"Novo", fr:"Nouveau", ja:"新着" },
+  earlier: { tr:"Daha önce", en:"Earlier", de:"Früher", es:"Antes", pt:"Antes", fr:"Plus tôt", ja:"以前" },
+  empty:   { tr:"Şimdilik sessiz. Önemli bir gelişme olduğunda burada olacak.", en:"Quiet for now. When something important happens, it will be here.", de:"Gerade ist es still. Wenn es etwas Wichtiges gibt, findest du es hier.", es:"Por ahora hay calma. Cuando haya algo importante, estará aquí.", pt:"Por agora está tudo calmo. Quando houver algo importante, vai estar aqui.", fr:"C'est calme pour l'instant. Quand il y aura du nouveau d'important, ce sera ici.", ja:"いまは静かです。大切なお知らせがあれば、ここに届きます。" },
+  whatsNew:{ tr:"Yenilikler", en:"What's new", de:"Neuigkeiten", es:"Novedades", pt:"Novidades", fr:"Nouveautés", ja:"新しいこと" },
+  now:     { tr:"şimdi", en:"now", de:"jetzt", es:"ahora", pt:"agora", fr:"à l'instant", ja:"いま" },
+  hours:   { tr:"{n} sa", en:"{n}h", de:"{n} Std.", es:"{n} h", pt:"{n} h", fr:"{n} h", ja:"{n}時間前" },
+  close:   { tr:"Kapat", en:"Close", de:"Schließen", es:"Cerrar", pt:"Fechar", fr:"Fermer", ja:"閉じる" },
+};
+function readInbox() { try { const a = JSON.parse(localStorage.getItem(INBOX_KEY) || "[]"); return Array.isArray(a) ? a : []; } catch (_) { return []; } }
+// Anlık mesajı cihazdaki kutuya yaz. Panel duyurusundan geldiyse id = newsId (sunucu
+// kaydıyla birleşir, iki kez görünmez); değilse metnin kısa özeti.
+function addToInbox(n, read) {
+  try {
+    const d = (n && n.data) || {};
+    const title = String((typeof d.title === "string" && d.title) || (n && n.title) || "Sakin").slice(0, 80);
+    const body = String((typeof d.body === "string" && d.body) || (n && n.body) || "").slice(0, 400);
+    if (!body) return;
+    let h = 0; for (let i = 0; i < body.length; i++) h = (h * 31 + body.charCodeAt(i)) | 0;
+    const id = (typeof d.newsId === "string" && d.newsId) || ("p" + (h >>> 0).toString(36));
+    const list = readInbox();
+    const prev = list.find((x) => x.id === id);
+    if (prev) { if (read && !prev.read) { prev.read = true; localStorage.setItem(INBOX_KEY, JSON.stringify(list)); } return; }
+    const screen = typeof d.screen === "string" ? d.screen : "";
+    localStorage.setItem(INBOX_KEY, JSON.stringify([{ id, t: Date.now(), title, body, screen, read: !!read }, ...list].slice(0, 40)));
+    try { window.dispatchEvent(new Event("sakin-inbox")); } catch (_) {}
+  } catch (_) {}
+}
+function InboxSheet({ lang, items, seenAt, onClose, onGo }) {
+  const L = (o) => pickLang(o, lang);
+  const JOST = "'Jost',sans-serif", INTER = "'Inter',sans-serif", SERIF = "'Cormorant Garamond',Georgia,serif";
+  const now = Date.now();
+  const when = (t) => {
+    const m = (now - t) / 60000;
+    if (m < 60) return L(INBOX_TXT.now);
+    if (m < 60 * 24) return L(INBOX_TXT.hours).replace("{n}", String(Math.floor(m / 60)));
+    try { return new Date(t).toLocaleDateString(localeFromLang(lang), { day:"numeric", month:"short" }); } catch (_) { return ""; }
+  };
+  const fresh = items.filter((x) => x.t > seenAt && !x.read);
+  const earlier = items.filter((x) => !(x.t > seenAt && !x.read));
+  const row = (x) => (
+    <button key={x.id} onClick={() => { if (x.screen) onGo(x.screen); }}
+      style={{ WebkitAppearance:"none",appearance:"none",background:"transparent",border:"none",font:"inherit",color:"inherit",textAlign:"left",
+        width:"100%",display:"flex",alignItems:"flex-start",gap:12,padding:"12px 0",borderTop:"1px solid rgba(184,164,216,0.08)",cursor: x.screen ? "pointer" : "default" }}>
+      <span style={{ width:34,height:34,flexShrink:0,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",
+        background: x.kind === "wn" ? "rgba(143,207,166,0.08)" : "rgba(232,192,122,0.08)",
+        border:`1px solid ${x.kind === "wn" ? "rgba(143,207,166,0.3)" : "rgba(232,192,122,0.3)"}`,
+        color: x.kind === "wn" ? "#8fcfa6" : "#e8c07a",fontSize:14,lineHeight:1 }}>{x.kind === "wn" ? "❋" : "✦"}</span>
+      <span style={{ flex:1,minWidth:0 }}>
+        <span style={{ display:"flex",alignItems:"baseline",gap:8 }}>
+          <span style={{ flex:1,minWidth:0,fontFamily:JOST,fontSize:13.5,letterSpacing:0.4,color:"#f1ecf9" }}>{x.title}</span>
+          <span style={{ flexShrink:0,fontFamily:INTER,fontSize:11,color:"#7d7692" }}>{when(x.t)}</span>
+        </span>
+        <span style={{ display:"block",marginTop:3,fontFamily:INTER,fontSize:13.5,lineHeight:1.55,color:"#b8aed0",whiteSpace:"pre-line",overflowWrap:"anywhere" }}>{x.body}</span>
+      </span>
+      {x.screen ? <span aria-hidden="true" style={{ alignSelf:"center",color:"#6f6a80",fontSize:16 }}>›</span> : null}
+    </button>
+  );
+  const head = (t) => <div style={{ fontFamily:JOST,fontSize:10.5,letterSpacing:2.5,textTransform:"uppercase",color:"#8f88a3",margin:"14px 0 2px" }}>{t}</div>;
+  return createPortal(
+    <div onClick={onClose} style={{ position:"fixed",inset:0,zIndex:100015,background:"rgba(4,3,10,0.66)",display:"flex",alignItems:"flex-end",justifyContent:"center",animation:"fadeIn 0.3s ease" }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ width:"100%",maxWidth:480,maxHeight:"84vh",overflowY:"auto",boxSizing:"border-box",
+        padding:"16px 20px calc(18px + var(--sab))",borderRadius:"22px 22px 0 0",background:"#100c1c",
+        borderTop:"1px solid rgba(232,192,122,0.26)",boxShadow:"0 -12px 40px rgba(0,0,0,0.5)",animation:"fadeUp 0.35s ease-out" }}>
+        <div style={{ width:38,height:4,borderRadius:4,background:"rgba(255,255,255,0.14)",margin:"0 auto 12px" }} />
+        <div style={{ fontFamily:SERIF,fontSize:24,color:"#f1ecf9",textAlign:"center",marginBottom:4 }}>{L(INBOX_TXT.title)}</div>
+        {items.length === 0 ? (
+          <div style={{ fontFamily:SERIF,fontSize:18,lineHeight:1.45,color:"#b8aed0",textAlign:"center",padding:"26px 12px 18px" }}>{L(INBOX_TXT.empty)}</div>
+        ) : (<>
+          {fresh.length > 0 && <>{head(L(INBOX_TXT.fresh))}{fresh.map(row)}</>}
+          {earlier.length > 0 && <>{head(L(INBOX_TXT.earlier))}{earlier.map(row)}</>}
+        </>)}
+        <button onClick={onClose} style={{ WebkitAppearance:"none",appearance:"none",background:"transparent",font:"inherit",width:"100%",marginTop:14,padding:"11px",borderRadius:100,
+          fontFamily:JOST,fontSize:12.5,letterSpacing:1.6,textTransform:"uppercase",display:"flex",alignItems:"center",justifyContent:"center",color:"#cfc7e0",border:"1px solid rgba(255,255,255,0.12)",cursor:"pointer" }}>{L(INBOX_TXT.close)}</button>
+      </div>
+    </div>,
+    document.body
+  );
+}
+
 // Push'la gelen hedef ekran BEYAZ LİSTEDEN olmalı (panelle aynı liste).
 // BİLDİRİMİN TAMAMI (kullanıcı, Eyl 2026: "önizlemeden taşan bildirim okunamıyor;
 // özelliğe yönlendirmeyen bildirime dokununca uygulamada tamamı görünsün").
@@ -8182,6 +8276,73 @@ export default function SakinApp() {
     window.__sakinOverlayBack = back;
     return () => { if (window.__sakinOverlayBack === back) window.__sakinOverlayBack = null; };
   }, [notifNote]);
+  // ── BİLDİRİM MERKEZİ (zil, Ben üst çubuğu) ──
+  const [inboxOpen, setInboxOpen] = useState(false);
+  const [inboxLocal, setInboxLocal] = useState(() => readInbox());
+  const [inboxNews, setInboxNews] = useState(() => { try { const a = JSON.parse(localStorage.getItem("sakin_news_cache") || "[]"); return Array.isArray(a) ? a : []; } catch (_) { return []; } });
+  const [inboxSeen, setInboxSeen] = useState(() => { try { return parseInt(localStorage.getItem(INBOX_SEEN_KEY) || "0", 10) || 0; } catch (_) { return 0; } });
+  // Sayfa açıldığı andaki "görüldü" sınırı: açıkken "Yeni" bölümü kaybolmasın.
+  const [inboxSeenAtOpen, setInboxSeenAtOpen] = useState(0);
+  useEffect(() => {
+    const on = () => setInboxLocal(readInbox());
+    window.addEventListener("sakin-inbox", on);
+    return () => window.removeEventListener("sakin-inbox", on);
+  }, []);
+  // Tepside bekleyen (dokunulmamış) anlık mesajlar da kutuya: açılışta bir kez.
+  useEffect(() => {
+    if (!pushSupported()) return;
+    PushNotifications.getDeliveredNotifications()
+      .then((r) => { (r && r.notifications || []).forEach((n) => addToInbox(n, false)); setInboxLocal(readInbox()); })
+      .catch(() => {});
+  }, []);
+  // Panel duyuruları: Ben ekranına girince ve zil açılınca tazelenir (60 sn CDN önbelleği).
+  const refreshNews = () => {
+    const plat = isNative ? Capacitor.getPlatform() : "web";
+    fetch(API_BASE + "/.netlify/functions/news?lang=" + encodeURIComponent(lang) + "&p=" + plat)
+      .then((r) => r.json())
+      .then((j) => {
+        if (!j || !j.ok || !Array.isArray(j.items)) return;
+        setInboxNews(j.items);
+        try { localStorage.setItem("sakin_news_cache", JSON.stringify(j.items.slice(0, 20))); } catch (_) {}
+      })
+      .catch(() => {});
+  };
+  useEffect(() => { if (screen === "harita") refreshNews(); /* eslint-disable-next-line */ }, [screen, lang]);
+  // Birleşik liste: sunucu duyurusu + cihazdaki mesaj (aynı id bir kez) + bu sürümün
+  // "Ne yeni" notu. "Ne yeni" okunmamış noktası YAKMAZ (yeni kuruluma boş yere nokta).
+  const inboxItems = (() => {
+    const map = new Map();
+    for (const n of inboxNews) map.set(n.id, { ...n, kind: "news" });
+    for (const n of inboxLocal) { const p = map.get(n.id); map.set(n.id, p ? { ...p, read: p.read || n.read } : { ...n, kind: "push" }); }
+    const out = [...map.values()];
+    try {
+      const wk = "sakin_wn_at_" + WHATS_NEW.version;
+      let at = parseInt(localStorage.getItem(wk) || "0", 10);
+      if (!at) { at = Date.now(); localStorage.setItem(wk, String(at)); }
+      const its = pickLang(WHATS_NEW.items, lang);
+      out.push({ id: "wn_" + WHATS_NEW.version, kind: "wn", t: at, read: true,
+        title: pickLang(INBOX_TXT.whatsNew, lang) + " · " + pickLang(WHATS_NEW.headline, lang),
+        body: Array.isArray(its) ? its.map((x) => "· " + x).join("\n") : "" });
+    } catch (_) {}
+    return out.sort((a, b) => b.t - a.t);
+  })();
+  const inboxUnread = inboxItems.some((x) => x.kind !== "wn" && !x.read && x.t > inboxSeen);
+  const openInbox = () => {
+    try { haptic(); } catch (_) {}
+    setInboxSeenAtOpen(inboxSeen);
+    setInboxOpen(true);
+    refreshNews();
+    const now = Date.now();
+    setInboxSeen(now);
+    try { localStorage.setItem(INBOX_SEEN_KEY, String(now)); } catch (_) {}
+    try { track("inbox", { a: "open" }); } catch (_) {}
+  };
+  useEffect(() => {
+    if (!inboxOpen) return;
+    const back = () => setInboxOpen(false);
+    window.__sakinOverlayBack = back;
+    return () => { if (window.__sakinOverlayBack === back) window.__sakinOverlayBack = null; };
+  }, [inboxOpen]);
   // Bildirim tıklaması → ilgili ekrana yönlendir (Sprint 2). schedule'daki extra.screen
   // okunur; yoksa eski davranış (sadece uygulama açılır). iOS-only: webde no-op.
   useEffect(() => {
@@ -13718,6 +13879,8 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
       />}
 
       <NotifNoteCard note={notifNote} lang={lang} onClose={() => setNotifNote(null)} />
+      {inboxOpen && <InboxSheet lang={lang} items={inboxItems} seenAt={inboxSeenAtOpen} onClose={() => setInboxOpen(false)}
+        onGo={(scr) => { setInboxOpen(false); if (PUSH_SCREENS.includes(scr)) { try { setShowAilesi(false); } catch (_) {} setScreen(scr); } }} />}
       {/* ÇEMBER: canlı oda (tam ekran, alt barın üstünde). Kapı: bugünkü bağlantı. */}
       {showCember && (
         <CemberScreen lang={lang} unlocked={allStepsComplete || cemberFreeSession} minor={isCemberMinor(birthDate)}
@@ -13822,7 +13985,23 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
           return (
             <>
               {homeItem && renderBtn(homeItem)}
-              <div style={{ position:"relative", flex:"0 0 auto", marginLeft:"auto" }}>
+              <div style={{ position:"relative", flex:"0 0 auto", marginLeft:"auto", display:"flex", alignItems:"stretch", gap:8 }}>
+                {/* BİLDİRİM MERKEZİ ZİLİ (1.4.3): Ayarlar'ın solunda, aynı kutu dili. Okunmamış
+                    duyuru/mesaj varsa sayı DEĞİL, küçük altın nokta (sayı da görev hissi verir). */}
+                <button onClick={openInbox} aria-label={pickLang(INBOX_TXT.title, lang)}
+                  style={{ WebkitAppearance:"none", appearance:"none", font:"inherit", position:"relative",
+                    width:48, minHeight:38, padding:"7px 0", display:"flex", alignItems:"center", justifyContent:"center",
+                    borderRadius:20, cursor:"pointer", transition:"all 0.25s",
+                    background: inboxOpen ? "rgba(184,164,216,0.18)" : "rgba(255,255,255,0.05)",
+                    border: inboxOpen ? "1px solid rgba(184,164,216,0.45)" : "1px solid rgba(255,255,255,0.16)",
+                    color:"rgba(228,218,245,0.9)" }}>
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" style={{ display:"block", flexShrink:0 }} aria-hidden="true">
+                    <path d="M6 9.5a6 6 0 0 1 12 0c0 5.2 1.6 7.2 2.5 8H3.5c.9-.8 2.5-2.8 2.5-8z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round"/>
+                    <path d="M10 20.5a2.1 2.1 0 0 0 4 0" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+                  </svg>
+                  {inboxUnread && <span aria-hidden="true" style={{ position:"absolute", top:8, right:13, width:6, height:6, borderRadius:"50%",
+                    background:"#e8c07a", boxShadow:"0 0 6px rgba(232,192,122,0.9)" }} />}
+                </button>
                 {/* NATIVE→WEB TAŞIMA MADDE 6: ☰ (üç çizgi + açılır menü) her
                     platformda kaldırıldı, DOĞRUDAN Ayarlar'a gider. Menüdeki
                     maddeler (Terimler/Yolculuk/Sakin Nedir/tema/Satın Alımları

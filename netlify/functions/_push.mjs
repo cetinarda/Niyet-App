@@ -131,9 +131,10 @@ export async function sendApnsBatch(cfg, items, concurrency = 20) {
   try { sandbox && sandbox.close(); } catch {}
   return results;
 }
-export function apnsPayload(title, body, screen) {
+export function apnsPayload(title, body, screen, newsId) {
   const p = { aps: { alert: { title, body }, sound: "default" } };
   if (screen) p.screen = screen;
+  if (newsId) p.newsId = newsId;   // bildirim merkezindeki aynı kaydı tekrar göstermesin
   return p;
 }
 
@@ -179,12 +180,12 @@ export async function sendFcmBatch(sa, items, concurrency = 10) {
   await Promise.all(Array.from({ length: Math.min(concurrency, items.length) }, worker));
   return results;
 }
-export function fcmPayload(title, body, screen) {
+export function fcmPayload(title, body, screen, newsId) {
   return {
     notification: { title, body },
     // Metin data'da da gider: Android'de uygulama kapalıyken dokunulan bildirimde
     // Capacitor yalnızca data'yı iletir; uygulama tam metni kartta gösterir.
-    data: { ...(screen ? { screen } : {}), title: String(title || ""), body: String(body || "") },
+    data: { ...(screen ? { screen } : {}), ...(newsId ? { newsId } : {}), title: String(title || ""), body: String(body || "") },
     android: { priority: "high", notification: { color: "#b8a4d8", sound: "default" } },
   };
 }

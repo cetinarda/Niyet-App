@@ -7,6 +7,11 @@
 // "herkese". Anlık mesajlar VARSAYILAN AÇIK: bildirim izni olan ve anahtarı
 // kapatmamış cihazlar kayıtlı. ⚠️ Bu yüzden TANITIM gönderme (Apple 4.5.4).
 //
+// BİLDİRİM MERKEZİ (1.4.3, kullanıcı: "Ben'in köşesinde küçük bir zil"): kitleye
+// gönderilen mesaj istenirse uygulamadaki bildirim merkezine de yazılır (Blobs
+// `sakin-news`, anahtar "feed", son 30). "Yalnızca bildirim merkezine ekle" push
+// GÖNDERMEZ: uygulama içi kutu Apple 4.5.4 kapsamında değil, yani yeni özellik
+// duyurusu gibi "önemli gelişmeler" yalnızca buradan verilir. Uygulama news.mjs'ten okur.
 // PUSH_ADMIN_TOKEN tanımlı değilse panel KAPALI. Ortak kod + env listesi: _push.mjs.
 // ⚠️ Senkron fonksiyon (~10 sn tavan). Birkaç bin cihaza kadar yeter (APNs tek
 // HTTP/2 bağlantıda çoklanıyor). Çok büyürse gönderimi "-background" fonksiyona taşı.
@@ -50,7 +55,7 @@ async function loadDevices(store) {
   return out;
 }
 
-function panel(token, devices, cfg, log, notice = "") {
+function panel(token, devices, cfg, log, notice = "", news = []) {
   const by = (f) => devices.reduce((m, d) => (m[f(d)] = (m[f(d)] || 0) + 1, m), {});
   const pl = by((d) => d.p), lg = by((d) => d.l);
   const status = (ok, name, env) => ok ? `<span class="ok">✓ ${name} hazır</span>` : `<span class="bad">✗ ${name} kapalı</span> <span class="muted">(${env} eksik)</span>`;
@@ -73,8 +78,12 @@ ${notice}
 <div><label>Platform</label><select name="platform"><option value="">Hepsi</option><option value="ios">iPhone</option><option value="android">Android</option></select></div></div>
 <label>Dokununca açılacak ekran</label><select name="screen">${SCREENS.map(([v, n]) => `<option value="${v}">${n}</option>`).join("")}</select>
 <label>Test cihaz kodu (uygulamada Ayarlar > Bildirimler'in altında yazar)</label><input name="code" maxlength="6" placeholder="örn. 4F7A2C" style="text-transform:uppercase">
+<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" name="inbox" value="1" checked style="width:auto"> Kitleye gönderirken uygulamadaki bildirim merkezine (zil) de ekle</label>
 <div class="btns"><button type="submit" onclick="this.form.mode.value='test'">Yalnız test cihazına gönder</button>
-<button type="submit" class="all" onclick="this.form.mode.value='all'">Seçilen kitleye gönder</button></div></form>
+<button type="submit" class="all" onclick="this.form.mode.value='all'">Seçilen kitleye gönder</button>
+<button type="submit" onclick="this.form.mode.value='inbox'">Yalnızca bildirim merkezine ekle (push yok)</button></div>
+<div class="muted" style="margin-top:8px">Yeni özellik ya da önemli gelişme duyurusu için yalnızca bildirim merkezini kullan: push gitmez, kullanıcı Ben'deki zilde görür.</div></form>
+<h2>Bildirim merkezi (uygulamadaki zil)</h2><div class="card"><table>${(news || []).slice(0, 15).map((n) => `<tr><td>${esc(new Date(n.ts).toLocaleString("tr-TR", { timeZone: "Europe/Istanbul" }))}${n.lang ? " · " + esc(n.lang) : ""}<br><b>${esc(n.title)}</b> <span class="muted">${esc((n.general || Object.values(n.per || {}).find(Boolean) || "").slice(0, 90))}</span></td><td class="n"><form method="post" onsubmit="return confirm('Bildirim merkezinden kaldırılsın mı?')"><input type="hidden" name="token" value="${esc(token)}"><input type="hidden" name="mode" value="delnews"><input type="hidden" name="id" value="${esc(n.id)}"><button type="submit" style="padding:6px 12px">Kaldır</button></form></td></tr>`).join("") || `<tr><td class="muted">Henüz yok.</td></tr>`}</table></div>
 <h2>Son gönderimler</h2><div class="card"><table>${(log || []).slice(0, 15).map((e) => `<tr><td>${esc(new Date(e.ts).toLocaleString("tr-TR", { timeZone: "Europe/Istanbul" }))} · ${e.mode === "test" ? "test" : "kitle"}<br><span class="muted">${esc(e.text)}</span></td><td class="n">${e.ok} ✓ · ${e.fail} ✗${e.removed ? ` · ${e.removed} silindi` : ""}</td></tr>`).join("") || `<tr><td class="muted">Henüz yok.</td></tr>`}</table></div>`;
 }
 
@@ -92,12 +101,23 @@ export default async (req) => {
   const cfg = await pushConfig();
   let log = [];
   try { log = (await logStore.get("log", { type: "json" })) || []; } catch {}
+  let newsStore = null, news = [];
+  try { newsStore = getStore("sakin-news"); news = (await newsStore.get("feed", { type: "json" })) || []; } catch {}
   const devices = await loadDevices(store);
+  const P = (d, c, l, n = "") => panel(token, d, c, l, n, news);
 
-  if (!form) return html(panel(token, devices, cfg, log));
+  if (!form) return html(P(devices, cfg, log));
+
+  if (form.get("mode") === "delnews") {
+    const id = String(form.get("id") || "");
+    news = news.filter((n) => n.id !== id);
+    try { await newsStore.setJSON("feed", news); } catch {}
+    return html(P(devices, cfg, log, `<p class="ok">Bildirim merkezinden kaldırıldı.</p>`));
+  }
 
   // ── GÖNDER ──
-  const mode = form.get("mode") === "all" ? "all" : "test";
+  const rawMode = form.get("mode");
+  const mode = rawMode === "all" ? "all" : rawMode === "inbox" ? "inbox" : "test";
   const title = String(form.get("title") || "").trim().slice(0, 60) || "Sakin";
   const general = String(form.get("body") || "").trim().slice(0, 240);
   const per = Object.fromEntries(LANGS.map((l) => [l, String(form.get("body_" + l) || "").trim().slice(0, 240)]));
@@ -109,21 +129,33 @@ export default async (req) => {
   // Test gönderiminde cihazın dilinde metin yoksa yazılan İLK metin gider (boş bildirim gitmesin).
   const anyText = general || per[LANGS.find((l) => per[l])] || "";
   const textFor = (l) => per[l] || (mode === "test" ? anyText : (onlyWritten && !general ? "" : general));
-  if (!general && !LANGS.some((l) => per[l])) return html(panel(token, devices, cfg, log, `<p class="bad">Mesaj boş.</p>`));
+  if (!general && !LANGS.some((l) => per[l])) return html(P(devices, cfg, log, `<p class="bad">Mesaj boş.</p>`));
+
+  // Bildirim merkezi kaydı: "yalnızca merkez" ya da kitle + kutu işaretli. Test hiç yazılmaz.
+  let newsId = "";
+  if (mode === "inbox" || (mode === "all" && form.get("inbox") === "1")) {
+    newsId = "n" + Date.now().toString(36);
+    const item = { id: newsId, ts: Date.now(), title, general, per, onlyWritten, lang, platform, screen };
+    news = [item, ...news].slice(0, 30);
+    try { await newsStore.setJSON("feed", news); } catch { newsId = ""; }
+  }
+  if (mode === "inbox") {
+    return html(P(devices, cfg, log, newsId ? `<p class="ok">Bildirim merkezine eklendi (push gönderilmedi).</p>` : `<p class="bad">Bildirim merkezine yazılamadı (Blobs).</p>`));
+  }
 
   let targets = devices.filter((d) => (!lang || d.l === lang) && (!platform || d.p === platform) && textFor(d.l));
   if (mode === "test") {
-    if (!/^[0-9A-F]{6}$/.test(code)) return html(panel(token, devices, cfg, log, `<p class="bad">Test için cihaz kodunu gir (6 karakter).</p>`));
+    if (!/^[0-9A-F]{6}$/.test(code)) return html(P(devices, cfg, log, `<p class="bad">Test için cihaz kodunu gir (6 karakter).</p>`));
     targets = devices.filter((d) => deviceCode(d.t) === code);
-    if (!targets.length) return html(panel(token, devices, cfg, log, `<p class="bad">Bu kodla kayıtlı cihaz yok. Uygulamada anlık mesajlar açık mı?</p>`));
+    if (!targets.length) return html(P(devices, cfg, log, `<p class="bad">Bu kodla kayıtlı cihaz yok. Uygulamada anlık mesajlar açık mı?</p>`));
   }
   const ios = targets.filter((d) => d.p === "ios"), android = targets.filter((d) => d.p === "android");
   const results = [];
   try {
-  if (ios.length && cfg.apns) results.push(...await sendApnsBatch(cfg.apns, ios.map((d) => ({ key: d.key, token: d.t, payload: apnsPayload(title, textFor(d.l), screen) }))));
-  if (android.length && cfg.fcm) results.push(...await sendFcmBatch(cfg.fcm, android.map((d) => ({ key: d.key, token: d.t, payload: fcmPayload(title, textFor(d.l), screen) }))));
+  if (ios.length && cfg.apns) results.push(...await sendApnsBatch(cfg.apns, ios.map((d) => ({ key: d.key, token: d.t, payload: apnsPayload(title, textFor(d.l), screen, newsId) }))));
+  if (android.length && cfg.fcm) results.push(...await sendFcmBatch(cfg.fcm, android.map((d) => ({ key: d.key, token: d.t, payload: fcmPayload(title, textFor(d.l), screen, newsId) }))));
   } catch (e) {
-    return html(panel(token, devices, cfg, log, `<p class="bad">Gönderim hatası: ${esc(String(e && e.message || e))}</p>`));
+    return html(P(devices, cfg, log, `<p class="bad">Gönderim hatası: ${esc(String(e && e.message || e))}</p>`));
   }
   const skipped = (cfg.apns ? 0 : ios.length) + (cfg.fcm ? 0 : android.length);
 
@@ -142,5 +174,5 @@ export default async (req) => {
   else if (/DeviceTokenNotForTopic/.test(allWhy)) hint = "Cihaz başka bir uygulama kimliğine ait: APNS_BUNDLE_ID app.sakin.life olmalı.";
   else if (/TopicDisallowed/.test(allWhy)) hint = "Bu uygulama kimliği için push kapalı: Apple Developer > Identifiers > app.sakin.life > Push Notifications açık olmalı.";
   const notice = `<div class="card" style="margin-top:16px"><b class="${fail ? "bad" : "ok"}">${mode === "test" ? "Test" : "Gönderim"} tamamlandı:</b> ${ok} başarılı, ${fail} başarısız${dead.length ? `, ${dead.length} geçersiz cihaz silindi` : ""}${skipped ? `, ${skipped} cihaz atlandı (platform anahtarı eksik)` : ""}.${errs.length ? `<div class="muted">Hatalar: ${errs.map(esc).join(" · ")}</div>` : ""}${hint ? `<div style="margin-top:8px">${esc(hint)}</div>` : ""}</div>`;
-  return html(panel(token, await loadDevices(store), cfg, [entry, ...log], notice));
+  return html(P(await loadDevices(store), cfg, [entry, ...log], notice));
 };

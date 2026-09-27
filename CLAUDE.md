@@ -114,7 +114,7 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    - `ios/App/App.xcodeproj/project.pbxproj`: `MARKETING_VERSION` ve `CURRENT_PROJECT_VERSION` (her biri 2 occurrence)
    - `src/App.jsx`: `APP_VERSION` (~satır 14)
    - `android/app/build.gradle`: `versionCode` (artan tamsayı) ve `versionName`
-   - **CANLI (27 Eyl 2026): Play Store `1.4.2` (versionCode 20) · App Store `1.4.2` İNCELEMEDE** (1.4.1 geri çekildi, hiç yayınlanmadı). Repoda hazırlanan: `1.4.3 / build 1`, Android `versionCode 21`. `WHATS_NEW.version = 1.4.3` ama `since = 1.4.2` (1.4.2 notları, 1.4.0/1.4.1'den atlayana gösterilir); 1.4.3'e görünür özellik gelince notları yaz, `since`i güncelle. 1.4.2 = deep link + 1.4.1'den SONRA gelen görünür özellikler (Çember, Niyet Mektubu, bildirim ayarları, anlık mesajlar); "Ne yeni" kartı bunları anlatır, `WHATS_NEW.since = "1.4.2"`. `latest-ios-version.json` otomatik, ELLE bump etme.
+   - **CANLI (27 Eyl 2026): Play Store `1.4.2` (versionCode 20) · App Store `1.4.2` İNCELEMEDE** (1.4.1 geri çekildi, hiç yayınlanmadı). Repoda hazırlanan: `1.4.3 / build 1`, Android `versionCode 21`. `WHATS_NEW` 1.4.3 notları yazıldı (`since = 1.4.3`: Ayna'yla sohbet, tam akort, rozetler + zil); aynı not bildirim merkezinde de görünür. 1.4.2 = deep link + 1.4.1'den SONRA gelen görünür özellikler (Çember, Niyet Mektubu, bildirim ayarları, anlık mesajlar); "Ne yeni" kartı bunları anlatır, `WHATS_NEW.since = "1.4.2"`. `latest-ios-version.json` otomatik, ELLE bump etme.
    - ⚠️ **Sürüm bump'ında `WHATS_NEW.version` (src/App.jsx) da AYNI değere çekilmeli**, eşleşmezse "Ne yeni" kartı hiç görünmez (bayat not koruması).
    - ⚠️ **Play Console'a bir kez yüklenen `versionCode` KALICI OLARAK yanar**: reddedilse,
      silinse, taslak olarak kalsa bile o sayı bir daha ASLA kullanılamaz ("sürüm X kullanıldı"
@@ -1092,6 +1092,19 @@ cihazına" = Ayarlar > Bildirimler altındaki 6 haneli CİHAZ KODU, son gönderi
   önce açık onaya (opt-in) dön. Dokunma →
   `PUSH_SCREENS` beyaz listesindeki ekran, soğuk açılış tamponlu. Analitik
   `push_optin` {v} + `notif_open` k="anlik" (track.mjs beyaz listede).
+- **🔔 BİLDİRİM MERKEZİ / ZİL (1.4.3, kullanıcı: "Ben'in köşesinde küçük bir zil, zarif,
+  appin ruhuna uygun; sadece app ile ilgili önemli gelişmeler"):** Ben üst çubuğunda
+  Ayarlar'ın solunda ince çizgili zil; okunmamışta SAYI YOK, küçük altın nokta.
+  Alttan açılan sayfa (`InboxSheet`, modül bileşeni, portal, Android geri tuşu kapatır):
+  "Yeni" / "Daha önce". YALNIZCA iki kaynak: (1) panel duyuruları (`push-admin` >
+  "Yalnızca bildirim merkezine ekle" PUSH GÖNDERMEZ, uygulama içi kutu Apple 4.5.4
+  kapsamında değil, yani "yeni özellik" duyurusu BURADAN yapılır; kitleye gönderirken
+  "bildirim merkezine de ekle" kutusu varsayılan işaretli) + anlık mesajlar (cihazda
+  `sakin_inbox`: dokunulan/ön planda gelen/tepside bekleyen, `newsId` ile duyuruyla
+  birleşir), (2) bu sürümün `WHATS_NEW` notu (nokta YAKMAZ). Günlük yerel hatırlatmalar
+  BİLEREK girmez. Sunucu: Blobs `sakin-news` "feed" (son 30), `news.mjs` GET ?lang&p
+  (CORS *, 60 sn önbellek, kişisel veri yok), panelde listeleme + "Kaldır".
+  Analitik `inbox` a="open" (track + rapor "inbox_" öneki).
 - ✅ ANDROID AÇIK (Eyl 2026): `android/app/google-services.json` (Firebase projesi
   `sakin-fd9b7`, paket com.sakin.app) repoda, `PUSH_ANDROID_READY = true`.
   ⚠️ Dosya silinirse bayrağı false yap (Firebase'siz register() native hata verir).
