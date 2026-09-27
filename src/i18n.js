@@ -290,7 +290,7 @@ export const TRANS = {
     privacy_s7:        "7. VERİ GÜVENLİĞİ",
     privacy_s7p:       "Verilerinizin büyük kısmı yalnızca cihazınızda durur; uygulamayı kaldırdığınızda ya da \"Hesabımı ve verilerimi sil\" dediğinizde silinir. Bu işlem anlık bildirim kaydınızı da sunucudan kaldırır. Çember'e yazdığınız mesajlar odadaki herkese açıktır: yanında cihazınızdan türetilmiş bir takma ad görünür, cihaz kimliğiniz yalnızca geri çevrilemeyen bir özet olarak tutulur. Mesajlar 24 saat görünür ve 48 saat içinde silinir; yasaklanan cihazların özeti yasak kaldırılana kadar saklanır. Tüm iletişim HTTPS ile şifrelenir, anahtarlar sunucu tarafındadır.",
     privacy_s8:        "8. ÇOCUKLARIN GİZLİLİĞİ",
-    privacy_s8p:       "Uygulamanın içeriği genel olarak her yaşa uygundur. Çember herkese açık bir canlı sohbet alanıdır ve 13 yaşından küçükler için tasarlanmamıştır. 13 yaşın altındaki çocuklardan bilerek veri toplanmaz.",
+    privacy_s8p:       "Uygulamanın içeriği genel olarak her yaşa uygundur. Çember herkese açık bir canlı sohbet alanıdır ve 13 yaşından küçükler için tasarlanmamıştır; girilen doğum tarihine göre 13 yaşından küçük kullanıcılara kapalıdır. 13 yaşın altındaki çocuklardan bilerek veri toplanmaz.",
     privacy_s9:        "9. POLİTİKA DEĞİŞİKLİKLERİ",
     privacy_s9p:       "Bu gizlilik politikası zaman zaman güncellenebilir. Önemli değişiklikler uygulama güncellemesi notlarında belirtilecektir.",
     // KVKK AYDINLATMA METNİ (6698 sayılı kanun m.10). Apple'ın gizlilik şartları
@@ -1059,7 +1059,7 @@ export const TRANS = {
     privacy_s7:        "7. DATA SECURITY",
     privacy_s7p:       "Most of your data stays only on your device and is deleted when you remove the app or choose \"Delete my account and data\". That action also removes your notification record from our server. Messages you write in the Circle are visible to everyone in the room: they show a nickname derived from your device, and your device ID is stored only as an irreversible hash. Messages are visible for 24 hours and deleted within 48 hours; hashes of banned devices are kept until the ban is lifted. All communication is encrypted with HTTPS and keys are kept server-side.",
     privacy_s8:        "8. CHILDREN'S PRIVACY",
-    privacy_s8p:       "The app's content is generally suitable for all ages. The Circle is a public live chat room and is not designed for children under 13. We do not knowingly collect data from children under 13.",
+    privacy_s8p:       "The app's content is generally suitable for all ages. The Circle is a public live chat room and is not designed for children under 13; it is closed to users whose birth date shows they are under 13. We do not knowingly collect data from children under 13.",
     privacy_s9:        "9. POLICY CHANGES",
     privacy_s9p:       "This privacy policy may be updated from time to time. Important changes will be noted in app update release notes.",
     privacy_kvkk:      "11. DATA PROTECTION NOTICE (KVKK)",

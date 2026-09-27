@@ -1562,6 +1562,11 @@ const CEMBER_TXT = {
   letterIc:{ tr:"Mühürlü bir niyet mektubu taşıyor", en:"Carries a sealed intention letter", de:"Trägt einen versiegelten Absichtsbrief", es:"Lleva una carta de intención sellada", pt:"Leva uma carta de intenção selada", fr:"Porte une lettre d'intention scellée", ja:"封をした意図の手紙を持っています" },
   locked:  { tr:"Bugünkü bağlantını tamamla, Çember açılsın.", en:"Complete today's connection to open the Circle.", de:"Schließe deine heutige Verbindung ab, dann öffnet sich der Kreis.", es:"Completa tu conexión de hoy y el Círculo se abrirá.", pt:"Completa a tua ligação de hoje e o Círculo abre-se.", fr:"Termine ta connexion du jour pour ouvrir le Cercle.", ja:"今日のつながりを完了するとサークルが開きます。" },
   lockedSub:{ tr:"Çember, günün pratiğini tamamlayanların buluştuğu sakin bir oda.", en:"The Circle is a calm room for those who completed the day's practice.", de:"Der Kreis ist ein ruhiger Raum für alle, die die Übung des Tages abgeschlossen haben.", es:"El Círculo es una sala tranquila para quienes completaron la práctica del día.", pt:"O Círculo é uma sala calma para quem concluiu a prática do dia.", fr:"Le Cercle est un salon paisible pour celles et ceux qui ont terminé la pratique du jour.", ja:"サークルは、その日のプラクティスを終えた人が集まる静かな部屋です。" },
+  // 13 YAŞ KAPISI (1.4.3): Çember anonim canlı sohbet; doğum tarihine göre 13
+  // yaşından küçüklere kapalı. Uygulamanın geri kalanı (nefes, meditasyon, kartlar) açık.
+  minorHead:{ tr:"Çember 13 yaş ve üzeri için", en:"The Circle is for ages 13 and up", de:"Der Kreis ist ab 13 Jahren", es:"El Círculo es para mayores de 13 años", pt:"O Círculo é para maiores de 13 anos", fr:"Le Cercle est réservé aux 13 ans et plus", ja:"サークルは13歳以上が対象です" },
+  minorSub: { tr:"Nefes, meditasyon ve günün kartları her zaman seninle. Birlikte bir nefes alalım mı?", en:"Breathing, meditation and the day's cards are always here for you. Shall we take a breath together?", de:"Atmen, Meditation und die Karten des Tages sind immer für dich da. Wollen wir zusammen atmen?", es:"La respiración, la meditación y las cartas del día siempre están aquí para ti. ¿Respiramos juntos?", pt:"A respiração, a meditação e as cartas do dia estão sempre aqui para ti. Respiramos juntos?", fr:"La respiration, la méditation et les cartes du jour sont toujours là pour toi. On respire ensemble ?", ja:"呼吸、瞑想、今日のカードはいつでもここに。一緒に深呼吸しよう。" },
+  minorBtn: { tr:"Birlikte nefes al", en:"Breathe together", de:"Gemeinsam atmen", es:"Respirar juntos", pt:"Respirar juntos", fr:"Respirer ensemble", ja:"一緒に呼吸する" },
   goBaglan:{ tr:"Bağlan'a git", en:"Go to Connect", de:"Zu „Verbinden“ gehen", es:"Ir a Conectar", pt:"Ir para Liga-te", fr:"Aller à Se relier", ja:"「つながる」へ" },
   closed:  { tr:"Çember şu an kapalı. Birazdan tekrar dene.", en:"The Circle is closed right now. Try again soon.", de:"Der Kreis ist gerade geschlossen. Versuch es bald wieder.", es:"El Círculo está cerrado ahora. Inténtalo pronto.", pt:"O Círculo está fechado agora. Tenta daqui a pouco.", fr:"Le Cercle est fermé pour l'instant. Réessaie bientôt.", ja:"サークルは今閉じています。少ししてからまた試してね。" },
   rulesHead:{ tr:"Çember'e hoş geldin", en:"Welcome to the Circle", de:"Willkommen im Kreis", es:"Bienvenido al Círculo", pt:"Bem-vindo ao Círculo", fr:"Bienvenue dans le Cercle", ja:"サークルへようこそ" },
@@ -1631,6 +1636,16 @@ function getCember() {
   return __cemberPromise;
 }
 // Bugün kartı için: iki odadaki toplam kişi (kendisi katılmadan, yalnızca izler).
+// Doğum tarihine göre 13 yaşından küçük mü? Tarih yoksa ya da okunamıyorsa false
+// (Çember'e zaten doğum bilgisi istemeden girilemiyor: Ayna adımı doğum ister).
+function isCemberMinor(bd) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(bd || ""));
+  if (!m) return false;
+  const now = new Date(), y = +m[1], mo = +m[2], d = +m[3];
+  let age = now.getFullYear() - y;
+  if (now.getMonth() + 1 < mo || (now.getMonth() + 1 === mo && now.getDate() < d)) age--;
+  return age >= 0 && age < 13;
+}
 function watchCemberCount(cb) {
   let stopped = false; const chans = [];
   getCember().then((c) => {
@@ -1648,7 +1663,7 @@ function watchCemberCount(cb) {
   return () => { stopped = true; getCember().then((c) => { if (c.ok) chans.forEach((ch) => c.sb.removeChannel(ch)); }); };
 }
 
-function CemberScreen({ lang, unlocked, onClose, onGoBaglan, onGoNefes }) {
+function CemberScreen({ lang, unlocked, minor, onClose, onGoBaglan, onGoNefes }) {
   const L = (o) => pickLang(o, lang);
   const JOST = "'Jost',sans-serif", INTER = "'Inter',sans-serif", SERIF = "'Cormorant Garamond',Georgia,serif";
   const INK = "#f1ecf9", MUTE = "#8f88a3", GOLD = "#e8c07a", LAV = "#b8a4d8";
@@ -1833,6 +1848,12 @@ function CemberScreen({ lang, unlocked, onClose, onGoBaglan, onGoNefes }) {
       display:"flex",alignItems:"center",justifyContent:"center",color:"#f6dfb0",background:"rgba(232,192,122,0.13)",border:"1px solid rgba(232,192,122,0.45)" }}>{label}</button>
   );
 
+  if (minor) return shell(centerCard(<>
+    <div style={{ fontSize:26,textAlign:"center",color:GOLD }}>◌</div>
+    <div style={{ fontFamily:SERIF,fontSize:21,lineHeight:1.3,color:INK,textAlign:"center" }}>{L(CEMBER_TXT.minorHead)}</div>
+    <div style={{ fontFamily:INTER,fontSize:13,lineHeight:1.6,color:"#b8aed0",textAlign:"center" }}>{L(CEMBER_TXT.minorSub)}</div>
+    {primaryBtn(L(CEMBER_TXT.minorBtn), onGoNefes)}
+  </>));
   if (!unlocked) return shell(centerCard(<>
     <div style={{ fontSize:26,textAlign:"center",color:GOLD }}>◌</div>
     <div style={{ fontFamily:SERIF,fontSize:21,lineHeight:1.3,color:INK,textAlign:"center" }}>{L(CEMBER_TXT.locked)}</div>
@@ -8986,6 +9007,8 @@ export default function SakinApp() {
   // değilken iki odanın presence'ını İZLER (katılmadan). Ekrandan çıkınca kapanır.
   useEffect(() => {
     if (screen !== "bugun" || !allStepsComplete || showCember) return;
+    let bd = ""; try { bd = localStorage.getItem("sakin_birth_date") || ""; } catch (_) {}
+    if (isCemberMinor(bd)) return; // 13 yaş altı: oda hiç izlenmez
     return watchCemberCount(setCemberCount);
   }, [screen, allStepsComplete, showCember]);
 
@@ -13224,7 +13247,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
 
       {/* ÇEMBER: canlı oda (tam ekran, alt barın üstünde). Kapı: bugünkü bağlantı. */}
       {showCember && (
-        <CemberScreen lang={lang} unlocked={allStepsComplete}
+        <CemberScreen lang={lang} unlocked={allStepsComplete} minor={isCemberMinor(birthDate)}
           onClose={() => setShowCember(false)}
           onGoBaglan={() => { setShowCember(false); setScreen("mandala"); }}
           onGoNefes={() => { setShowCember(false); setScreen("nefes"); }} />
@@ -18550,6 +18573,8 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                 })()}
                 {/* ÇEMBER GİRİŞİ: bağlantıyı tamamlayana canlı oda + anlık kişi sayısı;
                     tamamlamayana kilitli davet (dokununca açıklamalı kilit ekranı). */}
+                {/* 13 yaş altına Çember satırı HİÇ gösterilmez (kilitli oda merak uyandırmasın). */}
+                {!isCemberMinor(birthDate) && (
                 <button onClick={() => { try { haptic(); } catch (_) {} setShowCember(true); }}
                   style={{ ...BTN,marginTop:14,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.12)",display:"flex",alignItems:"center",gap:12 }}>
                   {icon("◌", allStepsComplete ? "#82d9a3" : LAV, 36, 15)}
@@ -18565,6 +18590,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                   </span>
                   {chevron()}
                 </button>
+                )}
               </div>
             </section>
 

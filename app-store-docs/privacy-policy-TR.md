@@ -71,7 +71,7 @@ Tüm iletişim HTTPS ile şifrelenir; API anahtarları sunucu tarafındadır. Su
 
 ## 5. Çocukların Gizliliği
 
-Uygulamanın içeriği genel olarak her yaşa uygundur. Çember herkese açık bir canlı sohbet alanıdır ve 13 yaşından küçükler için tasarlanmamıştır. 13 yaşın altındaki çocuklardan bilerek veri toplanmaz.
+Uygulamanın içeriği genel olarak her yaşa uygundur. Çember herkese açık bir canlı sohbet alanıdır ve 13 yaşından küçükler için tasarlanmamıştır; girilen doğum tarihine göre 13 yaşından küçük kullanıcılara kapalıdır. 13 yaşın altındaki çocuklardan bilerek veri toplanmaz.
 
 ## 6. Verilerinizi Silme
 

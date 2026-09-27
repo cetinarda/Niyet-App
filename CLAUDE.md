@@ -1065,6 +1065,13 @@ koruma sunucuda.
 - ⏳ **MAĞAZA ÖNCESİ YAPILACAKLAR:** ~~gizlilik politikası~~ (YAPILDI, Eyl 2026, aşağıya
   bak), App Store gizlilik etiketi "User Content", Apple yaş anketi (kullanıcılar
   arası iletişim), Play Data safety, App Review notuna moderasyon açıklaması.
+- **13 YAŞ KAPISI (1.4.3, kullanıcı: "etik olarak çocuklara iyi gelecek pratikler var"):**
+  `isCemberMinor(birthDate)` (modül seviyesi, doğum tarihinden tam yaş) 13'ten küçükse
+  Bugün'deki Çember satırı HİÇ çizilmez, oda sayacı izlenmez, `CemberScreen` `minor`
+  ile "Çember 13 yaş ve üzeri için" + "Birlikte nefes al" gösterir (`CEMBER_TXT.minor*`,
+  7 dil). Nefes/meditasyon/kartlar açık. Gizlilik `privacy_s8p` (7 dil) + web + md buna
+  göre. Bu kapı sayesinde Apple yaş derecelendirmesi 9+'a indirilebilir; Google'da 13 yaş
+  altı hedef kitle SEÇİLMEZ (Aileler politikası Meta SDK'yı kabul etmez).
 - **Presence anahtarı oturumluk rastgele** (`"p"+random`): presence anahtarı odadaki
   HERKESE görünür, anonim ölçüm kimliğini (`getAnonId`) buraya KOYMA.
 - Test: sahte Supabase + sahte Groq ile sunucu uçtan uca (yavaş mod, link, kriz,
