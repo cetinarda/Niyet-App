@@ -79,6 +79,7 @@ Uygulamanın içeriği genel olarak her yaşa uygundur. Çember herkese açık b
 - **Anlık mesajlar:** Ayarlar > Bildirimler'den kapattığınızda kayıt silinir.
 - **Çember:** mesajlar 48 saat içinde kendiliğinden silinir.
 - **Uygulamayı kaldırarak:** cihazdaki tüm veriler silinir.
+- **Uygulamaya veya cihazınıza erişiminiz yoksa:** destek@sakin.life adresine yazın. Sunucumuzda tutulan anlık bildirim kaydınızı (varsa) ve Çember'de gönderdiğiniz mesajlara ait cihaz özetini talebiniz üzerine sileriz. Sakin'de hesap/şifre olmadığı için kimlik doğrulaması istemeyiz; isteğinizi 30 gün içinde sonuçlandırırız.
 
 Apple/Google üzerinden aldığınız abonelik mağaza hesabınıza bağlıdır; iptal için mağaza ayarlarınızı kullanın.
 
