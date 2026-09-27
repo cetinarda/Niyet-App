@@ -204,3 +204,53 @@ export async function computeNatalHD(birthDate, birthTime, utcOffset, lang = "tr
     };
   } catch { return null; }
 }
+
+// ── BUGÜNÜN VURGUSU (premium, 1.4.3) ────────────────────────────────────────
+// Tasarım'ın HomeScreen "Bugünün Vurgusu" mantığı (apps/tasarim/src/utils/
+// personalize.ts todaysHighlight): bugünün 13 transit kapısı × doğum haritasının
+// aktif kapıları. Sıra: (a) transit kapı, kişinin bir kapısının kanal ORTAĞINI
+// tamamlıyor = geçici kanal; (b) transit kapı kişide zaten aktif = çifte güç;
+// (c) ikisi de yoksa Güneş'in kapısı kişide tanımsız = dışarıdan gelen tema.
+// Fark (bilerek): Tasarım bir kapının YALNIZCA ilk kanalına bakıyordu; burada
+// kapının bütün kanalları taranır. Metin App.jsx HIGHLIGHT_TXT'te (7 dil).
+export async function computeTodayHighlight(birthDate, birthTime, utcOffset, now = new Date()) {
+  if (!birthDate || !birthTime || typeof utcOffset !== "number") return null;
+  const [Y, Mo, Da] = String(birthDate).split("-").map(Number);
+  const [hh, mm] = String(birthTime).split(":").map(Number);
+  if (!Y || !Mo || !Da || Number.isNaN(hh) || Number.isNaN(mm)) return null;
+  let A;
+  try { A = await engine(); } catch { return null; }
+  try {
+    const pJD = jdFromDate(new Date(Date.UTC(Y, Mo - 1, Da, hh, mm, 0) - utcOffset * 3600 * 1000));
+    const natal = [...activations(A, pJD), ...activations(A, designJD(A, pJD))];
+    const now13 = activations(A, jdFromDate(now));
+    if (!natal.length || !now13.length) return null;
+    const active = new Set(natal.map((a) => a.gate));
+    const transit = new Set(now13.map((a) => a.gate));
+    let seed = Math.floor(now.getTime() / 86400000);
+    for (const a of natal) seed = (seed * 31 + a.gate * 6 + a.line) % 1000000007;
+    // Hızlı gövdeler öne: yavaş gezegenin (Satürn, Plüton...) eşleşmesi aylarca aynı
+    // kalır, her gün aynı cümle çıkıyordu. Ay/Güneş kaynaklı eşleşme varsa o seçilir.
+    const RANK = { moon: 0, sun: 1, earth: 1, Mercury: 2, Venus: 2, Mars: 3 };
+    const rankOf = (g) => Math.min(...now13.filter((a) => a.gate === g).map((a) => RANK[a.planet] ?? 4));
+    const comp = [];
+    for (const ug of active) {
+      for (const ch of DATA.channels) {
+        if (ch.g[0] !== ug && ch.g[1] !== ug) continue;
+        const partner = ch.g[0] === ug ? ch.g[1] : ch.g[0];
+        if (!active.has(partner) && transit.has(partner)) comp.push({ userGate: ug, transitGate: partner, r: rankOf(partner) });
+      }
+    }
+    if (comp.length) {
+      const best = Math.min(...comp.map((c) => c.r));
+      const pool = comp.filter((c) => c.r === best).sort((a, b) => a.transitGate - b.transitGate || a.userGate - b.userGate);
+      const c = pool[seed % pool.length];
+      const sunGate = (now13.find((a) => a.planet === "sun") || {}).gate;
+      return { kind: "complete", userGate: c.userGate, transitGate: c.transitGate, fromSun: c.transitGate === sunGate };
+    }
+    const overlaps = [...active].filter((g) => transit.has(g)).sort((a, b) => a - b);
+    if (overlaps.length) return { kind: "overlap", gate: overlaps[seed % overlaps.length] };
+    const sun = now13.find((a) => a.planet === "sun");
+    return sun ? { kind: "outer", gate: sun.gate } : null;
+  } catch { return null; }
+}

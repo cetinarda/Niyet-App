@@ -95,6 +95,12 @@ function gateField(info, f, lang) {
   const v = info[f + l[0].toUpperCase() + l[1]];
   return v || info[f + "En"] || "";
 }
+// Tek bir kapının adı/teması (Bugünün vurgusu gibi Güneş-Ay dışı kapılar için).
+export function gateInfo(gate, lang = "tr") {
+  const info = GATES[String(gate)];
+  if (!info) return null;
+  return { gate, name: gateField(info, "n", lang), theme: gateField(info, "t", lang) };
+}
 // Evreye göre ay diski görseli (emoji değil, tipografik daire dolgusu ile
 // çizilemediği için Unicode ay sembolleri kullanıldı; her platformda var).
 const PHASE_GLYPH = ["🌑","🌒","🌓","🌔","🌕","🌖","🌗","🌘"];

@@ -749,6 +749,17 @@ DEĞİL) → İkili uyum → Bugünün ilk adımı. Aşağıdaki numaralar tarih
   başlayan eski kullanıcıya aynı motivasyonla "Dün yeniden başladın...", `restartOne`), sonra "{n} gün üst üste.
   Bugünkü 3 adımı tamamla, seri {m} güne çıksın" (`streakAlive/streakOne/doneOne`).
 
+✦ **BUGÜNÜN VURGUSU (1.4.3, YALNIZCA PREMIUM; kullanıcı: "güncel geçiş kutusu açılınca
+Sakin Tasarım'ın 'Bugünün vurgusu' yazısı da eklensin; 'Bugün gökyüzü seni tamamlıyor'
+klişesini kaldır, doğrudan mesaj"):** Güncel geçiş kutusunun açılır kısmında Vurgu/
+Nelere dikkat'in altında. Hesap `src/hd-natal.js` `computeTodayHighlight` (Tasarım
+`personalize.ts todaysHighlight` mantığı: 13 transit kapı × doğum haritası; geçici
+kanal > çifte güç > Güneş kapısı dışarıdan). Farklar: kapının TÜM kanalları taranır,
+Ay/Güneş kaynaklı eşleşme öne alınır (yavaş gezegen aynı cümleyi aylarca verirdi),
+transit kapı Güneş'inkiyse tema eki atlanır (üstteki haftalık temayı yineliyordu).
+Başlık cümlesi YOK. Metin `HIGHLIGHT_TXT` (7 dil). Doğum saati + şehir yoksa premium'a
+"saatini ekle" notu; ücretsizde tek satır kilit işareti (fiyat ekranına ATMAZ).
+
 ⚠️ **KAPSAM ETİKETLERİ (Eyl 2026, kullanıcı: "vurgu ve nelere dikkat değişmiyor,
 bakman gereken yer değişmiyor; kullanıcı bugüne ait şeyler bekliyor"):** Güneş bir
 HD kapısında ~6 gün kalır. Güncel geçiş kartında Güneş/Ay satırları kalır, altındaki

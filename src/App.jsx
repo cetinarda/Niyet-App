@@ -2480,6 +2480,36 @@ const TODAY_TXT = {
   // soulid/soulidGo KALDIRILDI: Bugün'deki Ruh Profili davet kartı, Keşfet
   // panelindeki aynısıyla ikilik yaratıyordu (kullanıcı isteği, bkz. görev #52).
 };
+// BUGÜNÜN VURGUSU (1.4.3, YALNIZCA PREMIUM; kullanıcı: "güncel geçiş kutusu açılınca
+// Sakin Tasarım'ın 'Bugünün vurgusu' yazısı da eklensin; 'Bugün gökyüzü seni
+// tamamlıyor' klişesini kaldır, doğrudan mesaj"). Hesap: hd-natal.js
+// computeTodayHighlight (doğum SAATİ + ŞEHİR şart). Başlık cümlesi YOK, yalnızca mesaj.
+const HIGHLIGHT_TXT = {
+  title:    { tr:"Bugünün vurgusu", en:"Today's highlight", de:"Heutiger Schwerpunkt", es:"Lo destacado de hoy", pt:"O destaque de hoje", fr:"Le point fort du jour", ja:"今日のハイライト" },
+  complete: { tr:"Gökyüzündeki {t}. kapı ({tn}) bugün senin {u}. kapınla ({un}) birleşip sende geçici bir kanal açıyor. Normalde başkalarında aradığın bu frekans bugün kendi içinde: {tth}",
+              en:"Gate {t} ({tn}) in the sky joins your gate {u} ({un}) today and opens a temporary channel in you. The frequency you usually look for in others is inside you today: {tth}",
+              de:"Das Tor {t} ({tn}) am Himmel verbindet sich heute mit deinem Tor {u} ({un}) und öffnet einen vorübergehenden Kanal in dir. Die Frequenz, die du sonst bei anderen suchst, ist heute in dir: {tth}",
+              es:"La puerta {t} ({tn}) del cielo se une hoy a tu puerta {u} ({un}) y abre en ti un canal temporal. La frecuencia que sueles buscar en otros está hoy dentro de ti: {tth}",
+              pt:"A porta {t} ({tn}) no céu junta-se hoje à tua porta {u} ({un}) e abre em ti um canal temporário. A frequência que costumas procurar nos outros está hoje dentro de ti: {tth}",
+              fr:"La porte {t} ({tn}) du ciel rejoint aujourd'hui ta porte {u} ({un}) et ouvre en toi un canal temporaire. La fréquence que tu cherches d'habitude chez les autres est en toi aujourd'hui : {tth}",
+              ja:"空のゲート{t}（{tn}）が今日、あなたのゲート{u}（{un}）とつながり、あなたの中に一時的なチャネルを開きます。ふだん他の人の中に探している周波数が、今日はあなたの内側にあります：{tth}" },
+  overlap:  { tr:"{g}. kapın ({n}) bugün gökyüzünde de açık, bu tema sende çifte güçle çalışıyor: {th}",
+              en:"Your gate {g} ({n}) is open in the sky today too, so this theme works in you at double strength: {th}",
+              de:"Dein Tor {g} ({n}) ist heute auch am Himmel offen, dieses Thema wirkt in dir doppelt stark: {th}",
+              es:"Tu puerta {g} ({n}) también está abierta hoy en el cielo, así que este tema actúa en ti con doble fuerza: {th}",
+              pt:"A tua porta {g} ({n}) também está aberta hoje no céu, por isso este tema atua em ti com dupla força: {th}",
+              fr:"Ta porte {g} ({n}) est aussi ouverte dans le ciel aujourd'hui, ce thème agit en toi avec une double force : {th}",
+              ja:"あなたのゲート{g}（{n}）は今日、空でも開いています。このテーマはあなたの中で二倍の力で働きます：{th}" },
+  outer:    { tr:"Güneş'in {g}. kapısı ({n}) senin haritanda tanımlı değil: bu tema bugün sana dışarıdan esiyor. Onu fark et, taşımak zorunda değilsin.",
+              en:"The Sun's gate {g} ({n}) isn't defined in your chart: this theme blows in from outside today. Notice it; you don't have to carry it.",
+              de:"Das Sonnentor {g} ({n}) ist in deinem Chart nicht definiert: Dieses Thema weht heute von außen herein. Nimm es wahr, du musst es nicht tragen.",
+              es:"La puerta {g} del Sol ({n}) no está definida en tu carta: este tema te llega hoy desde fuera. Obsérvalo; no tienes que cargarlo.",
+              pt:"A porta {g} do Sol ({n}) não está definida no teu mapa: este tema chega-te hoje de fora. Repara nele; não tens de o carregar.",
+              fr:"La porte {g} du Soleil ({n}) n'est pas définie dans ta carte : ce thème souffle aujourd'hui de l'extérieur. Remarque-le, tu n'as pas à le porter.",
+              ja:"太陽のゲート{g}（{n}）はあなたのチャートでは定義されていません。このテーマは今日、外から吹いてきます。気づくだけでいい、背負う必要はありません。" },
+  needTime: { tr:"Bugünün vurgusu için doğum saatini ve şehrini ekle.", en:"Add your birth time and city to see today's highlight.", de:"Füge Geburtszeit und Geburtsort hinzu, um den heutigen Schwerpunkt zu sehen.", es:"Añade tu hora y ciudad de nacimiento para ver lo destacado de hoy.", pt:"Adiciona a tua hora e cidade de nascimento para veres o destaque de hoje.", fr:"Ajoute ton heure et ta ville de naissance pour voir le point fort du jour.", ja:"今日のハイライトを見るには、出生時刻と出生地を追加してください。" },
+  locked:   { tr:"Haritanla bugünün gökyüzünün buluştuğu yer, Premium'da.", en:"Where your chart meets today's sky, with Premium.", de:"Wo dein Chart den heutigen Himmel trifft, mit Premium.", es:"Donde tu carta se encuentra con el cielo de hoy, con Premium.", pt:"Onde o teu mapa encontra o céu de hoje, com Premium.", fr:"Là où ta carte rencontre le ciel du jour, avec Premium.", ja:"あなたのチャートと今日の空が出会う場所。Premiumで。" },
+};
 // I Ching kırmızı butonu (Bugün ekranı, kullanıcı isteği). Buton metni
 // bilerek EYLEM CÜMLESİ ("bir öğüt al"), etiket değil: prototip/onboarding'de
 // kurulan üslupla tutarlı.
@@ -12205,6 +12235,35 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
       .catch(e => { console.warn("[ben] HD hesaplanamadi:", e); });
     return () => { alive = false; };
   }, [screen, lang, birthDate, birthTime, birthCity]);
+  // BUGÜNÜN VURGUSU (premium): doğum haritası × bugünün 13 transit kapısı.
+  // Yalnızca premium + Bugün ekranı; doğum saati/şehri yoksa "missing".
+  const [todayHighlight, setTodayHighlight] = useState(null);
+  useEffect(() => {
+    if (screen !== "bugun" || !isPremium) { setTodayHighlight(null); return; }
+    const loc = birthCity ? lookupCity(birthCity) : null;
+    if (!birthDate || !birthTime || !loc) { setTodayHighlight({ kind: "missing" }); return; }
+    let alive = true;
+    const [Y, Mo, Da] = birthDate.split("-").map(Number);
+    const off = effectiveUtcOffset(loc[0], loc[1], loc[2], Y, Mo, Da);
+    Promise.all([import("./hd-natal"), import("./hd-transit")])
+      .then(async ([n, tx]) => {
+        const h = await n.computeTodayHighlight(birthDate, birthTime, off, new Date());
+        if (!alive || !h) return;
+        const gi = (g) => tx.gateInfo(g, lang) || { name: String(g), theme: "" };
+        let text = "";
+        // Güneş'in kapısıysa tema, hemen üstteki "Bu haftanın teması" ile aynı: eki atla.
+        if (h.kind === "complete") {
+          let tpl = pickLang(HIGHLIGHT_TXT.complete, lang);
+          if (h.fromSun) tpl = tpl.replace(/\s?[:：]\s?\{tth\}/, lang === "ja" ? "。" : ".");
+          text = tpl.replace("{t}", h.transitGate).replace("{tn}", gi(h.transitGate).name).replace("{u}", h.userGate).replace("{un}", gi(h.userGate).name).replace("{tth}", gi(h.transitGate).theme);
+        }
+        else if (h.kind === "overlap") text = pickLang(HIGHLIGHT_TXT.overlap, lang).replace("{g}", h.gate).replace("{n}", gi(h.gate).name).replace("{th}", gi(h.gate).theme);
+        else text = pickLang(HIGHLIGHT_TXT.outer, lang).replace("{g}", h.gate).replace("{n}", gi(h.gate).name);
+        setTodayHighlight({ kind: h.kind, text });
+      })
+      .catch(e => { console.warn("[bugun] vurgu hesaplanamadi:", e); });
+    return () => { alive = false; };
+  }, [screen, lang, isPremium, birthDate, birthTime, birthCity, todayKey]);
   useEffect(() => {
     if (screen !== "bugun") return;
     let alive = true;
@@ -18720,6 +18779,26 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                           <div style={{ fontSize:13.5,color:BODY,fontFamily:INTER,lineHeight:1.5 }}>{transit.sun.gift}</div></div>
                         <div>{label(pickLang(TODAY_TXT.dikkat, lang), "#d9a0a0")}
                           <div style={{ fontSize:13.5,color:BODY,fontFamily:INTER,lineHeight:1.5 }}>{transit.sun.shadow}</div></div>
+                      </div>
+                    )}
+                    {/* BUGÜNÜN VURGUSU: yalnızca premium'da mesaj; ücretsizde tek satır
+                        nazik işaret (fiyat ekranına ATMAZ). */}
+                    {transitThemeOpen && (
+                      <div style={{ marginTop:14,paddingTop:12,borderTop:"1px solid rgba(232,192,122,0.16)",textAlign:"left",animation:"fadeIn .3s ease" }}>
+                        {label(`✦ ${pickLang(HIGHLIGHT_TXT.title, lang)}`, GOLD)}
+                        {isPremium ? (
+                          todayHighlight && todayHighlight.text ? (
+                            <div style={{ fontFamily:SERIF,fontSize:17,lineHeight:1.45,color:INK }}>{todayHighlight.text}</div>
+                          ) : todayHighlight && todayHighlight.kind === "missing" ? (
+                            <div style={{ fontSize:13,color:MUTE,fontFamily:INTER,lineHeight:1.5 }}>{pickLang(HIGHLIGHT_TXT.needTime, lang)}</div>
+                          ) : (
+                            <div style={{ fontSize:13,color:MUTE,fontFamily:JOST,letterSpacing:2 }}>...</div>
+                          )
+                        ) : (
+                          <div style={{ display:"flex",alignItems:"center",gap:7,fontSize:13,color:MUTE,fontFamily:INTER,lineHeight:1.5 }}>
+                            <span aria-hidden="true" style={{ fontSize:12,opacity:0.8 }}>🔒</span>{pickLang(HIGHLIGHT_TXT.locked, lang)}
+                          </div>
+                        )}
                       </div>
                     )}
                   </button>
