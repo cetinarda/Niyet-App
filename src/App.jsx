@@ -305,7 +305,7 @@ try { if (typeof window !== "undefined") window.__sakinResumeAudio = __resumeAll
 // bildirimi gider (1.3.4'te bu hata yaşandı). Doğru sıra:
 //   1) burada + pbxproj + build.gradle bump  → gönder
 //   2) App Store'da YAYINLANDIKTAN SONRA     → latest-ios-version.json bump
-const APP_VERSION = "1.4.2";
+const APP_VERSION = "1.4.3";
 
 // ── "NE YENİ" NOTLARI ───────────────────────────────────────────────────────
 // Telefon uygulamayı OTOMATİK güncellediğinde kullanıcı "yeni sürüm var"
@@ -317,7 +317,7 @@ const APP_VERSION = "1.4.2";
 // okumak boş metin riski taşır.
 // YENİ SÜRÜMDE: `version`ı APP_VERSION ile aynı yap ve metinleri güncelle.
 const WHATS_NEW = {
-  version: "1.4.2",
+  version: "1.4.3",
   // `since`: bu notların anlattığı özellikler hangi sürümde geldi. O sürümü
   // (ya da sonrasını) zaten görmüş kullanıcıya kart TEKRAR çıkmaz. 1.4.2 notları
   // 1.4.1'den SONRA gelen görünür özellikler: Çember, Niyet Mektubu, bildirim
