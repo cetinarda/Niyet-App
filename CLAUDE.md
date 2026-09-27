@@ -258,6 +258,15 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
       `setIfChanged` bu adı yok sayar. ASLA uydurma ad koyma.
     - `?go=attachment` hem `target()`'ta hem doğrudan yönlendirmede olmalı:
       telefonda köprü/karne hidrasyonu da `target()`'a gidiyor, yoksa /profil'e düşer.
+    - **İKİLİ UYUM: IP BAŞINA 1 ÜCRETSİZ ÇİFT (1.4.3, kullanıcı: "premium olmayanlara her IP
+      için 1 kez; şu an birden fazla yapabiliyorlar"):** yerel kural (`soulprofile.used.compat`,
+      1 çift) silip kurunca / "verilerimi sil" / başka tarayıcıda sıfırlanıyordu. Artık
+      `lib/entitlements.ts serverAllowsCompat` premium değilse ve çift yerelde yoksa
+      `netlify/functions/compat-gate.mjs`'e sorar (Blobs `sakin-compat`: IP özeti -> ilk çiftin
+      kısa özeti). Aynı çift serbest, farklı çift `denied` -> PremiumGate. FAIL-OPEN (ağ/Blobs
+      hatası = izin). Doğum bilgisi sunucuya GİTMEZ (çift kimliğinin cyrb53 özeti). ⚠️ CGNAT:
+      aynı mobil IP'yi paylaşan yabancılar tek hakkı paylaşır; sorun olursa `WINDOW_DAYS`
+      (0 = kalıcı). Gizlilik metinleri (3 yer, 7 dil) güncellendi.
     - **Keşfet giriş kapısı:** `SOULID_PREMIUM_GATE` (App.jsx başı) şu an `false` = herkese ücretsiz + "Ücretsiz" rozeti (`FREE_BADGE_TXT`, 7 dil; Eyl 2026'da "Yeni" yerine). `true` yapmak kilidi ve Premium rozetini geri getirir (tek satır).
     - ⚠️ **TEK MERKEZ = Niyet-App (kullanıcı kararı: "soulid reposunu unut").** `cetinarda/SoulProfile` reposu ve soulprofile.life sitesi ARTIK TAKİP EDİLMİYOR. Tüm SoulID geliştirmesi `apps/soulid` içinde yapılır, `public/embedded/soulid/`'e derlenir, sakin.life'tan yayınlanır. Sebep: iki yeri elle senkron tutmak main↔gdkpd ayrışmasının aynısını doğuruyordu; ayrıca bu oturumun git erişimi yalnızca niyet-app'e yetkili (SoulProfile'a push proxy tarafından reddediliyor).
     - **Bağlanma testinin paylaşılabilir adresi:** `sakin.life/baglanma` (EN girişi `/attachment`). `netlify.toml` bunu `/embedded/soulid/attachment/`'a **301** ile yollar. **200 rewrite KULLANMA:** embed `basePath=/embedded/soulid` ile derlendiği için farklı bir yolda Next istemci router'ı yolu eşleştiremez, hydration/gezinme bozulur. Adres uygulama içinde `TEST_URL` (app/attachment/page.tsx) + hikâye görselinde yazılı; değiştirirsen ikisini de güncelle.

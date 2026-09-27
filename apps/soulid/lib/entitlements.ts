@@ -94,6 +94,41 @@ export function recordCompatView(compatId: string): void {
   addToSet(KEY_COMPAT_IDS, compatId);
 }
 
+/**
+ * SUNUCU KAPISI (1.4.3, kullanici: "ikili uyum her IP icin 1 kez olsun"): yerel kayit
+ * uygulamayi silip kurunca / baska tarayicida sifirlaniyordu. Premium degilse ve
+ * bu cift yerelde zaten gorulmemisse, netlify `compat-gate`e sorulur: IP basina
+ * ilk ucretsiz cift saklanir, farkli cift "denied" alir. Sunucuya dogum bilgisi
+ * DEGIL, cift kimliginin kisa ozeti gider. Ag hatasi / bilinmeyen = izin
+ * (fail-open; yerel kural zaten calisiyor).
+ */
+function pairDigest(id: string): string {
+  // cyrb53: yalnizca esitlik icin; ters cevrilmesi amaclanmayan kisa ozet.
+  let h1 = 0xdeadbeef ^ 7, h2 = 0x41c6ce57 ^ 7;
+  for (let i = 0; i < id.length; i++) {
+    const c = id.charCodeAt(i);
+    h1 = Math.imul(h1 ^ c, 2654435761); h2 = Math.imul(h2 ^ c, 1597334677);
+  }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36).padStart(8, '0');
+}
+export async function serverAllowsCompat(compatId: string): Promise<boolean> {
+  if (sakinPremium()) return true;
+  if (readSet(KEY_COMPAT_IDS).has(compatId)) return true;
+  try {
+    const ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    const timer = ctrl ? setTimeout(() => ctrl.abort(), 6000) : null;
+    const r = await fetch('https://sakin.life/.netlify/functions/compat-gate', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pair: pairDigest(compatId) }), signal: ctrl ? ctrl.signal : undefined,
+    });
+    if (timer) clearTimeout(timer);
+    const j = await r.json().catch(() => null);
+    return !(j && j.verdict === 'denied');
+  } catch { return true; }
+}
+
 /** İki dogum-anahtarindan sirali, deterministik cift kimligi. */
 export function compatId(keyA: string, keyB: string): string {
   return [keyA, keyB].sort().join('~');

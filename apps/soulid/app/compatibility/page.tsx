@@ -15,7 +15,7 @@ import { generateCompatNarrative, type CompatNarrative } from '@/lib/compatibili
 import type { GalacticReport } from '@/lib/types';
 import { SIGN_NAMES_TR } from '@/lib/content/astrology-content';
 import { useT } from '@/lib/i18n';
-import { canViewCompat, recordCompatView, compatId, hasPremium } from '@/lib/entitlements';
+import { canViewCompat, recordCompatView, compatId, hasPremium, serverAllowsCompat } from '@/lib/entitlements';
 import { PremiumGate } from '@/components/PremiumGate';
 import { FORM_INPUT, BTN_COSMIC } from '@/lib/ui';
 import { IS_CAPACITOR } from '@/lib/nav';
@@ -124,7 +124,7 @@ export default function CompatibilityPage() {
       // İlk uyum (çift) ücretsiz; aynı çift tekrar → serbest; farklı çift +
       // hak dolmuşsa → premium.
       const cid = compatId(birthKey(me.birth), birthKey(other.birth));
-      if (!canViewCompat(cid)) {
+      if (!canViewCompat(cid) || !(await serverAllowsCompat(cid))) {
         setGated(true);
         setLoading(false);
         return;

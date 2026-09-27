@@ -67,7 +67,7 @@ Reklam ağı veya sosyal medya ile giriş yoktur.
 
 ## 4. Veri Güvenliği ve Saklama
 
-Tüm iletişim HTTPS ile şifrelenir; API anahtarları sunucu tarafındadır. Sunucuda tutulan veriler: bildirim kaydı (siz kapatana ya da verilerinizi silene kadar), Çember mesajları (en çok 48 saat), yasaklanan cihaz özetleri (yasak kalkana kadar) ve anonim kullanım sayaçları (kişiyi tanımlamaz).
+Tüm iletişim HTTPS ile şifrelenir; API anahtarları sunucu tarafındadır. Sunucuda tutulan veriler: bildirim kaydı (siz kapatana ya da verilerinizi silene kadar), Çember mesajları (en çok 48 saat), yasaklanan cihaz özetleri (yasak kalkana kadar), ikili uyumun ücretsiz hakkı için IP adresinizin geri çevrilemeyen özeti ile hesaplanan çiftin kısa özeti (doğum bilgisi ya da ad değil) ve anonim kullanım sayaçları (kişiyi tanımlamaz).
 
 ## 5. Çocukların Gizliliği
 

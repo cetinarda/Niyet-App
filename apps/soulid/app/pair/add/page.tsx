@@ -10,7 +10,7 @@ import { listReports, saveCompat } from '@/lib/supabase/reports';
 import { geocodePlace, type GeocodeResult } from '@/lib/geocoding';
 import { buildGalacticReport, birthKey } from '@/lib/report';
 import { compareReports, type CompatibilityResult } from '@/lib/compatibility';
-import { canViewCompat, recordCompatView, compatId, hasPremium } from '@/lib/entitlements';
+import { canViewCompat, recordCompatView, compatId, hasPremium, serverAllowsCompat } from '@/lib/entitlements';
 import { readSakinAvatar } from '@/lib/sakin-bridge';
 import { setActiveCompatId } from '@/lib/active-compat';
 import type { GalacticReport } from '@/lib/types';
@@ -183,7 +183,7 @@ export default function PairAddPage() {
         locale,
       );
       const cid = compatId(birthKey(me.birth), birthKey(rep.birth));
-      if (!canViewCompat(cid)) { setNova(false); setGated(true); setBusy(false); return; }
+      if (!canViewCompat(cid) || !(await serverAllowsCompat(cid))) { setNova(false); setGated(true); setBusy(false); return; }
       const res = compareReports(me, rep, locale);
       recordCompatView(cid);
       saveCompat({
