@@ -1495,7 +1495,7 @@ export const EXTRA_LANGS = {
     conn_lv3: "Nivel 3: se abre tras 21 dias constantes (x4)",
     evo_seed: "Semilla",
     evo_sapling: "Brote",
-    evo_tree: "Arbol",
+    evo_tree: "Árbol",
     evo_days: "dias",
     evo_desc: "Crece completando el tunel cada dia.",
     theme_light:  "Tema claro",

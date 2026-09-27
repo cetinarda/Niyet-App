@@ -445,6 +445,11 @@ Türkçe "Fide" → "Fidan" (kullanıcı tercihi, `evo_sapling`). "Orman" 7 dild
 aşamasından AYRI bir eksen ve dört aşamaya geçince "Ağaç = 3. Seviye, 21 gün"
 diye çelişiyordu.
 
+**DÖRT AŞAMA KUTUSU (1.4.3, kullanıcı: "hangi seviyedeyse o kutu yansın, diğerleri
+sönük"):** bitkinin altında Tohum · Fidan · Ağaç · Orman kutuları; bulunulan aşama element
+renginde parlar, diğerleri %50 soluk; altlarında başladığı gün ("başlangıç" / 3 / 7 / 21 gün,
+`EVO2_TXT.startLbl`). Bitki + "Sıradaki" satırı aynen duruyor.
+
 **Evrim göstergesi artık ÜÇ KUTU DEĞİL, TEK BİR BİTKİ.** `plantSVG(p, hue, size)`
 parametrik çizim: `p` (0..1, `min(1, gunSerisi/21)`) büyüdükçe gövde uzuyor,
 yaprak çiftleri sırayla AÇILIYOR (belirmiyor, yavaşça büyüyor) ve son üçte birde
@@ -1116,6 +1121,11 @@ koruma sunucuda.
   sonundaki `ip_hash` ALTER'ını çalıştırmalı; çalıştırılana kadar kayıt sütunsuz
   tekrar denenir, yalnızca cihaz banı çalışır. Gizlilik metinleri (7 dil + web) IP
   özetini anlatıyor.
+- **İLK GİRİŞ SERBEST (1.4.3, kullanıcı: "kişi chatle tanışsın, sonraki girişte temel görevler"):**
+  hiç girmemiş kişi (`sakin_cember_visited` yok) bağlantısını tamamlamadan BİR KEZ girer.
+  Hak `openCember` ile açılışta harcanır; o oturum `cemberFreeSession` ile açık kalır, Çember
+  hangi yoldan kapanırsa kapansın sıfırlanır. Bugün satırı bu sırada "İlk girişin serbest:
+  odayla tanış" der (`CEMBER_TXT.firstFree`, 7 dil). 13 yaş kapısı bundan ÖNCE gelir.
 - **Presence anahtarı oturumluk rastgele** (`"p"+random`): presence anahtarı odadaki
   HERKESE görünür, anonim ölçüm kimliğini (`getAnonId`) buraya KOYMA.
 - Test: sahte Supabase + sahte Groq ile sunucu uçtan uca (yavaş mod, link, kriz,

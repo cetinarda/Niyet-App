@@ -1609,6 +1609,9 @@ const CEMBER_TXT = {
   },
   crisisBreath:{ tr:"Birlikte nefes al", en:"Breathe together", de:"Gemeinsam atmen", es:"Respira con nosotros", pt:"Respira connosco", fr:"Respirer ensemble", ja:"一緒に呼吸する" },
   close:   { tr:"Kapat", en:"Close", de:"Schließen", es:"Cerrar", pt:"Fechar", fr:"Fermer", ja:"閉じる" },
+  // İLK GİRİŞ SERBEST (kullanıcı, Eyl 2026: "ilk giriş şartsız olsun, kişi chatle tanışsın;
+  // sonraki girişlerde temel görevleri yapsın").
+  firstFree: { tr:"İlk girişin serbest: odayla tanış", en:"Your first visit is open: meet the room", de:"Dein erster Besuch ist frei: lerne den Raum kennen", es:"Tu primera visita es libre: conoce la sala", pt:"A tua primeira visita é livre: conhece a sala", fr:"Ta première visite est libre : découvre le salon", ja:"最初の訪問は自由です。部屋をのぞいてみよう" },
   entryQuiet:{ tr:"Oda sessiz, ilk sen gel", en:"Quiet room, be the first", de:"Stiller Raum, sei der Erste", es:"Sala tranquila, sé el primero", pt:"Sala calma, sê o primeiro", fr:"Salon calme, sois le premier", ja:"静かな部屋、最初の一人に" },
 };
 // Takma ad rengi = cihazın element dilimi (sunucu `el`, 0-7).
@@ -3600,6 +3603,7 @@ const EVO2_TXT = {
   forest:    { tr:"Orman", en:"Forest", de:"Wald", es:"Bosque", pt:"Floresta", fr:"Forêt", ja:"森" },
   next:      { tr:"Sıradaki", en:"Next", de:"Als Nächstes", es:"Siguiente", pt:"A seguir", fr:"Ensuite", ja:"次は" },
   days:      { tr:"gün", en:"days", de:"Tage", es:"días", pt:"dias", fr:"jours", ja:"日" },
+  startLbl:  { tr:"başlangıç", en:"start", de:"Start", es:"inicio", pt:"início", fr:"début", ja:"開始" },
   full:      { tr:"En olgun hâlindesin. Kökler derinleşmeye devam ediyor.",
                en:"You are at full growth. The roots keep deepening.",
                de:"Du bist voll gewachsen. Die Wurzeln vertiefen sich weiter.",
@@ -7807,6 +7811,19 @@ export default function SakinApp() {
   // ÇEMBER (canlı oda) tam ekran katmanı + Bugün kartındaki "şu an N kişi" sayacı.
   const [showCember, setShowCember] = useState(false);
   const [cemberCount, setCemberCount] = useState(null);
+  // İlk giriş serbest: hiç girmemiş kişi bağlantısını tamamlamadan da BİR KEZ girer.
+  // Hak açılışta harcanır (oturum boyunca açık kalır, sonraki girişte temel görevler şart).
+  const [cemberFirstFree, setCemberFirstFree] = useState(() => { try { return localStorage.getItem("sakin_cember_visited") !== "1"; } catch (_) { return false; } });
+  const [cemberFreeSession, setCemberFreeSession] = useState(false);
+  // Çember hangi yoldan kapanırsa kapansın (geri tuşu, "Bağlan'a git", "nefes al") serbest oturum biter.
+  useEffect(() => { if (!showCember) setCemberFreeSession(false); }, [showCember]);
+  const openCember = () => {
+    if (cemberFirstFree) {
+      setCemberFreeSession(true); setCemberFirstFree(false);
+      try { localStorage.setItem("sakin_cember_visited", "1"); } catch (_) {}
+    }
+    setShowCember(true);
+  };
   // ANONIM KULLANIM OLCUMU opt-out toggle'i (App Store gizlilik kontrolu). ACIK
   // (varsayilan) = veri paylasilir; kapatilinca sakin_analytics_off=1 yazilir ve
   // src/analytics.js her gonderiden once bunu okuyup susar.
@@ -9057,11 +9074,11 @@ export default function SakinApp() {
   // ÇEMBER sayacı: yalnızca Bugün ekranındayken, bağlantı tamamsa ve oda açık
   // değilken iki odanın presence'ını İZLER (katılmadan). Ekrandan çıkınca kapanır.
   useEffect(() => {
-    if (screen !== "bugun" || !allStepsComplete || showCember) return;
+    if (screen !== "bugun" || (!allStepsComplete && !cemberFirstFree) || showCember) return;
     let bd = ""; try { bd = localStorage.getItem("sakin_birth_date") || ""; } catch (_) {}
     if (isCemberMinor(bd)) return; // 13 yaş altı: oda hiç izlenmez
     return watchCemberCount(setCemberCount);
-  }, [screen, allStepsComplete, showCember]);
+  }, [screen, allStepsComplete, cemberFirstFree, showCember]);
 
   // ── GÜNÜN SAATİNE GÖRE GİRİŞ EKRANI ─────────────────────────────────────────
   // Kullanıcı: "appe akşam girdim bağlanmak istedim ama 'bugünü nasıl geçirmek
@@ -13299,8 +13316,8 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
       <NotifNoteCard note={notifNote} lang={lang} onClose={() => setNotifNote(null)} />
       {/* ÇEMBER: canlı oda (tam ekran, alt barın üstünde). Kapı: bugünkü bağlantı. */}
       {showCember && (
-        <CemberScreen lang={lang} unlocked={allStepsComplete} minor={isCemberMinor(birthDate)}
-          onClose={() => setShowCember(false)}
+        <CemberScreen lang={lang} unlocked={allStepsComplete || cemberFreeSession} minor={isCemberMinor(birthDate)}
+          onClose={() => { setShowCember(false); setCemberFreeSession(false); }}
           onGoBaglan={() => { setShowCember(false); setScreen("mandala"); }}
           onGoNefes={() => { setShowCember(false); setScreen("nefes"); }} />
       )}
@@ -14727,7 +14744,9 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                 </div>
               </div>
               <div style={{ display:"flex",gap:8,marginBottom:20 }}>
-                <button className="sakin-btn-primary" style={{ flex:1 }} onClick={()=>setScreen("nefes")}>
+                {/* Sabah zaten yapılmışken de sıra AYNI: sabah → gün → nefes (kullanıcı:
+                    "sabahtan devam et deyince günü atlayıp nefese geçiyor"). */}
+                <button className="sakin-btn-primary" style={{ flex:1 }} onClick={()=>setScreen("gun")}>
                   {t("btn_continue")}
                 </button>
                 <button onClick={()=>{ setStepsCompleted(prev=>{ const next={...prev}; delete next.sabah; localStorage.setItem("sakin_steps_"+todayKey,JSON.stringify(next)); return next; }); }}
@@ -16518,6 +16537,26 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                   <span style={{ fontSize:11.5,color:"#8e8e99",fontFamily:"'Inter',sans-serif" }}>
                     {cur} {t("evo_days")}
                   </span>
+                </div>
+
+                {/* DÖRT AŞAMA KUTUSU (kullanıcı: "hangi seviyedeyse o kutu ışık gibi yansın,
+                    diğerleri sönük"): Tohum · Fidan · Ağaç · Orman, altında başladığı gün. */}
+                <div style={{ display:"flex",gap:6,width:"100%",maxWidth:340 }}>
+                  {MARKS.map((m, i) => {
+                    const on = i === idx;
+                    return (
+                      <div key={i} style={{ flex:1,minWidth:0,padding:"7px 2px 6px",borderRadius:10,textAlign:"center",
+                        display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:2,
+                        background: on ? `${accent}1f` : "rgba(255,255,255,0.02)",
+                        border: `1px solid ${on ? accent + "88" : "rgba(255,255,255,0.07)"}`,
+                        boxShadow: on ? `0 0 14px ${accent}40, inset 0 0 10px ${accent}1a` : "none",
+                        opacity: on ? 1 : 0.5,transition:"all 0.4s ease" }}>
+                        <span style={{ fontFamily:"'Jost',sans-serif",fontSize:11.5,letterSpacing:0.6,fontWeight: on ? 500 : 400,
+                          color: on ? accent : "#a8a2bd",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",maxWidth:"100%" }}>{m.label}</span>
+                        <span style={{ fontFamily:"'Inter',sans-serif",fontSize:10,color: on ? "#cfc7e0" : "#7d778f" }}>{m.d === 0 ? pickLang(EVO2_TXT.startLbl, lang) : `${m.d} ${pickLang(EVO2_TXT.days, lang)}`}</span>
+                      </div>
+                    );
+                  })}
                 </div>
 
                 {/* Aşama içi ilerleme çubuğu: her gün gözle görülür şekilde doluyor */}
@@ -18334,6 +18373,9 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
               <div style={{ ...SURF,padding:"16px 18px",display:"flex",alignItems:"center",gap:16 }}>
                 <span style={{ width:56,height:56,flexShrink:0,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",
                   fontFamily:SERIF,fontSize:32,lineHeight:1,color:"#f0d29a",border:`1px solid ${GOLD}66`,
+                  // Düz hizalı rakam: Cormorant'ın eski üslup rakamlarında 3/4/5/7/9 taban
+                  // çizgisinin altına sarkıyor, daire içinde aşağıda görünüyordu (kullanıcı bildirdi).
+                  fontVariantNumeric:"lining-nums",fontFeatureSettings:'"lnum" 1',
                   background:"radial-gradient(circle, rgba(232,192,122,0.16), transparent 70%)" }}>{num}</span>
                 <span style={{ flex:1,minWidth:0 }}>
                   <span style={{ display:"block",fontFamily:SERIF,fontSize:23,color:INK,lineHeight:1.15,marginBottom:4 }}>{kw}</span>
@@ -18627,15 +18669,15 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                     tamamlamayana kilitli davet (dokununca açıklamalı kilit ekranı). */}
                 {/* 13 yaş altına Çember satırı HİÇ gösterilmez (kilitli oda merak uyandırmasın). */}
                 {!isCemberMinor(birthDate) && (
-                <button onClick={() => { try { haptic(); } catch (_) {} setShowCember(true); }}
+                <button onClick={() => { try { haptic(); } catch (_) {} openCember(); }}
                   style={{ ...BTN,marginTop:14,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.12)",display:"flex",alignItems:"center",gap:12 }}>
-                  {icon("◌", allStepsComplete ? "#82d9a3" : LAV, 36, 15)}
+                  {icon("◌", (allStepsComplete || cemberFirstFree) ? "#82d9a3" : LAV, 36, 15)}
                   <span style={{ flex:1,minWidth:0 }}>
                     <span style={{ display:"block",fontSize:15,color:INK,fontFamily:JOST,fontWeight:300 }}>
                       {pickLang(CEMBER_TXT.title, lang)} · <span style={{ color:MUTE }}>{pickLang(CEMBER_TXT.live, lang)}</span>
                     </span>
-                    <span style={{ display:"block",fontSize:12,color: allStepsComplete ? "#82d9a3" : MUTE,fontFamily:INTER,marginTop:2,lineHeight:1.45 }}>
-                      {!allStepsComplete ? pickLang(CEMBER_TXT.locked, lang)
+                    <span style={{ display:"block",fontSize:12,color: (allStepsComplete || cemberFirstFree) ? "#82d9a3" : MUTE,fontFamily:INTER,marginTop:2,lineHeight:1.45 }}>
+                      {!allStepsComplete ? pickLang(cemberFirstFree ? CEMBER_TXT.firstFree : CEMBER_TXT.locked, lang)
                         : cemberCount > 0 ? pickLang(CEMBER_TXT.here, lang).replace("{n}", String(cemberCount))
                         : pickLang(CEMBER_TXT.entryQuiet, lang)}
                     </span>
@@ -18894,21 +18936,28 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
       })()}
 
       {screen==="ayarlar" && (
-        <div style={{ maxWidth:520,width:"100%",padding:"40px 22px 140px",position:"relative",zIndex:1,margin:"0 auto" }}>
+        <div style={{ maxWidth:520,width:"100%",padding:"32px 22px 140px",position:"relative",zIndex:1,margin:"0 auto" }}>
           {/* GERİ BUTONU: kullanıcı: "ayarlardan geri dönüş çıkış yok".
               Ayarlar ☰ menüsünden açılıyor, ☰ ise yalnızca "Ben" sekmesinde var;
               üstteki ⌂/☰ barı burada gizli olduğu için sayfa çıkışsız kalmıştı.
               Ayrıca alt bar da bu sayfada gösteriliyor (aşağıdaki nota bak), yani
               artık iki çıkış yolu var: bu ok ve alt bardaki sekmeler. */}
-          <button onClick={()=>{ try{haptic();}catch(_){} setScreen("harita"); }} aria-label={t("back")}
-            style={{ WebkitAppearance:"none",appearance:"none",position:"absolute",top:32,left:14,
-              width:40,height:40,borderRadius:"50%",background:"rgba(255,255,255,0.05)",
-              border:"1px solid rgba(255,255,255,0.12)",color:"#ddd",fontSize:18,cursor:"pointer",
-              display:"flex",alignItems:"center",justifyContent:"center",lineHeight:1,paddingRight:2 }}>
-            ←
-          </button>
-          <div style={{ fontFamily:"'Jost',sans-serif",fontWeight:200,fontSize:26,letterSpacing:4,color:"#e8e0f4",marginBottom:28,textAlign:"center" }}>
-            {pickLang(TAB_TXT.ayarlar, lang)}
+          {/* Başlık satırı: geri düğmesi + başlık AYNI satırda dikey ortalı (kullanıcı:
+              "hizalama hatası"). Eskiden düğme mutlak konumluydu, başlık ondan aşağıda
+              kalıyordu; ok da yazı karakteri olduğu için dairede ortalanmıyordu (SVG). */}
+          <div style={{ display:"grid",gridTemplateColumns:"40px 1fr 40px",alignItems:"center",gap:8,marginBottom:28 }}>
+            <button onClick={()=>{ try{haptic();}catch(_){} setScreen("harita"); }} aria-label={t("back")}
+              style={{ WebkitAppearance:"none",appearance:"none",width:40,height:40,padding:0,borderRadius:"50%",background:"rgba(255,255,255,0.05)",
+                border:"1px solid rgba(255,255,255,0.12)",color:"#ddd",cursor:"pointer",
+                display:"flex",alignItems:"center",justifyContent:"center" }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M19 12H5M11 6l-6 6 6 6" />
+              </svg>
+            </button>
+            <div style={{ fontFamily:"'Jost',sans-serif",fontWeight:200,fontSize:26,lineHeight:1.2,letterSpacing:4,color:"#e8e0f4",textAlign:"center" }}>
+              {pickLang(TAB_TXT.ayarlar, lang)}
+            </div>
+            <span aria-hidden="true" />
           </div>
           {(() => {
             // Gruplu liste (referans tasarımın yapısı, Sakin'in dili).
