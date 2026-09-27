@@ -6,15 +6,16 @@
 //
 // Native bridge lives in `ios/App/App/SakinNowPlaying.swift`.
 
-import { Capacitor } from "@capacitor/core";
+import { Capacitor, registerPlugin } from "@capacitor/core";
 
 const isNative = Capacitor.isNativePlatform();
+// Yalnızca iOS'ta yerel karşılığı var (SakinViewController.capacitorDidLoad içinde
+// registerPluginInstance ile kaydedilir). Android'de çağrılmaz.
+const NativeNP = isNative && Capacitor.getPlatform() === "ios" ? registerPlugin("SakinNowPlaying") : null;
 
 function plugin() {
   try {
-    if (!isNative) return null;
-    const p = Capacitor.Plugins?.SakinNowPlaying;
-    return p || null;
+    return NativeNP;
   } catch (_) {
     return null;
   }
@@ -31,7 +32,7 @@ function plugin() {
 export function showNowPlaying({ title, artist } = {}) {
   const p = plugin();
   if (!p) return;
-  try { p.show({ title: title || "Sakin Frekans", artist: artist || "Sakin" }); } catch (_) {}
+  try { Promise.resolve(p.show({ title: title || "Sakin Frekans", artist: artist || "Sakin" })).catch(() => {}); } catch (_) {}
 }
 
 /**
@@ -41,7 +42,7 @@ export function showNowPlaying({ title, artist } = {}) {
 export function updateNowPlayingState(playing) {
   const p = plugin();
   if (!p) return;
-  try { p.updateState({ playing: !!playing }); } catch (_) {}
+  try { Promise.resolve(p.updateState({ playing: !!playing })).catch(() => {}); } catch (_) {}
 }
 
 /**
@@ -50,7 +51,7 @@ export function updateNowPlayingState(playing) {
 export function clearNowPlaying() {
   const p = plugin();
   if (!p) return;
-  try { p.clear(); } catch (_) {}
+  try { Promise.resolve(p.clear()).catch(() => {}); } catch (_) {}
 }
 
 /**

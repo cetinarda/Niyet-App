@@ -584,9 +584,14 @@ günde 4, yeni kullanıcıya 5 bildirim gidiyordu. Artık TEK fonksiyon:
   notifications" (16+) / "app-settings:" adresi, Capacitor sisteme devrediyor, yerel kod
   YOK. Android: YEREL eklenti `android/.../SakinSettingsPlugin.java` (MainActivity'de
   `registerPlugin`, proguard'da `app.sakin.life.**` keep). Dönüşte izin yeniden okunur,
-  verildiyse bildirimler + push + mektup hemen kurulur. ⚠️ iOS'taki `SakinNowPlaying.swift`
-  capacitor.config `packageClassList`'te YOK, yani hiç kaydedilmiyor (kilit ekranı
-  kontrolleri çalışmıyor olabilir; bilinen, dokunulmadı).
+  verildiyse bildirimler + push + mektup hemen kurulur. ✅ iOS `SakinNowPlaying.swift` (kilit ekranı
+  kontrolleri) 1.4.3'e kadar HİÇ kaydedilmemişti (packageClassList yalnızca npm
+  eklentilerini listeler). Artık `SakinViewController.capacitorDidLoad` içinde
+  `bridge?.registerPluginInstance(SakinNowPlaying())`, JS `src/nowplaying.js`
+  `registerPlugin("SakinNowPlaying")` (yalnızca iOS). Kullanıcı onayladı. Yerel kendi
+  eklenti eklersen AYNI yoldan kaydet. **Gizlilik manifesti** `ios/App/App/PrivacyInfo.
+  xcprivacy` artık App hedefinin Resources'ında (pbxproj C3D4E5F6...) ve içeriği App
+  Store Connect App Privacy beyanıyla BİREBİR; birini değiştirirsen ötekini de.
 - **İzin zamanı:** artık ilk açılışta SORULMUYOR. `askNotifPermissionOnce`: ilk
   nefes bitince, tanışma bitince ya da en geç ikinci açılışta, bir kez
   (`sakin_notif_asked`).

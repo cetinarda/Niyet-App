@@ -43,6 +43,11 @@ class SakinViewController: CAPBridgeViewController, UIScrollViewDelegate {
 
     override func capacitorDidLoad() {
         super.capacitorDidLoad()
+        // Kilit ekranı / Kontrol Merkezi oynatma kontrolleri (Apple 2.5.4: arka planda
+        // ses çalan uygulama bu kontrolleri sunmalı). Eklenti SakinNowPlaying.swift'te
+        // yazılıydı ama HİÇ kaydedilmemişti (capacitor.config packageClassList yalnızca
+        // npm eklentilerini listeler), JS tarafı onu hiç bulamıyordu (1.4.3'te düzeltildi).
+        bridge?.registerPluginInstance(SakinNowPlaying())
         // Capacitor'ın dış scroll delegate'ini, davranışının bir üst kümesiyle değiştir.
         // (WKScrollView tek bir dış delegate destekler; Capacitor'ınki yalnızca
         // scrollViewWillBeginZooming yapıyordu — aşağıda birebir kopyalandı.)
