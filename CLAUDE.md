@@ -1340,6 +1340,17 @@ Yani prompt değişikliği = App.jsx değişikliği = 4 branch'a sync.
   değeri metne girdi. Çözüm: ham sayı yasağı, veri ancak anlamına çevrilerek
   kullanılabilir.
 
+**DEVAM SORUSU (1.4.3, kullanıcı: "yanıta doğrudan cevap verebilsin; üstün zekâ, şefkatli
+bağ, yeni soruyu cevaplasın"):** cevabın altında yanıt kutusu (`aynaThread`, en çok 8 tur).
+`generateAynaFollow` GERÇEK sohbet geçmişi gönderir (user: ilk soru, assistant: ilk cevap,
+son 4 devam turu, user: yeni yanıt; uzunlar kırpılır, sunucu sınırı 20.000 kr). Yönerge
+`AYNA_FOLLOW_DIRECTIVE` hem SİSTEM'de hem son mesajda: önce onun kelimesine dokunan 1-2
+cümlelik bağ, sonra tekrar etmeden yeni katman, bölüm/başlık yok, 4-9 cümle, kriz ifadesinde
+yalnızca yanında ol + 112. ⚠️ Canlı test dersleri: yönerge yalnızca son mesajdayken model
+"Paylaştığın için teşekkür ederim" kalıbını bırakmadı (sisteme taşındı); yönergeye ÖRNEK
+CÜMLE koyunca model onu kelimesi kelimesine kopyaladı (örnek kaldırıldı, koyma). Onay + günlük
+AI hakkı ana soruyla aynı, arşive "↳ " önekiyle yazılır, analitik `ayna_follow`.
+
 **SINIFLANDIRICI DİLİ (1.4.2 denetimi):** `aynaSoruTipi` Türkçe anahtar kelimeleri
 YALNIZCA `lang==="tr"`de arar (İspanyolca "hasta" = "-e kadar" beden sanılıyordu),
 küçük harf dile göre, "tired" listede YOK ("tired of this relationship" duygu).

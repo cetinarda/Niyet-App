@@ -201,6 +201,7 @@ export function mergeBatch(rec, body, now) {
     }
     // ⚠️ Ayna "iyi geldi mi?" oyu istemciden Eyl 2026'dan beri gönderiliyordu ama
     // burada HİÇ işlenmiyordu, yani oylar kayboluyordu. Artık sayılıyor.
+    else if (e === "ayna_follow") { bump("ayna_follow"); }   // Ayna devam sorusu (metin GİTMEZ)
     else if (e === "ayna_feedback") {
       const v = it.v === "up" || it.v === "down" ? it.v : null;
       const tip = typeof it.tip === "string" && /^[a-z]{2,14}$/.test(it.tip) ? it.tip : "genel";

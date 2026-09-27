@@ -2085,6 +2085,22 @@ const ONB_I18N = {
   kNoTimeShort:{ tr:"saat yok", en:"no time", de:"keine Uhrzeit", es:"sin hora", pt:"sem hora", fr:"sans heure", ja:"時間なし" },
 };
 // Doğum bilgisi kaydı sonrası anında karşılık kartı (Sprint 2, aha anı).
+// AYNA DEVAM SORUSU (kullanıcı, Eyl 2026: "yanıta doğrudan cevap verebilsin; yeni yanıt
+// üstün zekâ kullansın, onunla şefkatli bir bağ kursun ve yeni soruyu cevaplasın").
+const AYNA_FOLLOW_TXT = {
+  ph:       { tr:"Bu cevaba yanıt ver ya da devam et...", en:"Reply to this answer or keep going...", de:"Antworte darauf oder frag weiter...", es:"Responde a esta respuesta o sigue...", pt:"Responde a esta resposta ou continua...", fr:"Réponds à cette réponse ou continue...", ja:"この答えに返信するか、続けて聞いてみて..." },
+  send:     { tr:"Gönder", en:"Send", de:"Senden", es:"Enviar", pt:"Enviar", fr:"Envoyer", ja:"送信" },
+  thinking: { tr:"Ayna seni dinliyor...", en:"The Mirror is listening...", de:"Der Spiegel hört dir zu...", es:"El Espejo te escucha...", pt:"O Espelho está a ouvir-te...", fr:"Le Miroir t'écoute...", ja:"鏡があなたの声を聴いています..." },
+  err:      { tr:"Şu an yanıt alınamadı, birazdan tekrar dene.", en:"Couldn't get a reply right now, try again shortly.", de:"Gerade keine Antwort möglich, versuch es gleich noch einmal.", es:"Ahora no se pudo obtener respuesta, inténtalo en un momento.", pt:"Não foi possível obter resposta agora, tenta daqui a pouco.", fr:"Impossible d'obtenir une réponse pour l'instant, réessaie bientôt.", ja:"今は返答を受け取れませんでした。少ししてからもう一度どうぞ。" },
+};
+// Modele giden yönerge (dil kilidi sunucuda; cevap kullanıcının dilinde gelir).
+const AYNA_FOLLOW_DIRECTIVE = `Kullanıcı az önceki cevabına doğrudan yanıt verdi ya da konuşmayı sürdürdü. Konuşmanın TAMAMINI hesaba kat.
+1) Önce bir iki cümleyle onunla şefkatli bir bağ kur: söylediğini gerçekten duyduğunu, ONUN kendi kelimelerine dokunarak göster. İlk cümle doğrudan onun söylediği şeyin özüne değsin, onun kelimelerinden birini taşısın. YASAK açılışlar: "Paylaştığın için teşekkür ederim", "Seni anlıyorum", "Duygularını paylaştığın için". Abartılı övgü yok. Kendinden "biz" diye söz etme.
+2) Sonra yeni söylediğine DOĞRUDAN ve derinlemesine cevap ver. Önceki cevabını TEKRAR ETME, üstüne yeni bir katman aç; ona gerçekten özgü bir iç görü sun. Önceki cevapta onu yanlış anladıysan bunu açıkça ve sadece bir kez söyleyip düzelt.
+3) Gerekiyorsa tek bir somut adım öner (nefes için [[NEFES:Diyafram]] gibi, uygulama bölümü için [[EKRAN:nefes]] gibi); gerekmiyorsa önerme.
+4) Başlık, madde işareti ya da bölüm (Ayna, Senin için gibi) KULLANMA; akan, sıcak ve net bir metin yaz. Uzunluk 4-9 cümle.
+5) Söylediği gerçekten belirsizse sonunda tek bir nazik netleştirme sorusu sorabilirsin.
+6) Kendine zarar verme ya da yaşamına son verme ifadesi varsa yorum yapma: yalnızca şefkatle yanında ol, güvendiği birine ya da bir uzmana hemen ulaşmasını, acil durumda 112'yi (bulunduğu ülkenin acil numarasını) aramasını söyle.`;
 // TAM AKORT: yedi adımın hepsi (7/7) tamamlanınca Bağlan tünelinin altın hâli.
 const FULL_CHORD_TXT = {
   title: { tr:"Tam akort · 7/7", en:"Full chord · 7/7", de:"Voller Akkord · 7/7", es:"Acorde pleno · 7/7", pt:"Acorde pleno · 7/7", fr:"Accord parfait · 7/7", ja:"完全な和音 · 7/7" },
@@ -8775,6 +8791,10 @@ export default function SakinApp() {
   // kötü cevap veriyoruz sorusunu veriyle cevaplayabilmek için).
   const [aynaSonTip, setAynaSonTip] = useState("genel");
   const [showAynaGecmis, setShowAynaGecmis] = useState(false);
+  // Devam sohbeti: [{ q, a, err }]. Yeni ana soruda ve "yeni arama"da sıfırlanır.
+  const [aynaThread, setAynaThread] = useState([]);
+  const [aynaFollowDraft, setAynaFollowDraft] = useState("");
+  const [aynaFollowLoading, setAynaFollowLoading] = useState(false);
   const [aynaGecmisTemizleOnay, setAynaGecmisTemizleOnay] = useState(false);
   const aynaGecmisiKaydet = (soru, cevap) => {
     setAynaArsiv(prev => {
@@ -10845,6 +10865,7 @@ ${facts}
     setSikayetAnaliz("__loading__");
     setAynaGeriBildirim(null);
     setAynaCevapGecerli(false);
+    setAynaThread([]); setAynaFollowDraft("");
     // Rüya modu bir kerelik: bu gönderim tüketir, mod kapanır (bir sonraki
     // soru genel şikayet/soru akışına döner).
     const ruyaModu = aynaRuyaModu;
@@ -11006,6 +11027,42 @@ ${kisiselProfil()}${kisiselBagiam}${sureklilik}${tipIpucu}${louiseDirektif}${KIT
       aynaGecmisiKaydet(sikayet, d.text);
       sorguKaydet(ruyaModu ? "rüya" : "şikayet", sikayet);
     } catch(e) { setSikayetAnaliz(t("err_connection_prefix") + (e?.message || String(e))); console.error("SikayetAnaliz error:", e); }
+  };
+  // AYNA DEVAM: önceki soru + cevap(lar) GERÇEK sohbet geçmişi olarak (user/assistant)
+  // gider; model ne dediğini hatırlar. Son 4 tur tutulur, uzun cevaplar kırpılır
+  // (sunucu sınırı 20.000 karakter). Onay + günlük AI hakkı ana soruyla aynı.
+  const generateAynaFollow = async () => {
+    const q = aynaFollowDraft.trim();
+    if (!q || aynaFollowLoading || !aynaCevapGecerli) return;
+    setAynaFollowLoading(true);
+    const clip = (x, n) => { const s = String(x || ""); return s.length > n ? s.slice(0, n) + "..." : s; };
+    const msgs = [
+      { role:"user", content:`Kullanıcının sorusu: "${sanitizeInput(sikayet)}"${sikayetHis ? `\nHissi: "${sanitizeInput(sikayetHis)}"` : ""}` },
+      { role:"assistant", content: clip(sikayetAnaliz, 3500) },
+    ];
+    aynaThread.filter(x => x.a).slice(-4).forEach(x => { msgs.push({ role:"user", content: clip(sanitizeInput(x.q), 800) }); msgs.push({ role:"assistant", content: clip(x.a, 2000) }); });
+    let facts = ""; try { facts = await gatherAynaFacts(q); } catch (_) {}
+    msgs.push({ role:"user", content:`${sanitizeInput(q)}\n\n[YÖNERGE]\n${AYNA_FOLLOW_DIRECTIVE}${facts ? `\n${facts}` : ""}` });
+    // Yönerge SİSTEM talimatında da: yalnızca son mesajdayken model kalıp açılışı
+    // ("paylaştığın için teşekkürler") bırakmıyordu (canlı testte yakalandı).
+    const sys = (withReason) => `${buildMirrorSystemPrompt(lang, nextCreativeDomain(lang))}${withReason ? aynaReasoningDirective(lang) : ""}
+${kisiselProfil()}${aynaSureklilikBaglami(aynaArsiv)}
+BU BİR DEVAM SOHBETİ. KURALLAR:
+${AYNA_FOLLOW_DIRECTIVE}`;
+    const call = (withReason) => aiFetch({ method:"POST", headers:{"Content-Type":"text/plain"},
+      body: JSON.stringify({ max_tokens:1500, lang, system: sys(withReason), ragQuery: q, messages: msgs }) });
+    try {
+      let res = await call(true); let d = await res.json(); let ok = res.ok && !d.error && d.text;
+      // Ana soruyla aynı ders: <think> bütçeyi yerse düşünmesiz tek yeniden deneme.
+      if (!ok) { res = await call(false); d = await res.json(); ok = res.ok && !d.error && d.text; }
+      if (!ok) { setAynaThread(prev => [...prev, { q, a: "", err: true }]); return; }
+      setAynaThread(prev => [...prev, { q, a: d.text }]);
+      setAynaFollowDraft("");
+      aynaGecmisiKaydet("↳ " + q, d.text);
+      try { track("ayna_follow", { n: Math.min(9, aynaThread.length + 1) }); } catch (_) {}
+    } catch (_) {
+      setAynaThread(prev => [...prev, { q, a: "", err: true }]);
+    } finally { setAynaFollowLoading(false); }
   };
   // YARIM KALAN SORUYU SÜRDÜR (kullanıcı, Eyl 2026): doğum bilgisi yokken sorulan
   // soru "__needbirth__" davetinde bekler. Kullanıcı bilgisini girip Ayna'ya
@@ -15629,6 +15686,49 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                     else if (type === "screen") { setScreen(val); }
                   }} />
                 </div>
+                {/* DEVAM SOHBETİ: kullanıcının yanıtları (sağda, balon) + Ayna'nın cevapları. */}
+                {aynaThread.map((x, i) => (
+                  <div key={i} style={{ marginBottom:22 }}>
+                    <div style={{ display:"flex",justifyContent:"flex-end",marginBottom:12 }}>
+                      <div style={{ maxWidth:"86%",padding:"10px 14px",borderRadius:"16px 16px 4px 16px",background:"rgba(160,112,208,0.14)",
+                        border:"1px solid rgba(160,112,208,0.32)",color:"#e3d8f4",fontSize:14,lineHeight:1.6,fontFamily:"'Inter',sans-serif",whiteSpace:"pre-wrap",overflowWrap:"anywhere" }}>{x.q}</div>
+                    </div>
+                    {x.err ? (
+                      <div style={{ fontSize:12.5,color:"#b08080",fontFamily:"'Inter',sans-serif" }}>{pickLang(AYNA_FOLLOW_TXT.err, lang)}</div>
+                    ) : (
+                      <div style={{ fontSize:14,color:"#ccc0e0",lineHeight:2.0,whiteSpace:"pre-wrap",fontFamily:"'Inter',sans-serif" }}>
+                        <FreqText text={x.a} onNav={(type, val) => {
+                          if (type === "glossary") { setKilavuzQ(val); setShowKilavuz(true); }
+                          else if (type === "freq")   { pendingFreqRef.current = val; setScreen("ses"); }
+                          else if (type === "breath") { pendingBreathRef.current = val; setScreen("nefes"); }
+                          else if (type === "screen") { setScreen(val); }
+                        }} />
+                      </div>
+                    )}
+                  </div>
+                ))}
+                {aynaFollowLoading && (
+                  <div style={{ textAlign:"center",fontSize:12.5,letterSpacing:2.5,color:"#a070d0",fontFamily:"'Jost',sans-serif",margin:"4px 0 18px",animation:"pulse 1.5s ease-in-out infinite" }}>
+                    {pickLang(AYNA_FOLLOW_TXT.thinking, lang)}
+                  </div>
+                )}
+                {aynaCevapGecerli && aynaThread.length < 8 && (
+                  <div style={{ display:"flex",gap:8,alignItems:"flex-end",marginBottom:22,padding:"8px 8px 8px 14px",borderRadius:18,
+                    background:"rgba(255,255,255,0.035)",border:"1px solid rgba(160,112,208,0.28)" }}>
+                    <textarea value={aynaFollowDraft} onChange={e => setAynaFollowDraft(e.target.value.slice(0, 600))} rows={2}
+                      onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey && aynaFollowDraft.trim()) { e.preventDefault(); requireAiConsent(generateAynaFollow); } }}
+                      placeholder={pickLang(AYNA_FOLLOW_TXT.ph, lang)} disabled={aynaFollowLoading}
+                      style={{ flex:1,minWidth:0,resize:"none",background:"transparent",border:"none",outline:"none",color:"#e8e0f4",fontSize:16,lineHeight:1.45,fontFamily:"'Inter',sans-serif",padding:"6px 0" }} />
+                    <button onClick={() => requireAiConsent(generateAynaFollow)} disabled={!aynaFollowDraft.trim() || aynaFollowLoading} aria-label={pickLang(AYNA_FOLLOW_TXT.send, lang)}
+                      style={{ WebkitAppearance:"none",appearance:"none",width:40,height:40,flexShrink:0,borderRadius:"50%",cursor:"pointer",
+                        display:"flex",alignItems:"center",justifyContent:"center",padding:0,
+                        background: aynaFollowDraft.trim() ? "rgba(160,112,208,0.3)" : "rgba(255,255,255,0.04)",
+                        border:`1px solid ${aynaFollowDraft.trim() ? "rgba(200,168,240,0.7)" : "rgba(255,255,255,0.12)"}`,
+                        color: aynaFollowDraft.trim() ? "#f0e6ff" : "#6f6a80" }}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" /></svg>
+                    </button>
+                  </div>
+                )}
                 {/* GERİ BİLDİRİM: cevabın işe yarayıp yaramadığını ölçen tek
                     sinyal. Buna kadar kördük: hangi prompt'un, hangi modelin
                     iyi cevap ürettiğini ölçmeden tahminle ilerliyorduk (bkz.
@@ -15681,7 +15781,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                     style={{ background:"rgba(160,112,208,0.18)",border:"1px solid rgba(160,112,208,0.45)",borderRadius:24,color:"#c8a8f0",cursor:"pointer",fontSize:13,letterSpacing:2.5,padding:"9px 22px",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
                     {pickLang({tr:"PAYLAŞ",en:"SHARE",de:"TEILEN",es:"COMPARTIR",pt:"PARTILHAR",fr:"PARTAGER",ja:"シェア"}, lang)}
                   </button>
-                  <button onClick={()=>{ setSikayetAnaliz(""); setSikayet(""); setSikayetHis(""); setAynaRuyaModu(false); setAynaGeriBildirim(null); setAynaCevapGecerli(false); }}
+                  <button onClick={()=>{ setSikayetAnaliz(""); setSikayet(""); setSikayetHis(""); setAynaRuyaModu(false); setAynaGeriBildirim(null); setAynaCevapGecerli(false); setAynaThread([]); setAynaFollowDraft(""); }}
                     style={{ background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:24,color:"#a070d0",cursor:"pointer",fontSize:13,letterSpacing:2.5,padding:"9px 22px",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
                     {t("mirror_new_search")}
                   </button>
