@@ -479,6 +479,16 @@ taç çıkıyor. `.sakin-plant` sınıfı nefes gibi salındırıyor (6 sn, dibi
   "Fide'ye / Ağaç'a" ekleri isme göre değişiyor ve şablonla üretilince bozuluyor.
   Aynı sebeple sayı eki de yok ("8'i senden" değil "Senin payın: 8 nefes").
 
+**TAM AKORT (1.4.3, kullanıcı: "7/7 tamamlanınca tünelde bir şey değişsin, özel hissettirsin,
+yukarıdan beyaz-altın bir enerji insin"):** `fullChord` = `ALL_MANDALA_STEPS` yedisi de bugün
+tamam (bağlantının 3 adımı DEĞİL). Bağlan tüneli altın-beyaza döner (`tunnelBodyGold`/
+`tunnelFlowGold`, düğümler tek altın ışık, arka plan `.sakin-tunnel-wrap.gold`), ekranın
+tepesinden taca `.sakin-gold-beam` iner, başta `.sakin-halo`, yukarıdan `.sakin-spark`
+kıvılcımları, kırmızı akım parçacıkları gizli, yüzdenin altında "Tam akort · 7/7" +
+"Yukarıdan inen ışık bugün seninle" (`FULL_CHORD_TXT`, 7 dil). Günün İLK görüşünde tören
+(`goldDescend`, huzme iniş animasyonu + ışık parlaması + hafif haptic, `sakin_fullchord_<gün>`).
+Hareketi azalt: durağan altın hâl. CSS şablon metninde: TERS TIRNAK YAZMA.
+
 **Orkestra kartındaki yedi nokta artık SÜS DEĞİL.** Her nokta bir adım
 (`ALL_MANDALA_STEPS`); bugün tamamlanan kendi çakra rengiyle yanıyor, altında
 "Bugünkü akordun · 3/7" yazıyor. Orkestra metaforunun karşılığı bu: her adım bir

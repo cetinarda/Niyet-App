@@ -2085,6 +2085,11 @@ const ONB_I18N = {
   kNoTimeShort:{ tr:"saat yok", en:"no time", de:"keine Uhrzeit", es:"sin hora", pt:"sem hora", fr:"sans heure", ja:"時間なし" },
 };
 // Doğum bilgisi kaydı sonrası anında karşılık kartı (Sprint 2, aha anı).
+// TAM AKORT: yedi adımın hepsi (7/7) tamamlanınca Bağlan tünelinin altın hâli.
+const FULL_CHORD_TXT = {
+  title: { tr:"Tam akort · 7/7", en:"Full chord · 7/7", de:"Voller Akkord · 7/7", es:"Acorde pleno · 7/7", pt:"Acorde pleno · 7/7", fr:"Accord parfait · 7/7", ja:"完全な和音 · 7/7" },
+  line:  { tr:"Yukarıdan inen ışık bugün seninle.", en:"The light from above is with you today.", de:"Das Licht von oben ist heute bei dir.", es:"La luz que desciende te acompaña hoy.", pt:"A luz que desce está contigo hoje.", fr:"La lumière d'en haut t'accompagne aujourd'hui.", ja:"上から降りる光が、今日あなたと共に。" },
+};
 // AKŞAM "GÜNE BAŞLA" DEMEZ (kullanıcı, Eyl 2026: "18:00'den sonra 'Güne başla' çıkmasın,
 // 'Başla' yeterli"). 18:00-05:00 arası tüm "güne başla" düğmeleri yalın "Başla" der.
 const isEveningNow = () => { const h = new Date().getHours(); return h >= 18 || h < 5; };
@@ -4484,6 +4489,47 @@ const GLOBAL_CSS = `
     animation: sakinTunnelBloom 2.6s ease-out forwards;
   }
   @media (prefers-reduced-motion: reduce) { .sakin-tunnel-bloom { animation:none; opacity:0; } }
+  /* TAM AKORT (7/7, kullanıcı: "7/7 tamamlanınca tünelde bir şey değişsin, özel hissettirsin;
+     yukarıdan beyaz-altın bir enerji insin, renkler değişsin"). Tünel altın-beyaza döner,
+     ekranın tepesinden taca doğru bir huzme iner (günün ilk görüşünde tören: descend + flash),
+     başın çevresinde hale nefes alır, altın kıvılcımlar süzülür. ⚠️ TERS TIRNAK YAZMA. */
+  .sakin-tunnel-wrap.gold .sakin-tunnel-bands {
+    background: repeating-linear-gradient(180deg,
+      rgba(255,255,255,0.13) 0px, rgba(255,226,150,0.19) 42px, rgba(255,246,222,0.15) 84px,
+      rgba(255,255,255,0.13) 126px, rgba(255,226,150,0.19) 160px);
+    background-size: 100% 160px;
+  }
+  .sakin-tunnel-wrap.gold .sakin-tunnel-ground {
+    background: radial-gradient(ellipse 100% 100% at 50% 100%, rgba(255,244,212,0.44), rgba(255,214,130,0.2) 45%, transparent 72%);
+  }
+  @keyframes sakinGoldDescend { 0% { transform:translateX(-50%) scaleY(0); opacity:0; } 12% { opacity:1; } 100% { transform:translateX(-50%) scaleY(1); opacity:1; } }
+  @keyframes sakinGoldBreath { 0%,100% { opacity:0.6; } 50% { opacity:1; } }
+  .sakin-gold-beam {
+    position:fixed; left:50%; top:0; width:min(48vw,200px); height:62vh; pointer-events:none; z-index:0;
+    transform:translateX(-50%); transform-origin:top center;
+    background: linear-gradient(180deg, rgba(255,253,240,0.62) 0%, rgba(255,234,176,0.34) 34%, rgba(255,214,130,0.12) 68%, transparent 100%);
+    -webkit-mask: radial-gradient(ellipse 50% 100% at 50% 0%, #000 42%, transparent 100%);
+    mask: radial-gradient(ellipse 50% 100% at 50% 0%, #000 42%, transparent 100%);
+    filter: blur(12px);
+    animation: sakinGoldBreath 5s ease-in-out infinite;
+  }
+  .sakin-gold-beam.descend { animation: sakinGoldDescend 2.8s cubic-bezier(.2,.7,.2,1) both, sakinGoldBreath 5s ease-in-out 2.8s infinite; }
+  @keyframes sakinGoldFlash { 0% { opacity:0; } 35% { opacity:0.7; } 100% { opacity:0; } }
+  .sakin-gold-flash {
+    position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0;
+    background: radial-gradient(ellipse 72% 56% at 50% 30%, rgba(255,251,236,0.6), rgba(255,222,150,0.2) 45%, transparent 76%);
+    animation: sakinGoldFlash 3.2s ease-out 1.5s forwards;
+  }
+  @keyframes sakinHalo { 0%,100% { opacity:0.5; transform:scale(1); } 50% { opacity:1; transform:scale(1.08); } }
+  .sakin-halo { transform-box: view-box; transform-origin: 110px 78px; animation: sakinHalo 4.5s ease-in-out infinite; }
+  @keyframes sakinSpark { 0% { transform:translateY(0); opacity:0; } 12% { opacity:1; } 88% { opacity:0.9; } 100% { transform:translateY(390px); opacity:0; } }
+  .sakin-spark { animation-name: sakinSpark; animation-timing-function: linear; animation-iteration-count: infinite; }
+  @media (prefers-reduced-motion: reduce) {
+    .sakin-gold-beam, .sakin-gold-beam.descend { animation:none; opacity:0.85; transform:translateX(-50%); }
+    .sakin-gold-flash { animation:none; opacity:0; }
+    .sakin-halo { animation:none; }
+    .sakin-spark { animation:none; opacity:0; }
+  }
   @keyframes navPulse    { 0%,100%{opacity:0.5;transform:scale(1)} 50%{opacity:1;transform:scale(1.07)} }
   @keyframes navGlow     { 0%,100%{opacity:0.85} 50%{opacity:1} }
   @keyframes navSoftPulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
@@ -9071,6 +9117,21 @@ export default function SakinApp() {
   // anında işaretle" bloğu; burada olmasının sebebi gunTasksDone'ın TDZ sırası).
   useEffect(() => { if (gunTasksDone >= STEP_MIN.gun) markStep("gun"); }, [gunTasksDone]);
   const allStepsComplete = completedStepCount === MANDALA_STEPS.length;
+  // TAM AKORT (7/7): bağlantının 3 adımı DEĞİL, yedi adımın hepsi. Tünel altına döner;
+  // günün ilk görüşünde yukarıdan ışık iner (tören, bir kez, sakin_fullchord_<gün>).
+  const fullChord = ALL_MANDALA_STEPS.every(s => stepsCompleted[s]);
+  const [goldDescend, setGoldDescend] = useState(false);
+  useEffect(() => {
+    if (!fullChord || screen !== "mandala") return;
+    const k = "sakin_fullchord_" + sakinDayKey();
+    let seen = false; try { seen = localStorage.getItem(k) === "1"; } catch (_) {}
+    if (seen) return;
+    try { localStorage.setItem(k, "1"); } catch (_) {}
+    setGoldDescend(true);
+    const h = setTimeout(() => { try { haptic(ImpactStyle.Light); } catch (_) {} }, 2200);
+    const e = setTimeout(() => setGoldDescend(false), 5200);
+    return () => { clearTimeout(h); clearTimeout(e); };
+  }, [fullChord, screen]);
   // ÇEMBER sayacı: yalnızca Bugün ekranındayken, bağlantı tamamsa ve oda açık
   // değilken iki odanın presence'ını İZLER (katılmadan). Ekrandan çıkınca kapanır.
   useEffect(() => {
@@ -14349,11 +14410,13 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
           <>
           {/* BAĞLANTI AKTİF: tam ekran ışık tüneli (tüm 9 adım tamamlanınca). */}
           {allStepsComplete && (
-            <div className="sakin-tunnel-wrap" aria-hidden="true">
+            <div className={"sakin-tunnel-wrap" + (fullChord ? " gold" : "")} aria-hidden="true">
               <div className="sakin-tunnel-bands" />
               <div className="sakin-tunnel-ground" />
             </div>
           )}
+          {fullChord && <div className={"sakin-gold-beam" + (goldDescend ? " descend" : "")} aria-hidden="true" />}
+          {goldDescend && <div className="sakin-gold-flash" aria-hidden="true" />}
           {/* Alt boşluk 110 → 170px (Android raporu: iskelet büyüyünce en alttaki
               "Günün Bağlantısı" kutusu sabit alt bar'ın (sakin-bottom-nav) altında
               kalıyordu). 170px diğer ana ekranlarla (Ses, Ben) aynı değer: nav-gap
@@ -14378,7 +14441,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                 bağlam (insan iskeletinin hemen üstü) zaten anlamı taşıyor. */}
             <div style={{textAlign:"center",marginBottom:8,width:"100%",maxWidth:isAndroid?190:210}}>
               <div style={{fontSize:isAndroid?28:32,fontWeight:200,lineHeight:1,fontFamily:"'Jost',sans-serif",
-                color: allStepsComplete ? "#82d9a3" : "#e8e0f4" }}>
+                color: fullChord ? "#ffd97a" : allStepsComplete ? "#82d9a3" : "#e8e0f4" }}>
                 {/* % işareti sayıdan küçük: büyük sayı asıl vurgu, işaret
                     onun önünde ufak bir etiket gibi duruyor. */}
                 <span style={{fontSize:"0.5em",verticalAlign:"0.28em",marginRight:1}}>%</span>
@@ -14389,13 +14452,24 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
               <div style={{height:3,borderRadius:100,background:"rgba(255,255,255,0.07)",margin:"8px 0 7px",overflow:"hidden"}}>
                 <div style={{height:"100%",borderRadius:100,transition:"width 0.4s ease",
                   width:`${Math.round((completedStepCount / N) * 100)}%`,
-                  background: allStepsComplete
+                  background: fullChord
+                    ? "linear-gradient(90deg,#fff4d6,#ffd97a,#f0b84a)"
+                    : allStepsComplete
                     ? "linear-gradient(90deg,#82d9a3,#a0e8c0)"
                     : "linear-gradient(90deg,#f1a24a,#8b5aa0,#2a6fb8)" }} />
               </div>
               {/* "N adım kaldı" satırı KALDIRILDI (kullanıcı isteği). Tamamlandı
                   mesajı kaldı, o "adım kaldı" değil ayrı bir kutlama cümlesi. */}
-              {allStepsComplete && (
+              {fullChord ? (
+                <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:3}}>
+                  <div style={{fontSize:11,letterSpacing:2.2,color:"#ffd97a",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",textShadow:"0 0 10px rgba(255,217,122,0.45)"}}>
+                    {pickLang(FULL_CHORD_TXT.title, lang)}
+                  </div>
+                  <div style={{fontSize:12,color:"#e9dcb8",fontFamily:"'Cormorant Garamond',Georgia,serif",fontStyle:"italic"}}>
+                    {pickLang(FULL_CHORD_TXT.line, lang)}
+                  </div>
+                </div>
+              ) : allStepsComplete && (
                 <div style={{fontSize:11,letterSpacing:1.4,color:"#7c7590",fontFamily:"'Jost',sans-serif"}}>
                   {t("mandala_complete")}
                 </div>
@@ -14473,6 +14547,28 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                       {/* Tünelin iç boşluğu: huzme BUNUN DIŞINA taşamaz. Böylece ışık
                           gökten girer, YER hizasında tünelin içinde biter (kullanıcı:
                           "ekranın en altına gidiyor, onu yerde bitir"). */}
+                      {/* TAM AKORT: altın-beyaz gövde ve akış (mor yok). */}
+                      <linearGradient id="tunnelBodyGold" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%"   stopColor="rgba(255,236,176,0.42)"/>
+                        <stop offset="30%"  stopColor="rgba(255,214,130,0.14)"/>
+                        <stop offset="50%"  stopColor="rgba(255,255,255,0.08)"/>
+                        <stop offset="70%"  stopColor="rgba(255,214,130,0.14)"/>
+                        <stop offset="100%" stopColor="rgba(255,236,176,0.42)"/>
+                      </linearGradient>
+                      <linearGradient id="tunnelFlowGold" gradientUnits="userSpaceOnUse"
+                        x1="0" y1="0" x2="0" y2="280" spreadMethod="repeat">
+                        <stop offset="0%"   stopColor="rgba(255,255,255,0.00)"/>
+                        <stop offset="20%"  stopColor="rgba(255,255,255,0.75)"/>
+                        <stop offset="40%"  stopColor="rgba(255,226,150,0.62)"/>
+                        <stop offset="60%"  stopColor="rgba(255,246,222,0.55)"/>
+                        <stop offset="80%"  stopColor="rgba(255,214,120,0.35)"/>
+                        <stop offset="100%" stopColor="rgba(255,255,255,0.00)"/>
+                      </linearGradient>
+                      <radialGradient id="haloGold" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stopColor="rgba(255,250,232,0.55)"/>
+                        <stop offset="55%" stopColor="rgba(255,222,150,0.18)"/>
+                        <stop offset="100%" stopColor="rgba(255,214,130,0)"/>
+                      </radialGradient>
                       <clipPath id="tunnelClip">
                         <rect x="88" y="18" width="44" height="390" rx="22" />
                       </clipPath>
@@ -14490,7 +14586,8 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                     )}
 
                     {/* Elektrik akimi partikulleri */}
-                    {pct > 0 && [0,1,2].map(i => (
+                    {/* Tam akortta kırmızı akım parçacıkları gizlenir (altın ışıkla çatışıyor). */}
+                    {pct > 0 && !fullChord && [0,1,2].map(i => (
                       <circle key={`ep${i}`} cx="110" r="2" fill="rgba(255,70,70,0.95)"
                         style={{animation:`electricRise ${2+i*0.7}s linear infinite`,animationDelay:`${i*0.6}s`}}>
                         <animateMotion dur={`${2.5+i*0.5}s`} repeatCount="indefinite" begin={`${i*0.4}s`}>
@@ -14521,6 +14618,8 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                       const done = node.id ? !!stepsCompleted[node.id] : (node.zone==="sub" ? pct>0 : pct>=1);
                       const lit = node.y >= lightY;
                       const r = (node.zone==="sub"||node.zone==="supra") ? 8 : 10;
+                      // Tam akort: bütün düğümler aynı altın ışıkla yanar (renkler tek ışıkta birleşir).
+                      if (fullChord) node = { ...node, color: "#ffd97a" };
                       return (
                         <g key={i} style={{cursor:node.id?"pointer":"default"}} onClick={()=>{ if(node.id) setScreen(node.id); }}>
                           {/* Glow hale: KALDIRILDI (kullanıcı: "yuvarlak dans eden
@@ -14579,7 +14678,8 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                     {allStepsComplete && <>
                       {/* (1) Tunel govdesi: cakra hattini saran koridor */}
                       <rect x="86" y="18" width="48" height="394" rx="24"
-                        fill="url(#tunnelBody)" stroke="rgba(255,240,190,0.28)" strokeWidth="1" />
+                        fill={fullChord ? "url(#tunnelBodyGold)" : "url(#tunnelBody)"}
+                        stroke={fullChord ? "rgba(255,226,150,0.55)" : "rgba(255,240,190,0.28)"} strokeWidth={fullChord ? 1.3 : 1} />
                       {/* (2) Kesintisiz ışık akışı, huzme sürekli aşağı kayar
                           (gradyanın kendisi hareket eder, tek tek parçacık yok).
                           NOT: Çakraların etrafında aşağı süzülen "dans eden halkalar"
@@ -14590,11 +14690,24 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                             üstte boşluk kalmaz. Kırpma sayesinde sadece tünelin içi
                             görünür: huzme GÖK'ten girer, YER'de tünelin içinde biter. */}
                         <rect x="88" y="-256" width="44" height="800"
-                          fill="url(#tunnelFlow)" style={{ animation:"sakinTunnelDown 2.2s linear infinite" }} />
+                          fill={fullChord ? "url(#tunnelFlowGold)" : "url(#tunnelFlow)"}
+                          style={{ animation:`sakinTunnelDown ${fullChord ? 3.2 : 2.2}s linear infinite` }} />
                       </g>
                       {/* (4) Tunel agzi parlamasi */}
                       <ellipse cx="110" cy="18" rx="22" ry="6" fill="rgba(255,250,225,0.5)" filter="url(#glowF)"/>
                       <ellipse cx="110" cy="410" rx="22" ry="6" fill="rgba(255,225,170,0.45)" filter="url(#glowF)"/>
+                    </>}
+                    {/* TAM AKORT: tacın çevresinde nefes alan hale + yukarıdan süzülen kıvılcımlar. */}
+                    {fullChord && <>
+                      <g className="sakin-halo">
+                        <circle cx="110" cy="78" r="34" fill="url(#haloGold)" />
+                        <circle cx="110" cy="78" r="25" fill="none" stroke="rgba(255,226,150,0.7)" strokeWidth="1.1" filter="url(#glowF)" />
+                      </g>
+                      {[[98,5.2,0],[121,6.4,1.3],[106,4.6,2.4],[115,7.1,0.7],[92,6.0,3.1],[127,5.6,1.9]].map(([x,dur,delay],k) => (
+                        <circle key={`sp${k}`} className="sakin-spark" cx={x} cy="12" r={k%2 ? 1.3 : 1.7}
+                          fill={k%3===0 ? "#ffffff" : "#ffe3a0"}
+                          style={{ animationDuration:`${dur}s`, animationDelay:`${delay}s` }} />
+                      ))}
                     </>}
                   </svg>
                 </div>
