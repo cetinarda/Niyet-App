@@ -18,7 +18,12 @@
   temkinli davranır ve eşleşebilecek kaynakları korur. Üçüncü taraf
   SDK'lar (Facebook, Capacitor eklentileri) bunu kullanabildiği için
   "strict" moda GEÇME.
+
+  1.4.3: `android.r8.optimizedResourceShrinking=true` (gradle.properties, Play önerisi)
+  ile kırpma R8 kod analizine bağlandı. Adla (getIdentifier) aranan bildirim simgesi
+  (capacitor.config LocalNotifications.smallIcon = "ic_stat_sakin") ve rengi ile
+  açılış görseli de ADIYLA korunuyor.
 -->
 <resources xmlns:tools="http://schemas.android.com/tools"
     tools:shrinkMode="safe"
-    tools:keep="@string/facebook_app_id,@string/facebook_client_token,@xml/file_paths" />
+    tools:keep="@string/facebook_app_id,@string/facebook_client_token,@xml/file_paths,@drawable/ic_stat_sakin,@color/sakin_notif,@drawable/splash" />

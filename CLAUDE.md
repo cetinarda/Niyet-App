@@ -894,6 +894,25 @@ küçültme (~%32-33), kullanılmayan kaynak kaldırma kapalı, AGP 9 önerisi.
 - **Cihazı asıl yoran R8 değil, embed'ler.** public/embedded 29 MB (APK içinde),
   runtime'da açık olan embed + mitler (sticky).
 
+**PLAY 1.4.2 ÖNERİLERİ (versionCode 20, Eyl 2026) ve 1.4.3 kararları:**
+- **Desteği biten çubuk API'leri:** `@capacitor/status-bar` KALDIRILDI (setStatusBarColor
+  kullanıyordu), yerine Capacitor 8 çekirdeğindeki `SystemBars` (`SystemBars.setStyle
+  ({style: SystemBarsStyle.Dark})`, capacitor.config `plugins.SystemBars`). MainActivity'deki
+  `setNavigationBarColor`/`setSystemUiVisibility` yerine `WindowInsetsControllerCompat`
+  (yalnızca simge rengi; çubuk rengi styles.xml'den, Android 14 ve öncesi). Eklentiyi GERİ
+  EKLEME.
+- **Uçtan uca (EdgeToEdge.enable) BİLEREK YAPILMADI:** targetSdk 36; Android 15+ zaten uçtan
+  uca ve Capacitor 8 SystemBars iç boşlukları yönetiyor (eski WebView'da ebeveyn görünüme
+  padding, yeni WebView'da env(safe-area-*)). Android 14 ve öncesinde `EdgeToEdge.enable()`
+  çağrılırsa SystemBars padding'i yalnızca SDK 35+ verdiği için eski WebView'lı cihazlarda
+  içerik çubukların altına kayar. Play'in bu satırı bilgi amaçlı, kalabilir.
+- **Optimize kaynak küçültme:** `android.r8.optimizedResourceShrinking=true`
+  (gradle.properties). Adla aranan bildirim simgesi/rengi + splash `res/raw/keep.xml`'de.
+  ⚠️ R8 test kapısı bu yüzden de ŞART (bildirim simgesi çıkıyor mu bak).
+- **AGP 9'a yükseltme YAPILMADI:** Gradle 9 + yeni DSL/Kotlin varsayılanları; Capacitor 8
+  eklentileri ve google-services uyumu doğrulanmadı, derleme kırılma riski yüksek. Öneri,
+  zorunluluk değil. Capacitor resmi olarak AGP 9'u desteklediğinde birlikte yapılır.
+
 **EMBED BELLEK (yapıldı, düşük risk):** standart embed kapanırken
 `releaseStandardEmbedFrame()` iframe'e `about:blank` navigasyonu verir; WKWebView
 ağır sayfayı hemen bıraksın (element'i sadece unmount etmek WebKit'te yavaş

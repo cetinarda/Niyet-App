@@ -1,8 +1,8 @@
 package app.sakin.life;
 
-import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import com.getcapacitor.BridgeActivity;
 import com.facebook.appevents.AppEventsLogger;
 
@@ -12,20 +12,17 @@ public class MainActivity extends BridgeActivity {
         // Yerel eklentiler super.onCreate'ten ÖNCE kaydedilmeli (Capacitor kuralı).
         registerPlugin(SakinSettingsPlugin.class);
         super.onCreate(savedInstanceState);
-        // Samsung/One UI'da sistem gezinme çubuğu varsayılan beyaz kalıyordu.
-        // Uygulamanın koyu tonuna (#080C14) sabitle + koyu zeminde açık ikonlar.
-        // Tema (styles.xml) yeni edge-to-edge cihazlarda; bu native kod eski
-        // Android'de kesin uygular. iOS etkilenmez (yalnızca Android modülü).
+        // Koyu zeminde AÇIK renk sistem simgeleri (Samsung/One UI'da gezinme çubuğu
+        // simgeleri koyu kalıyordu). Çubuk RENGİ temadan gelir (styles.xml
+        // navigationBarColor, Android 14 ve öncesi); Android 15+ zaten uçtan uca.
+        // ⚠️ Eskiden getWindow().setNavigationBarColor + setSystemUiVisibility
+        // çağrılıyordu: Android 15'te desteği bitti, Play uyarı verdi (1.4.3).
         try {
-            getWindow().setNavigationBarColor(0xFF080C14);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                View decor = getWindow().getDecorView();
-                decor.setSystemUiVisibility(
-                    decor.getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-                );
-            }
+            WindowInsetsControllerCompat c = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+            c.setAppearanceLightNavigationBars(false);
+            c.setAppearanceLightStatusBars(false);
         } catch (Exception e) {
-            // sessiz — çubuk rengi kritik değil, uygulama açılışını engelleme
+            // sessiz: simge rengi kritik değil, uygulama açılışını engelleme
         }
     }
 

@@ -20,16 +20,15 @@
       "smallIcon": "ic_stat_sakin",
       "iconColor": "#ffffff"
     },
-    "StatusBar": {
-      "style": "DARK",
-      "backgroundColor": "#000000"
-    },
     "PushNotifications": {
       "presentationOptions": [
         "badge",
         "sound",
         "alert"
       ]
+    },
+    "SystemBars": {
+      "style": "DARK"
     }
   }
 }

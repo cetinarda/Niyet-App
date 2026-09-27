@@ -6,7 +6,7 @@ import { getGlossary } from "./glossary";
 import { Capacitor, registerPlugin } from "@capacitor/core";
 import { SplashScreen } from "@capacitor/splash-screen";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
-import { StatusBar, Style } from "@capacitor/status-bar";
+import { SystemBars, SystemBarsStyle } from "@capacitor/core";
 // revokeLocalPremium ARTIK YALNIZCA sunucu doğrulaması "not_entitled" derse
 // çağrılır (bkz. "PREMIUM DOĞRULAMA: SUNUCUYA SOR" bloğu). İstemcinin store.owned
 // tahminiyle iptal etmesi kaldırıldı, ödeme yapan kullanıcıyı düşürüyordu.
@@ -549,7 +549,10 @@ const detectTablet = () => {
 };
 let isTablet = detectTablet();
 const haptic = (style = ImpactStyle.Light) => { if (isNative) Haptics.impact({ style }).catch(() => {}); };
-if (isNative) StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
+// Durum çubuğu: açık renk simgeler (koyu zemin). @capacitor/status-bar yerine Capacitor 8
+// çekirdeğindeki SystemBars (Play uyarısı: eklenti Android 15'te desteği biten
+// setStatusBarColor API'sini kullanıyordu).
+if (isNative) SystemBars.setStyle({ style: SystemBarsStyle.Dark }).catch(() => {});
 
 const API_BASE = isNative ? "https://sakin.life" : "";
 const AI_CALL_URL = API_BASE + "/.netlify/functions/ai-call";
