@@ -722,6 +722,9 @@ DEĞİL) → İkili uyum → Bugünün ilk adımı. Aşağıdaki numaralar tarih
   eklemek: dosyayı 96k AAC m4a'ya çevir (`-c:a aac -b:a 96k -movflags +faststart`),
   `public/audio/`'ya koy; ses dosyalarını repo köküne KOYMA (her klona iner).
   ⚠️ Headless Chromium AAC çalamaz; test cihazda/Chrome'da yapılır.
+- **Akşam "Güne başla" YOK (kullanıcı, Eyl 2026):** 18:00-05:00 arası (`isEveningNow`) Bağlan'daki
+  "GÜNE BAŞLA →", harita altındaki "yeni güne başla" ve doğum sonrası "Güne başla ◎" yalın
+  "Başla" olur (`START_EVENING_TXT`, 7 dil). Yeni bir "güne başla" düğmesi eklersen aynı kuralı uygula.
 - **Bağlantı eşikleri herkese hafif** (`STEP_MIN` 5 nefes / 30 sn / 60 sn / 1 görev).
 - **Alt çağrı metni** seri 1'de "Dün ilk adımını attın..." (serisi sıfırlanıp yeniden
   başlayan eski kullanıcıya aynı motivasyonla "Dün yeniden başladın...", `restartOne`), sonra "{n} gün üst üste.

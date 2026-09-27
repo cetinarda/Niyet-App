@@ -2082,6 +2082,14 @@ const ONB_I18N = {
   kNoTimeShort:{ tr:"saat yok", en:"no time", de:"keine Uhrzeit", es:"sin hora", pt:"sem hora", fr:"sans heure", ja:"時間なし" },
 };
 // Doğum bilgisi kaydı sonrası anında karşılık kartı (Sprint 2, aha anı).
+// AKŞAM "GÜNE BAŞLA" DEMEZ (kullanıcı, Eyl 2026: "18:00'den sonra 'Güne başla' çıkmasın,
+// 'Başla' yeterli"). 18:00-05:00 arası tüm "güne başla" düğmeleri yalın "Başla" der.
+const isEveningNow = () => { const h = new Date().getHours(); return h >= 18 || h < 5; };
+const START_EVENING_TXT = {
+  arrow: { tr:"BAŞLA →", en:"START →", de:"BEGINNEN →", es:"EMPEZAR →", pt:"COMEÇAR →", fr:"COMMENCER →", ja:"始める →" },
+  ring:  { tr:"Başla ◎", en:"Start ◎", de:"Beginnen ◎", es:"Empezar ◎", pt:"Começar ◎", fr:"Commencer ◎", ja:"始める ◎" },
+  plain: { tr:"başla", en:"start", de:"beginnen", es:"empezar", pt:"começar", fr:"commencer", ja:"始める" },
+};
 const REVEAL_I18N = {
   title:  { tr:"İşte ilk işaretlerin", en:"Here are your first signs", de:"Hier sind deine ersten Zeichen", es:"Aquí están tus primeras señales", pt:"Aqui estão os teus primeiros sinais", fr:"Voici tes premiers signes", ja:"最初のしるしが届きました" },
   sun:    { tr:"Burcun", en:"Your sun sign", de:"Dein Sternzeichen", es:"Tu signo", pt:"O teu signo", fr:"Ton signe", ja:"星座" },
@@ -14140,7 +14148,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
             </button>
             <button onClick={()=>{ setShowKimlikReveal(false); setScreen("sabah"); }}
               style={{ display:"block",width:"100%",padding:"11px 0",fontSize:13,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",background:"transparent",border:"1px solid rgba(255,255,255,0.14)",borderRadius:24,color:"#b0a4c8",cursor:"pointer" }}>
-              {pickLang(REVEAL_I18N.gune, lang)}
+              {pickLang(isEveningNow() ? START_EVENING_TXT.ring : REVEAL_I18N.gune, lang)}
             </button>
           </div>
         </div>
@@ -14592,7 +14600,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
             ):nextStep?(
               <button className="sakin-btn-primary" style={{marginTop:4,fontSize:13,letterSpacing:2}}
                 onClick={()=>setScreen(nextStep?.id || "sabah")}>
-                {completedStepCount>0 ? t("mandala_continue_today") : t("mandala_start_today")}
+                {completedStepCount>0 ? t("mandala_continue_today") : isEveningNow() ? pickLang(START_EVENING_TXT.arrow, lang) : t("mandala_start_today")}
               </button>
             ):null}
 
@@ -16535,7 +16543,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
           {/* Güne zaten bağlanıldıysa "yeni güne başla" yanlış olur (kullanıcı
               bildirdi): mandala ekranındaki ile AYNI kural uygulanıyor. */}
           <button className="sakin-btn" style={{ width:"100%" }} onClick={()=>{ markStep("harita"); setScreen("mandala"); }}>
-            {completedStepCount>0 ? t("mandala_continue_today") : t("btn_new_day")}
+            {completedStepCount>0 ? t("mandala_continue_today") : isEveningNow() ? pickLang(START_EVENING_TXT.plain, lang) : t("btn_new_day")}
           </button>
         </div>
       )}
