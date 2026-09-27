@@ -1368,6 +1368,14 @@ AI hakkı ana soruyla aynı, arşive "↳ " önekiyle yazılır, analitik `ayna_
 YALNIZCA `lang==="tr"`de arar (İspanyolca "hasta" = "-e kadar" beden sanılıyordu),
 küçük harf dile göre, "tired" listede YOK ("tired of this relationship" duygu).
 
+**DEVAM CEVABI ALINTILAMAZ (Eyl 2026, kullanıcı: "devam sorusunu cevabın başına
+alıntılamasın, doğrudan cevabı versin arkadaş gibi"):** kök sebep `AYNA_FOLLOW_DIRECTIVE`
+1. maddesiydi ("ilk cümle onun kelimelerinden birini taşısın") + geçmişteki
+`Kullanıcının sorusu: "..."` kalıbı alıntıyı örnekliyordu. Artık madde "doğrudan
+cevapla, alıntılama/özetleme, şefkat cevabın sesinde", geçmiş düz metin, ve
+`stripEchoedQuestion` başa gelen tırnaklı/">" alıntıyı (soruyla örtüşüyorsa) +
+"diyorsun." artığını keser. Canlı denemede 6/6 cevap doğrudan başladı.
+
 **YARIM SORU SÜRER (Eyl 2026):** doğum bilgisi yokken sorulan soru "__needbirth__"
 davetinde bekler; bilgi kaydedilip Ayna'ya dönülünce `aynaResumeRef` etkisi aynı
 soruyu kendiliğinden gönderir. Beden sorusunda `louiseDirektif` Louise Hay'in

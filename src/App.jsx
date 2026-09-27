@@ -2253,12 +2253,33 @@ const AYNA_FOLLOW_TXT = {
 };
 // Modele giden yönerge (dil kilidi sunucuda; cevap kullanıcının dilinde gelir).
 const AYNA_FOLLOW_DIRECTIVE = `Kullanıcı az önceki cevabına doğrudan yanıt verdi ya da konuşmayı sürdürdü. Konuşmanın TAMAMINI hesaba kat.
-1) Önce bir iki cümleyle onunla şefkatli bir bağ kur: söylediğini gerçekten duyduğunu, ONUN kendi kelimelerine dokunarak göster. İlk cümle doğrudan onun söylediği şeyin özüne değsin, onun kelimelerinden birini taşısın. YASAK açılışlar: "Paylaştığın için teşekkür ederim", "Seni anlıyorum", "Duygularını paylaştığın için". Abartılı övgü yok. Kendinden "biz" diye söz etme.
-2) Sonra yeni söylediğine DOĞRUDAN ve derinlemesine cevap ver. Önceki cevabını TEKRAR ETME, üstüne yeni bir katman aç; ona gerçekten özgü bir iç görü sun. Önceki cevapta onu yanlış anladıysan bunu açıkça ve sadece bir kez söyleyip düzelt.
+1) Yakın bir arkadaşınla konuşuyormuş gibi DOĞRUDAN cevapla. Söylediğini ALINTILAMA, TEKRARLAMA, özetleyerek de başlama: tırnak içinde onun cümlesi, "Diyorsun ki", "...dedin", "...diye soruyorsun", "Sorun şu" gibi açılışlar YASAK, o yazdığını zaten ekranda görüyor. İlk cümle doğrudan cevabın kendisi olsun. Şefkat ayrı bir giriş cümlesi değil, cevabın sesinde olsun: sıcak, samimi, içten. YASAK açılışlar: "Paylaştığın için teşekkür ederim", "Seni anlıyorum", "Duygularını paylaştığın için". Abartılı övgü yok. Kendinden "biz" diye söz etme.
+2) Yeni söylediğine derinlemesine cevap ver. Önceki cevabını TEKRAR ETME, üstüne yeni bir katman aç; ona gerçekten özgü bir iç görü sun. Önceki cevapta onu yanlış anladıysan bunu açıkça ve sadece bir kez söyleyip düzelt.
 3) Gerekiyorsa tek bir somut adım öner (nefes için [[NEFES:Diyafram]] gibi, uygulama bölümü için [[EKRAN:nefes]] gibi); gerekmiyorsa önerme.
 4) Başlık, madde işareti ya da bölüm (Ayna, Senin için gibi) KULLANMA; akan, sıcak ve net bir metin yaz. Uzunluk 4-9 cümle.
 5) Söylediği gerçekten belirsizse sonunda tek bir nazik netleştirme sorusu sorabilirsin.
 6) Kendine zarar verme ya da yaşamına son verme ifadesi varsa yorum yapma: yalnızca şefkatle yanında ol, güvendiği birine ya da bir uzmana hemen ulaşmasını, acil durumda 112'yi (bulunduğu ülkenin acil numarasını) aramasını söyle.`;
+// Devam cevabı yine de kullanıcının sorusunu başa alıntılarsa o alıntıyı kes
+// (kullanıcı, Eyl 2026: "devam sorusunu cevabın başına alıntılamasın, doğrudan
+// cevabı versin arkadaş gibi"). TEMKİNLİ: yalnızca ilk satır/cümle tırnak ya da
+// ">" ile başlıyor VE içeriği soruyla büyük ölçüde örtüşüyorsa silinir.
+function stripEchoedQuestion(text, q) {
+  const t = String(text || "").replace(/^\s+/, "");
+  const norm = (x) => String(x || "").toLocaleLowerCase().replace(/[^\p{L}\p{N}\s]/gu, " ").split(/\s+/).filter(w => w.length > 1);
+  const qw = norm(q); if (!qw.length) return t;
+  const overlaps = (seg) => { const sw = norm(seg); if (!sw.length) return false; const qs = new Set(qw); const hit = sw.filter(w => qs.has(w)).length; return hit / sw.length >= 0.6 && hit / qw.length >= 0.5; };
+  // "> alıntı" satırı
+  let m = /^>\s*([^\n]*)\n+/.exec(t);
+  if (m && overlaps(m[1])) return t.slice(m[0].length).replace(/^\s+/, "");
+  // Tırnaklı açılış: "...", “...”, «...», „...“, 「...」 ve ardından gelen noktalama
+  m = /^(?:\*\*)?["“«„「『']([^"”»“」』'\n]{3,400})["”»“」』'](?:\*\*)?\s*[.,:;!?…-]*\s*/.exec(t);
+  if (m && overlaps(m[1])) {
+    // Alıntıdan sonra gelen "diyorsun." / "you say." artığı da gider.
+    const rest = t.slice(m[0].length).replace(/^(?:diyorsun|dedin|diye (?:soruyorsun|sordun)|you (?:say|said|ask|asked)|sagst du|dices|dizes|tu dis)\b[^.!?\n]*[.!?]?\s*/iu, "");
+    return rest ? rest.charAt(0).toLocaleUpperCase() + rest.slice(1) : t;
+  }
+  return t;
+}
 // TAM AKORT: yedi adımın hepsi (7/7) tamamlanınca Bağlan tünelinin altın hâli.
 const FULL_CHORD_TXT = {
   title: { tr:"Tam akort · 7/7", en:"Full chord · 7/7", de:"Voller Akkord · 7/7", es:"Acorde pleno · 7/7", pt:"Acorde pleno · 7/7", fr:"Accord parfait · 7/7", ja:"完全な和音 · 7/7" },
@@ -11199,7 +11220,9 @@ ${kisiselProfil()}${kisiselBagiam}${sureklilik}${tipIpucu}${louiseDirektif}${KIT
     setAynaFollowLoading(true);
     const clip = (x, n) => { const s = String(x || ""); return s.length > n ? s.slice(0, n) + "..." : s; };
     const msgs = [
-      { role:"user", content:`Kullanıcının sorusu: "${sanitizeInput(sikayet)}"${sikayetHis ? `\nHissi: "${sanitizeInput(sikayetHis)}"` : ""}` },
+      // Soru düz metin olarak gider: "Kullanıcının sorusu: \"...\"" kalıbı modele
+      // alıntılamayı örnekliyordu (kullanıcı: "devam sorusunu başa alıntılamasın").
+      { role:"user", content:`${sanitizeInput(sikayet)}${sikayetHis ? `\n(${sanitizeInput(sikayetHis)})` : ""}` },
       { role:"assistant", content: clip(sikayetAnaliz, 3500) },
     ];
     aynaThread.filter(x => x.a).slice(-4).forEach(x => { msgs.push({ role:"user", content: clip(sanitizeInput(x.q), 800) }); msgs.push({ role:"assistant", content: clip(x.a, 2000) }); });
@@ -11218,9 +11241,10 @@ ${AYNA_FOLLOW_DIRECTIVE}`;
       // Ana soruyla aynı ders: <think> bütçeyi yerse düşünmesiz tek yeniden deneme.
       if (!ok) { res = await call(false); d = await res.json(); ok = res.ok && !d.error && d.text; }
       if (!ok) { setAynaThread(prev => [...prev, { q, a: "", err: true }]); return; }
-      setAynaThread(prev => [...prev, { q, a: d.text }]);
+      const ans = stripEchoedQuestion(d.text, q);
+      setAynaThread(prev => [...prev, { q, a: ans }]);
       setAynaFollowDraft("");
-      aynaGecmisiKaydet("↳ " + q, d.text);
+      aynaGecmisiKaydet("↳ " + q, ans);
       try { track("ayna_follow", { n: Math.min(9, aynaThread.length + 1) }); } catch (_) {}
     } catch (_) {
       setAynaThread(prev => [...prev, { q, a: "", err: true }]);
