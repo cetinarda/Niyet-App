@@ -1217,6 +1217,12 @@ koruma sunucuda.
   (`sakin_cember_stage_seen`). Rozet düğmesi BAŞLIK satırında DEĞİL: 320 px'te oda
   düğmeleriyle çakışıyordu. Gizlilik metinlerine (3 yer) rozet cümlesi eklendi.
   Analitik `cember` a="badges".
+  **Takma ada dokun = rozet özeti** (kullanıcı: "bir kullanıcı diğerinin adına basarak
+  rozet özetini görebilsin"): mesaj başlığındaki ad + rozet satırı ayrı dokunma alanı
+  (`stopPropagation`, Bildir/Engelle menüsü AÇILMAZ; mesajın geri kalanına dokunmak
+  menüyü açmaya devam eder). Alttan sayfa (`badgeOf`): büyük rozetler, renkli takma ad,
+  her rozetin adı + anlamı, "Rozetler mesajın yazıldığı andaki hâli gösterir", "Tüm
+  rozetler" rehbere geçer. Rozetsiz eski mesajda "Bu mesajda rozet yok". a="badgeof".
 - **Presence anahtarı oturumluk rastgele** (`"p"+random`): presence anahtarı odadaki
   HERKESE görünür, anonim ölçüm kimliğini (`getAnonId`) buraya KOYMA.
 - Test: sahte Supabase + sahte Groq ile sunucu uçtan uca (yavaş mod, link, kriz,

@@ -1645,6 +1645,8 @@ const CEMBER_BADGE_TXT = {
   top:    { tr:"En olgun aşamadasın.", en:"You're at the fullest stage.", de:"Du bist in der reifsten Phase.", es:"Estás en la etapa más plena.", pt:"Estás na fase mais plena.", fr:"Tu es au stade le plus mûr.", ja:"いちばん成熟した段階です。" },
   chordTip:{ tr:"Bugün yedi adımı tamamlarsan altın yıldız yanar.", en:"Complete all seven steps today and the golden star lights up.", de:"Schließe heute alle sieben Schritte ab, dann leuchtet der goldene Stern.", es:"Completa hoy los siete pasos y se enciende la estrella dorada.", pt:"Conclui hoje os sete passos e a estrela dourada acende-se.", fr:"Termine les sept étapes aujourd'hui et l'étoile dorée s'allume.", ja:"今日7つのステップを終えると、金の星が灯ります。" },
   shown:  { tr:"Rozetlerin her mesajınla birlikte görünür.", en:"Your badges appear with every message you send.", de:"Deine Abzeichen erscheinen bei jeder Nachricht, die du sendest.", es:"Tus insignias aparecen con cada mensaje que envías.", pt:"As tuas insígnias aparecem em cada mensagem que envias.", fr:"Tes badges apparaissent avec chaque message que tu envoies.", ja:"バッジは送るメッセージごとに表示されます。" },
+  none:   { tr:"Bu mesajda rozet yok.", en:"No badges on this message.", de:"Keine Abzeichen an dieser Nachricht.", es:"Este mensaje no tiene insignias.", pt:"Esta mensagem não tem insígnias.", fr:"Aucun badge sur ce message.", ja:"このメッセージにはバッジがありません。" },
+  atSend: { tr:"Rozetler mesajın yazıldığı andaki hâli gösterir.", en:"Badges show the moment the message was written.", de:"Abzeichen zeigen den Moment, in dem die Nachricht geschrieben wurde.", es:"Las insignias muestran el momento en que se escribió el mensaje.", pt:"As insígnias mostram o momento em que a mensagem foi escrita.", fr:"Les badges montrent l'instant où le message a été écrit.", ja:"バッジはメッセージを書いた時点の状態です。" },
   newOne: { tr:"Yeni rozetin: {name}", en:"New badge: {name}", de:"Neues Abzeichen: {name}", es:"Nueva insignia: {name}", pt:"Nova insígnia: {name}", fr:"Nouveau badge : {name}", ja:"新しいバッジ: {name}" },
 };
 const CEMBER_STAGE_DAYS = [0, 3, 7, 21];
@@ -1769,6 +1771,8 @@ function CemberScreen({ lang, unlocked, minor, onClose, onGoBaglan, onGoNefes, s
   const myStage = cemberStageOf(streakDays);
   const hasLetter = (() => { try { const l = JSON.parse(localStorage.getItem(LETTER_KEY) || "null"); return !!(l && !l.openedAt); } catch (_) { return false; } })();
   const [badgeSheet, setBadgeSheet] = useState(false);
+  // Başkasının (ya da kendi) takma adına dokununca o mesajın rozet özeti (1.4.3).
+  const [badgeOf, setBadgeOf] = useState(null);
   const [badgeNew, setBadgeNew] = useState("");
   // Aşama atlanmışsa (Çember'de son görülenden büyükse) bir kez "Yeni rozetin" kutlaması.
   useEffect(() => {
@@ -1781,11 +1785,11 @@ function CemberScreen({ lang, unlocked, minor, onClose, onGoBaglan, onGoNefes, s
   useEffect(() => { if (!badgeNew) return; const id = setTimeout(() => setBadgeNew(""), 5200); return () => clearTimeout(id); }, [badgeNew]);
   // Android geri tuşu önce rozet rehberini kapatsın (Çember açık kalır).
   useEffect(() => {
-    if (!badgeSheet) return;
-    const back = () => setBadgeSheet(false);
+    if (!badgeSheet && !badgeOf) return;
+    const back = () => { setBadgeSheet(false); setBadgeOf(null); };
     window.__sakinOverlayBack = back;
     return () => { if (window.__sakinOverlayBack === back) window.__sakinOverlayBack = null; };
-  }, [badgeSheet]);
+  }, [badgeSheet, badgeOf]);
 
   useEffect(() => { try { track("cember", { a: "open" }); } catch (_) {} }, []);
   useEffect(() => { try { localStorage.setItem("sakin_cember_room", room); } catch (_) {} }, [room]);
@@ -1946,6 +1950,52 @@ function CemberScreen({ lang, unlocked, minor, onClose, onGoBaglan, onGoNefes, s
         )}
       </div>
       {children}
+      {badgeOf && (() => {
+        const bm = badgeOf;
+        const bcol = CEMBER_EL_COLORS[(bm.el || 0) % CEMBER_EL_COLORS.length];
+        const hasStage = bm.s >= 0 && bm.s <= 3;
+        const line = (glyph, name, desc, key) => (
+          <div key={key} style={{ display:"flex",alignItems:"center",gap:12,padding:"9px 0",borderTop:"1px solid rgba(184,164,216,0.08)" }}>
+            <div style={{ width:34,height:34,borderRadius:"50%",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",
+              background:"rgba(232,192,122,0.07)",border:"1px solid rgba(232,192,122,0.3)" }}>{glyph}</div>
+            <div style={{ minWidth:0 }}>
+              <div style={{ fontFamily:JOST,fontSize:13,letterSpacing:0.6,color:"#f6dfb0" }}>{name}</div>
+              <div style={{ fontFamily:INTER,fontSize:12.5,lineHeight:1.45,color:"#a79fbd",marginTop:1 }}>{desc}</div>
+            </div>
+          </div>
+        );
+        return (
+          <div onClick={() => setBadgeOf(null)} style={{ position:"fixed",inset:0,zIndex:100012,background:"rgba(4,3,10,0.6)",display:"flex",alignItems:"flex-end",justifyContent:"center",animation:"fadeIn 0.25s ease" }}>
+            <div onClick={(e) => e.stopPropagation()} style={{ width:"100%",maxWidth:460,boxSizing:"border-box",padding:"16px 20px calc(18px + var(--sab))",
+              borderRadius:"22px 22px 0 0",background:"#100c1c",borderTop:"1px solid rgba(232,192,122,0.3)",boxShadow:"0 -12px 40px rgba(0,0,0,0.5)" }}>
+              <div style={{ width:38,height:4,borderRadius:4,background:"rgba(255,255,255,0.14)",margin:"0 auto 14px" }} />
+              <div style={{ display:"flex",flexDirection:"column",alignItems:"center",gap:8,marginBottom:10 }}>
+                {hasStage || bm.l || bm.c ? (
+                  <div style={{ display:"flex",alignItems:"center",justifyContent:"center",gap:12 }}>
+                    {hasStage && cemberStageGlyph(bm.s, 30, L(CEMBER_BADGE_TXT.names[bm.s]))}
+                    {bm.l ? cemberChestGlyph(24, L(CEMBER_BADGE_TXT.letter)) : null}
+                    {bm.c ? cemberChordGlyph(26, L(CEMBER_BADGE_TXT.chord)) : null}
+                  </div>
+                ) : null}
+                <div style={{ fontFamily:SERIF,fontSize:22,color:bcol,textAlign:"center" }}>{bm.nick}</div>
+              </div>
+              {hasStage && line(cemberStageGlyph(bm.s, 18, L(CEMBER_BADGE_TXT.names[bm.s])), L(CEMBER_BADGE_TXT.names[bm.s]), L(CEMBER_BADGE_TXT.descs[bm.s]), "s")}
+              {bm.l ? line(cemberChestGlyph(15, L(CEMBER_BADGE_TXT.letter)), L(CEMBER_BADGE_TXT.letter), L(CEMBER_BADGE_TXT.letterDesc), "l") : null}
+              {bm.c ? line(cemberChordGlyph(17, L(CEMBER_BADGE_TXT.chord)), L(CEMBER_BADGE_TXT.chord), L(CEMBER_BADGE_TXT.chordDesc), "c") : null}
+              {!hasStage && !bm.l && !bm.c && (
+                <div style={{ fontFamily:INTER,fontSize:13,lineHeight:1.55,color:"#a79fbd",textAlign:"center",padding:"6px 8px 4px" }}>{L(CEMBER_BADGE_TXT.none)}</div>
+              )}
+              <div style={{ fontFamily:INTER,fontSize:11.5,color:"#7d7692",textAlign:"center",margin:"12px 0 2px" }}>{L(CEMBER_BADGE_TXT.atSend)}</div>
+              <div style={{ display:"flex",gap:8,marginTop:12 }}>
+                <button onClick={() => { setBadgeOf(null); setBadgeSheet(true); }} style={{ ...BTN,flex:1,padding:"11px",borderRadius:100,fontFamily:JOST,fontSize:12,letterSpacing:1.4,textTransform:"uppercase",
+                  display:"flex",alignItems:"center",justifyContent:"center",color:"#f6dfb0",border:"1px solid rgba(232,192,122,0.4)" }}>{L(CEMBER_BADGE_TXT.all)}</button>
+                <button onClick={() => setBadgeOf(null)} style={{ ...BTN,flex:1,padding:"11px",borderRadius:100,fontFamily:JOST,fontSize:12,letterSpacing:1.4,textTransform:"uppercase",
+                  display:"flex",alignItems:"center",justifyContent:"center",color:"#cfc7e0",border:"1px solid rgba(255,255,255,0.12)" }}>{L(CEMBER_TXT.close)}</button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
       {badgeNew && (
         <div style={{ position:"absolute",left:"50%",top:"calc(70px + var(--sat))",transform:"translateX(-50%)",zIndex:3,pointerEvents:"none",
           display:"flex",alignItems:"center",gap:8,padding:"8px 14px",borderRadius:100,background:"rgba(20,16,34,0.94)",
@@ -2060,7 +2110,11 @@ function CemberScreen({ lang, unlocked, minor, onClose, onGoBaglan, onGoNefes, s
                 background: mine ? "rgba(232,192,122,0.1)" : "rgba(255,255,255,0.04)",
                 border:`1px solid ${mine ? "rgba(232,192,122,0.25)" : "rgba(184,164,216,0.12)"}` }}>
               <div style={{ display:"flex",alignItems:"baseline",gap:8,marginBottom:3 }}>
-                <span style={{ fontFamily:JOST,fontSize:11.5,letterSpacing:0.4,color:col,display:"inline-flex",alignItems:"center",gap:4 }}>
+                {/* Takma ad + rozetler: dokununca rozet özeti (mesaj menüsü AÇILMAZ). Dokunma
+                    alanı dikeyde biraz genişletildi, satır yüksekliği değişmedi. */}
+                <span role="button" tabIndex={0} aria-label={`${m.nick} · ${L(CEMBER_BADGE_TXT.title)}`}
+                  onClick={(e) => { e.stopPropagation(); setMenuFor(null); setBadgeOf(m); try { track("cember", { a: "badgeof" }); } catch (_) {} }}
+                  style={{ fontFamily:JOST,fontSize:11.5,letterSpacing:0.4,color:col,display:"inline-flex",alignItems:"center",gap:4,cursor:"pointer",padding:"4px 0",margin:"-4px 0" }}>
                   {m.nick}
                   {m.s >= 0 && m.s <= 3 ? cemberStageGlyph(m.s, 13, L(CEMBER_BADGE_TXT.names[m.s])) : null}
                   {m.l ? cemberChestGlyph(11, L(CEMBER_TXT.letterIc)) : null}
