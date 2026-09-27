@@ -86,6 +86,8 @@ export function nickFor(hash, room) {
 // edilebildiği için "birini engelle" başka birini de engelleyebiliyordu).
 export const authorTag = (hash) => createHash("sha256").update("tag:" + hash).digest("hex").slice(0, 12);
 // Bildirim ve moderasyon sınırı için IP özeti (IP'nin kendisi saklanmaz).
+// Ağ (IP) yasağının süresi: CGNAT yüzünden kalıcı değil (bkz. cember.sql sonu).
+export const IP_BAN_HOURS = 48;
 export const ipKey = (ip) => createHash("sha256").update("ip:" + String(ip || "?")).digest("hex").slice(0, 32);
 // Takma adın rengi (element başına), istemci bununla boyar.
 export function elementIndex(hash) { return parseInt(hash.slice(0, 4), 16) % 8; }

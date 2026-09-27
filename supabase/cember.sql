@@ -71,3 +71,11 @@ create policy "cember_presence" on realtime.messages for insert to anon, authent
 -- Mühürlü Niyet Mektubu olan kişinin mesajında takma adın yanında küçük sandık
 -- ikonu. Yalnızca bir evet/hayır bayrağı; mektubun içeriği ASLA sunucuya gitmez.
 alter table public.chat_messages add column if not exists letter boolean not null default false;
+
+-- ── AĞ YASAĞI (1.4.3) ─────────────────────────────────────────────────────────
+-- Yasaklanan kişi uygulama verisini silip yeni kimlikle dönebiliyordu. Her mesajla
+-- IP adresinin TEK YÖNLÜ özeti saklanır (IP'nin kendisi DEĞİL); panelden "Cihazı
+-- banla" o özeti de chat_bans'a "ip:<özet>" olarak yazar. Mobil operatörler çok
+-- kullanıcıya aynı IP'yi verebildiği (CGNAT) için ağ yasağı 48 SAAT geçerli
+-- (chat-send süreyi kendisi kontrol eder), cihaz yasağı kalıcı.
+alter table public.chat_messages add column if not exists ip_hash text;

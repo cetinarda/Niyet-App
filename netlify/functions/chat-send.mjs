@@ -5,7 +5,7 @@
 // crisis, slow, abuse, spam, db.
 // ⚠️ KRİZ: mesaj odaya DÜŞMEZ; istemci yazana ÖZEL destek mesajı gösterir.
 import { chatConfig, corsFor, json, rest, broadcast, ROOMS, MAX_LEN, SLOW_MS, deviceHash, validDeviceId,
-  nickFor, elementIndex, authorTag, hasLink, looksCrisis, looksProfane, aiModerate, ipLimited } from "./_chat.mjs";
+  nickFor, elementIndex, authorTag, hasLink, looksCrisis, looksProfane, aiModerate, ipLimited, ipKey, IP_BAN_HOURS } from "./_chat.mjs";
 
 export default async (req, context) => {
   const { ok: originOk, headers } = corsFor(req);
@@ -24,8 +24,14 @@ export default async (req, context) => {
   if (!room || !validDeviceId(b.id) || !text || text.length > MAX_LEN) return json(headers, 400, { ok: false, reason: "bad" });
   const h = deviceHash(b.id);
 
-  const ban = await rest(cfg, `chat_bans?select=device_hash&device_hash=eq.${h}&limit=1`);
-  if (ban.ok && Array.isArray(ban.data) && ban.data.length) return json(headers, 200, { ok: false, reason: "banned" });
+  // Yasak: cihaz özeti (kalıcı) YA DA ağ özeti "ip:<özet>" (IP_BAN_HOURS saat; aynı
+  // IP'yi paylaşan masum kullanıcılar uzun süre engellenmesin).
+  const ik = ipKey(ip);
+  const ban = await rest(cfg, `chat_bans?select=device_hash,created_at&device_hash=in.(${h},${encodeURIComponent(`"ip:${ik}"`)})`);
+  const ipCut = Date.now() - IP_BAN_HOURS * 3600e3;
+  const banned = ban.ok && Array.isArray(ban.data) && ban.data.some((x) =>
+    x.device_hash === h || (x.device_hash === `ip:${ik}` && new Date(x.created_at).getTime() > ipCut));
+  if (banned) return json(headers, 200, { ok: false, reason: "banned" });
   if (hasLink(text)) return json(headers, 200, { ok: false, reason: "link" });
   if (looksCrisis(text)) return json(headers, 200, { ok: false, reason: "crisis" });
 
@@ -47,8 +53,11 @@ export default async (req, context) => {
   // takma adın yanındaki küçük sandık ikonu için). Sütun henüz eklenmemişse
   // (cember.sql sonundaki ALTER) ekleme sütunsuz tekrar denenir, sohbet durmaz.
   const letter = b.letter === true;
+  // `ip_hash` sütunu (cember.sql, 1.4.3) henüz eklenmemişse sütunsuz, o da yoksa
+  // `letter`sız tekrar denenir: şema güncellenmeden de sohbet durmaz.
   const base = { room, nick: nickFor(h, room), body: text, device_hash: h };
-  let ins = await rest(cfg, "chat_messages", { method: "POST", prefer: "return=representation", body: { ...base, letter } });
+  let ins = await rest(cfg, "chat_messages", { method: "POST", prefer: "return=representation", body: { ...base, letter, ip_hash: ik } });
+  if (!ins.ok && ins.status === 400) ins = await rest(cfg, "chat_messages", { method: "POST", prefer: "return=representation", body: { ...base, letter } });
   if (!ins.ok && ins.status === 400) ins = await rest(cfg, "chat_messages", { method: "POST", prefer: "return=representation", body: base });
   const row = ins.ok && Array.isArray(ins.data) ? ins.data[0] : null;
   if (!row) return json(headers, 200, { ok: false, reason: "db" });

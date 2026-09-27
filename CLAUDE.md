@@ -1072,6 +1072,14 @@ koruma sunucuda.
   7 dil). Nefes/meditasyon/kartlar açık. Gizlilik `privacy_s8p` (7 dil) + web + md buna
   göre. Bu kapı sayesinde Apple yaş derecelendirmesi 9+'a indirilebilir; Google'da 13 yaş
   altı hedef kitle SEÇİLMEZ (Aileler politikası Meta SDK'yı kabul etmez).
+- **AĞ YASAĞI (1.4.3):** yasaklanan kişi uygulama verisini silip yeni kimlikle
+  dönebiliyordu. Her mesaj `ip_hash` (IP'nin tek yönlü özeti, `ipKey`) taşır; panelde
+  "Cihazı banla" cihazı KALICI, ağı `ip:<özet>` olarak `IP_BAN_HOURS`=48 saat banlar
+  (CGNAT: aynı IP'yi paylaşan masumlar uzun süre engellenmesin). `chat-send` iki yasağı
+  tek sorguda (`in.(...)`) kontrol eder. ⚠️ Kullanıcı SQL Editor'da `cember.sql`
+  sonundaki `ip_hash` ALTER'ını çalıştırmalı; çalıştırılana kadar kayıt sütunsuz
+  tekrar denenir, yalnızca cihaz banı çalışır. Gizlilik metinleri (7 dil + web) IP
+  özetini anlatıyor.
 - **Presence anahtarı oturumluk rastgele** (`"p"+random`): presence anahtarı odadaki
   HERKESE görünür, anonim ölçüm kimliğini (`getAnonId`) buraya KOYMA.
 - Test: sahte Supabase + sahte Groq ile sunucu uçtan uca (yavaş mod, link, kriz,

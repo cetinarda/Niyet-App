@@ -3,7 +3,7 @@
   publish = "dist"
 
 [build.environment]
-  NODE_VERSION = "18"
+  NODE_VERSION = "22"
   # Gizli tarama İSTİSNASI (anlık bildirim, Eyl 2026): Team ID ve Key ID gizli
   # bilgi DEĞİL, yalnızca kimlik numarası. Team ID Xcode projelerinde
   # (DEVELOPMENT_TEAM) zaten açıkça yazılı; env "secret" işaretlenince Netlify

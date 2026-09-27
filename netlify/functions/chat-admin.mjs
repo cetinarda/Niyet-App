@@ -4,7 +4,7 @@
 // her satırda Gizle / Göster / Cihazı banla. Ban: cihazın son 24 saatteki tüm
 // mesajları gizlenir ve bir daha yazamaz. Ban listesi altta, kaldırılabilir.
 import { timingSafeEqual } from "node:crypto";
-import { chatConfig, rest, broadcast, HISTORY_HOURS } from "./_chat.mjs";
+import { chatConfig, rest, broadcast, HISTORY_HOURS, IP_BAN_HOURS } from "./_chat.mjs";
 
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 function tokenOk(given) {
@@ -44,14 +44,20 @@ export default async (req) => {
       if (row && action === "hide") await broadcast(cfg, `room:${row.room}`, "hide", { id: row.id });
       notice = row ? (action === "hide" ? "Mesaj gizlendi." : "Mesaj yeniden görünür.") : "İşlem başarısız.";
     } else if (action === "ban") {
-      const m = await rest(cfg, `chat_messages?select=device_hash&id=eq.${Number(id)}&limit=1`);
-      const h = m.ok && Array.isArray(m.data) && m.data[0] ? m.data[0].device_hash : null;
+      // ip_hash sütunu yoksa (şema güncellenmemiş) yalnızca cihaz banlanır.
+      let m = await rest(cfg, `chat_messages?select=device_hash,ip_hash&id=eq.${Number(id)}&limit=1`);
+      if (!m.ok && m.status === 400) m = await rest(cfg, `chat_messages?select=device_hash&id=eq.${Number(id)}&limit=1`);
+      const row0 = m.ok && Array.isArray(m.data) && m.data[0] ? m.data[0] : null;
+      const h = row0 ? row0.device_hash : null, ik = row0 && row0.ip_hash ? row0.ip_hash : null;
       if (h) {
         await rest(cfg, "chat_bans", { method: "POST", prefer: "resolution=ignore-duplicates", body: { device_hash: h, reason: "panel" } });
+        // Ağ yasağı: aynı özet daha önce banlandıysa tarihini yenile (48 saat baştan).
+        if (ik) await rest(cfg, "chat_bans", { method: "POST", prefer: "resolution=merge-duplicates", body: { device_hash: `ip:${ik}`, reason: "panel-ip", created_at: new Date().toISOString() } });
         const since = new Date(Date.now() - HISTORY_HOURS * 3600e3).toISOString();
         const hid = await rest(cfg, `chat_messages?device_hash=eq.${h}&created_at=gte.${encodeURIComponent(since)}&select=id,room`, { method: "PATCH", prefer: "return=representation", body: { hidden: true } });
         for (const row of (hid.ok && Array.isArray(hid.data) ? hid.data : [])) await broadcast(cfg, `room:${row.room}`, "hide", { id: row.id });
-        notice = "Cihaz banlandı, son 24 saatteki mesajları gizlendi.";
+        notice = ik ? `Cihaz banlandı (kalıcı), ağı ${IP_BAN_HOURS} saat banlandı; son 24 saatteki mesajları gizlendi.`
+                    : "Cihaz banlandı, son 24 saatteki mesajları gizlendi. (Ağ yasağı için cember.sql sonundaki ALTER çalıştırılmalı.)";
       } else notice = "Mesaj bulunamadı.";
     } else if (action === "unban") {
       await rest(cfg, `chat_bans?device_hash=eq.${encodeURIComponent(id)}`, { method: "DELETE" });
@@ -73,5 +79,5 @@ export default async (req) => {
 ${notice ? `<p class="ok">${esc(notice)}</p>` : ""}
 <h2>Bildirilen ve gizlenen</h2>${flagged.map(row).join("") || `<p class="muted">Yok.</p>`}
 <h2>Son mesajlar</h2>${msgs.filter((m) => !m.reports && !m.hidden).slice(0, 80).map(row).join("") || `<p class="muted">Henüz mesaj yok.</p>`}
-<h2>Banlı cihazlar</h2>${(bans.ok && Array.isArray(bans.data) ? bans.data : []).map((x) => `<div class="m"><div class="meta">${esc(x.device_hash)} · ${esc(fmt(x.created_at))}</div>${btn(token, "unban", x.device_hash, "Banı kaldır")}</div>`).join("") || `<p class="muted">Yok.</p>`}`);
+<h2>Banlı cihazlar ve ağlar</h2>${(bans.ok && Array.isArray(bans.data) ? bans.data : []).map((x) => `<div class="m"><div class="meta">${String(x.device_hash).startsWith("ip:") ? `Ağ (${IP_BAN_HOURS} saat) · ` : "Cihaz · "}${esc(x.device_hash)} · ${esc(fmt(x.created_at))}</div>${btn(token, "unban", x.device_hash, "Banı kaldır")}</div>`).join("") || `<p class="muted">Yok.</p>`}`);
 };
