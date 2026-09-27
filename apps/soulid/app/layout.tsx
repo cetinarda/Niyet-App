@@ -36,7 +36,7 @@ const cormorant = Cormorant_Garamond({
 const A = process.env.NEXT_PUBLIC_EMBED_BASE || '';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://soulprofile.life'),
+  metadataBase: new URL('https://sakin.life'),
   title: {
     default: 'SoulProfile: Doğum Verisi · Kimlik Analizi',
     template: '%s · SoulProfile',

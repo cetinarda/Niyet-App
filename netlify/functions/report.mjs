@@ -203,7 +203,7 @@ export function aggregate(users) {
     notif: {
       users: notifUsers,
       byKind: ["genel", "kisisel", "koc", "tarot", "geridon", "mektup", "anlik", "diger"].map((k) => ({ k, n: ch["notif_" + k] || 0 })),
-      deeplink: ["mandala", "bugun", "nefes", "ses", "chakra"].map((k) => ({ k, n: ch["deeplink_" + k] || 0 })),
+      deeplink: ["mandala", "bugun", "nefes", "ses", "chakra", "soulid"].map((k) => ({ k, n: ch["deeplink_" + k] || 0 })),
     },
     choices: {
       forkShown: ch.fork_shown || 0,

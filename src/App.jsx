@@ -4990,120 +4990,120 @@ const GLOBAL_CSS = `
 
 
 const DAILY_REMINDERS_TR = [
-  "Aynaya bak ve gülümse",
-  "Bir bardak su iç, bedenini hisset",
+  "Kendine içinden bir gülümseme gönder",
+  "Bir yudum suyun bile bedenine iyi gelir",
   "Üç derin nefes al, şu anı fark et",
-  "Güneşi hisset, ışığı içine çek",
+  "İçindeki ışık, dışarıdaki güneş kadar gerçek",
   "Ayaklarını yere bas, toprağı hisset",
-  "Gökyüzüne bak, genişliği hatırla",
-  "Ellerini kalbine koy, minnetle nefes al",
-  "Bedenini esnet, omuzlarını gevşet",
+  "Gökyüzü hep orada, genişliği sende de var",
+  "Kalbine minnetle bir nefes gönder",
+  "Omuzların gevşeyebilir, bedenin bunu sever",
   "Bugünkü niyetini hatırla",
   "Bir an dur. Sadece ol.",
   "Çeneni gevşet, dilini damağından indir",
-  "Telefonu bırak, bir dakika sadece var ol",
-  "Pencereyi aç, temiz havayı içine çek",
+  "Bir an ekranın ötesine bak, sadece var ol",
+  "Bir nefes temiz hava gibidir, istediğin an içine çekebilirsin",
   "Omuzlarını kulaklarından uzaklaştır",
   "Gözlerini kapat, üçe kadar nefes say",
   "İçinden bile olsa bir 'teşekkür ederim' de",
   "Yürürken adımlarını hisset, acele etme",
   "Bugün seni güldüren tek şeyi hatırla",
   "Karnından nefes al, göğsünden değil",
-  "Bir bitkiye bak, yapraklarını izle",
+  "Doğa bir yerlerde büyümeye devam ediyor, sen de",
   "Kendine nazik bir cümle kur",
   "Sırtını dikleştir, başını hafifçe yukarı al",
-  "Elini kalbine koy, atışını dinle",
+  "Kalbin bütün gün senin için atıyor",
   "Bir kokuyu fark et: kahve, toprak, yağmur",
   "Şu an neredeysen, oraya tümüyle gel",
   "Kasıtlı olarak yavaşla, bir hareketi ağırdan al",
   "Bugünü bir kelimeyle adlandır, sahiplen",
-  "Avuçlarını birbirine sürt, sıcaklığı yüzüne koy",
+  "Avuçlarındaki sıcaklığı fark et, o sıcaklık senin",
 ];
 const DAILY_REMINDERS_EN = [
-  "Look in the mirror and smile",
-  "Drink a glass of water, feel your body",
+  "Send yourself a smile, even just inside",
+  "Even a sip of water is kind to your body",
   "Take three deep breaths, notice this moment",
-  "Feel the sunlight, draw it within",
+  "The light within you is as real as the sun outside",
   "Press your feet to the ground, feel the earth",
-  "Look at the sky, remember the vastness",
-  "Place your hands on your heart, breathe with gratitude",
-  "Stretch your body, relax your shoulders",
+  "The sky is always there, and its vastness is in you too",
+  "Send one grateful breath to your heart",
+  "Your shoulders can loosen; your body loves that",
   "Remember today's intention",
   "Pause for a moment. Just be.",
   "Relax your jaw, drop your tongue from the roof",
-  "Put the phone down, just exist for a minute",
-  "Open the window, draw in the fresh air",
+  "Look beyond the screen for a moment, just be",
+  "One breath is like fresh air; you can draw it in anytime",
   "Move your shoulders away from your ears",
   "Close your eyes, count three breaths",
   "Say a 'thank you', even if only inside",
   "Feel your steps as you walk, don't rush",
   "Recall the one thing that made you smile today",
   "Breathe from your belly, not your chest",
-  "Look at a plant, watch its leaves",
+  "Somewhere nature keeps growing, and so do you",
   "Form one kind sentence toward yourself",
   "Straighten your back, lift your head slightly",
-  "Place your hand on your heart, listen to it beat",
+  "Your heart has been beating for you all day",
   "Notice a scent: coffee, earth, rain",
   "Wherever you are, arrive there fully",
   "Slow down on purpose, take one motion gently",
   "Name today in a single word, own it",
-  "Rub your palms together, place the warmth on your face",
+  "Notice the warmth in your palms; that warmth is yours",
 ];
 // Sabah pingleri: her gün 7:30, havuz boyunca döner (varyasyon)
 const MORNING_PINGS_TR = [
   "Günaydın. Bugün nasıl hissetmek istersin?",
   "Günaydın. İlk nefesini derinden al.",
-  "Yeni bir gün. Niyetini tek cümlede söyle.",
+  "Yeni bir gün. Niyetin tek bir kelime bile olabilir.",
   "Günaydın. Bugün kendine ne diliyorsun?",
   "Gözlerini aç, güne üç nefesle başla.",
   "Günaydın. Acele yok, güne sakin gir.",
-  "Bugün senin. Küçük bir iyilikle başla.",
+  "Bugün senin. İlk iyilik kendine olsun.",
 ];
 const MORNING_PINGS_EN = [
   "Good morning. How do you want to feel today?",
   "Good morning. Take your first breath deeply.",
-  "A new day. Say your intention in one sentence.",
+  "A new day. Your intention can be just one word.",
   "Good morning. What do you wish for yourself today?",
   "Open your eyes, start the day with three breaths.",
   "Good morning. No rush, enter the day calmly.",
-  "Today is yours. Begin with a small kindness.",
+  "Today is yours. Let the first kindness be for you.",
 ];
 // Program özelliği davetleri: her gün 21:00, günde 1 tane, havuz boyunca döner
 // Yeni bildirim havuzları (kullanıcı isteği): nefes hatırlatması ve Keşfet/Tasarım
 // daveti. Tıklanınca doğrudan ilgili ekrana/embed'e gider (extra.screen / extra.embed).
 const NOTIF_NEFES = {
   "tr": [
-    "Bir dakikan var mı? Üç derin nefes, sadece bu.",
+    "Üç derin nefes, sadece bu. Olduğun yerde, kimse fark etmeden.",
     "Omuzların düştü mü? Nefesine dön.",
     "Nefes al. Ver. Buradasın."
   ],
   "en": [
-    "Got a minute? Three deep breaths, that's all.",
+    "Three deep breaths, that's all. Right where you are, unnoticed.",
     "Shoulders dropped? Come back to your breath.",
     "Breathe in. Out. You are here."
   ],
   "de": [
-    "Hast du eine Minute? Drei tiefe Atemzüge, mehr nicht.",
+    "Drei tiefe Atemzüge, mehr nicht. Genau da, wo du bist, unbemerkt.",
     "Schultern gesunken? Kehr zu deinem Atem zurück.",
     "Einatmen. Ausatmen. Du bist hier."
   ],
   "pt": [
-    "Tens um minuto? Três respirações profundas, só isso.",
+    "Três respirações profundas, só isso. Onde estás, sem ninguém reparar.",
     "Ombros caídos? Volta à tua respiração.",
     "Inspira. Expira. Estás aqui."
   ],
   "es": [
-    "¿Tienes un minuto? Tres respiraciones profundas, nada más.",
+    "Tres respiraciones profundas, nada más. Donde estés, sin que nadie lo note.",
     "¿Hombros caídos? Vuelve a tu respiración.",
     "Inhala. Exhala. Estás aquí."
   ],
   "fr": [
-    "Tu as une minute ? Trois respirations profondes, c'est tout.",
+    "Trois respirations profondes, c'est tout. Là où tu es, sans que personne le voie.",
     "Épaules tombées ? Reviens à ton souffle.",
     "Inspire. Expire. Tu es là."
   ],
   "ja": [
-    "1分ありますか？深呼吸を三度、それだけ。",
+    "深呼吸を三度、それだけ。今いる場所で、誰にも気づかれずに。",
     "肩が落ちていませんか？呼吸に戻って。",
     "吸って。吐いて。あなたはここにいる。"
   ]
@@ -5391,30 +5391,30 @@ const NOTIF_KESFET = {
 };
 const FEATURE_PROMOS_TR = [
   "Ses frekanslarıyla 1 dakikada sakinleşmek ister misin?",
-  "Nefes al, ver... şimdi Sakin Nefesi denemenin tam sırası.",
+  "Nefes al, ver... Sakin Nefesi istediğin an burada.",
   "432 Hz çalsın, kalp atışın yavaşlasın. Frekanslara göz at.",
   "Bugünkü çakranı biliyor musun? Çakra ekranında bir an dur.",
-  "Aynaya 30 saniye bak. Ayna alıştırmasını dene.",
+  "Ayna alıştırması seni bekliyor: kendine nazik bir bakış, ne zaman istersen.",
   "Kozmik hava bugün nasıl? Galaktik ekrana göz at.",
   "Totem hayvanın ne diyor? Sakin Hayvan'ı keşfet.",
   "Bir mit, bir sembol: bugünün Sakin Mitleri seni bekliyor.",
   "Haftalık içsel raporun hazır olabilir, bir bak.",
-  "528 Hz, 'Sevgi Frekansı': bir dakika dinle, hisset.",
-  "Bir bardak su, üç nefes, bir niyet: Sakin'le küçük bir mola.",
+  "528 Hz, 'Sevgi Frekansı': dinlemek istersen seni bekliyor.",
+  "Bir nefes, bir niyet: Sakin'le küçük bir mola, istediğin an.",
   "396 Hz kök çakranı topraklar. Gözlerini kapat, dinle.",
 ];
 const FEATURE_PROMOS_EN = [
   "Want to calm down in 1 minute with sound frequencies?",
-  "Breathe in, out... it's the perfect time to try Calm Breath.",
+  "Breathe in, out... Calm Breath is here whenever you want.",
   "Let 432 Hz play, let your heartbeat slow. Explore the frequencies.",
   "Do you know today's chakra? Pause for a moment in the Chakra screen.",
-  "Look in the mirror for 30 seconds. Try the Mirror exercise.",
+  "The Mirror exercise is waiting: a kind look at yourself, whenever you like.",
   "How's the cosmic weather today? Check the Galactic screen.",
   "What does your totem animal say? Discover Calm Animal.",
   "A myth, a symbol: today's Calm Myths await you.",
   "Your weekly inner report might be ready, take a look.",
-  "528 Hz, the 'Love Frequency': listen for a minute, feel it.",
-  "A glass of water, three breaths, one intention: a small break with Sakin.",
+  "528 Hz, the 'Love Frequency': here for you whenever you want to listen.",
+  "One breath, one intention: a small pause with Sakin, whenever you like.",
   "396 Hz grounds your root chakra. Close your eyes, listen.",
 ];
 
@@ -5446,80 +5446,83 @@ const MORNING_DAYS = [2, 5]; // Date.getDay(): 0=Paz..6=Cmt → Salı, Cuma
 
 // Şablon yedeği (AI başarısızsa). de/es/pt/fr/ja için EN'e düşer (yedek yol,
 // nadiren; AI birincil ve dili kendi zorluyor). EM ise 7 dilde tam.
+// ⚠️ RAHATLAT, GÖREV VERME (kullanıcı, Eyl 2026): "bir şeyi bitir", "mola planla",
+// "birine yaz", "telefonu bir saat uzağa koy" gibi iş/süre/ortam isteyen satırlar
+// kaldırıldı. Okuyan işte ya da yoğun olabilir; bildirim yük değil, ferahlık verir.
 const PNOTIF_FACIL = {
-  tr: ["Bugünü küçük tut. Tek bir şeyi bitir, gerisi kendiliğinden akar.",
-       "Acele etme. Bugün yavaşlamak da bir ilerleme.",
-       "Zor gelen şeyi ikiye böl. Yarısı bugün yeter.",
-       "Bir mola planla. Dinlenmiş zihin daha hızlı toparlar.",
-       "Kendine bir iyilik yap: en kolay işi ilk yap, ivme gelsin."],
-  en: ["Keep today small. Finish one thing, the rest will follow.",
-       "No rush. Slowing down today is also progress.",
-       "Split the hard thing in two. Half is enough for today.",
-       "Plan a pause. A rested mind recovers faster.",
-       "Do yourself a kindness: start with the easiest task, let momentum build."],
+  tr: ["Bugünü küçük tutabilirsin. Her şeyin bugün olması gerekmiyor.",
+       "Acelen yok. Yavaş gitmek de yol almaktır.",
+       "Zor gelen ne varsa, hepsini bir anda taşıman gerekmiyor.",
+       "Omuzların biraz inebilir. Nefesin zaten seninle.",
+       "Kendine nazik ol, bugün ne kadar yaparsan o kadarı yeter."],
+  en: ["You can keep today small. Not everything has to happen today.",
+       "No rush. Going slowly is still moving forward.",
+       "Whatever feels hard, you don't have to carry it all at once.",
+       "Your shoulders can drop a little. Your breath is already with you.",
+       "Be kind to yourself; whatever you do today is enough."],
   // Yapay zekâ çağrısı başarısız olursa bu diller eskiden İngilizce şablona düşüyordu.
-  de: ["Halte den Tag klein. Bring eine Sache zu Ende, der Rest folgt.",
-       "Keine Eile. Heute langsamer zu werden ist auch Fortschritt.",
-       "Teil das Schwierige in zwei. Die Hälfte reicht für heute.",
-       "Plane eine Pause. Ein ausgeruhter Geist erholt sich schneller.",
-       "Tu dir etwas Gutes: fang mit der leichtesten Aufgabe an, lass Schwung entstehen."],
-  es: ["Haz que hoy sea pequeño. Termina una cosa, lo demás fluirá.",
-       "Sin prisa. Ir más despacio hoy también es avanzar.",
-       "Divide lo difícil en dos. La mitad basta por hoy.",
-       "Planea una pausa. Una mente descansada se recupera antes.",
-       "Sé amable contigo: empieza por lo más fácil y deja que llegue el impulso."],
-  pt: ["Mantém o dia pequeno. Termina uma coisa, o resto vem a seguir.",
-       "Sem pressa. Abrandar hoje também é avançar.",
-       "Divide o difícil em dois. Metade chega por hoje.",
-       "Planeia uma pausa. Uma mente descansada recupera mais depressa.",
-       "Sê gentil contigo: começa pela tarefa mais fácil e deixa o ritmo crescer."],
-  fr: ["Garde la journée petite. Termine une chose, le reste suivra.",
-       "Pas de hâte. Ralentir aujourd'hui, c'est aussi avancer.",
-       "Coupe la chose difficile en deux. La moitié suffit pour aujourd'hui.",
-       "Prévois une pause. Un esprit reposé se remet plus vite.",
-       "Fais-toi du bien : commence par le plus facile, laisse l'élan venir."],
-  ja: ["今日は小さく。ひとつだけ終わらせれば、あとは自然に流れます。",
-       "急がなくていい。今日ゆっくりすることも前進です。",
-       "難しいことは半分に。今日は半分で十分。",
-       "休憩を予定に入れて。休んだ心は早く立ち直ります。",
-       "自分にやさしく。いちばん簡単なことから始めて、勢いにまかせて。"],
+  de: ["Du darfst den Tag klein halten. Nicht alles muss heute passieren.",
+       "Keine Eile. Langsam gehen ist auch Vorankommen.",
+       "Was schwer wirkt, musst du nicht alles auf einmal tragen.",
+       "Deine Schultern dürfen ein wenig sinken. Dein Atem ist schon bei dir.",
+       "Sei sanft mit dir: Was immer du heute tust, ist genug."],
+  es: ["Puedes hacer que hoy sea pequeño. No todo tiene que pasar hoy.",
+       "Sin prisa. Ir despacio también es avanzar.",
+       "Lo que se te haga difícil, no tienes que cargarlo todo de una vez.",
+       "Tus hombros pueden bajar un poco. Tu respiración ya está contigo.",
+       "Sé amable contigo: lo que hagas hoy es suficiente."],
+  pt: ["Podes manter o dia pequeno. Nem tudo tem de acontecer hoje.",
+       "Sem pressa. Ir devagar também é avançar.",
+       "O que te pesa, não tens de o carregar todo de uma vez.",
+       "Os teus ombros podem descer um pouco. A tua respiração já está contigo.",
+       "Sê gentil contigo: o que fizeres hoje chega."],
+  fr: ["Tu peux garder la journée petite. Tout n'a pas à se faire aujourd'hui.",
+       "Pas de hâte. Aller lentement, c'est aussi avancer.",
+       "Ce qui te semble lourd, tu n'as pas à tout porter d'un coup.",
+       "Tes épaules peuvent descendre un peu. Ton souffle est déjà avec toi.",
+       "Sois doux avec toi : ce que tu fais aujourd'hui suffit."],
+  ja: ["今日は小さくていい。全部を今日やらなくても大丈夫。",
+       "急がなくていい。ゆっくり進むことも前進です。",
+       "重く感じることも、一度に全部抱えなくていい。",
+       "肩の力を少し抜いていい。呼吸はもうあなたと一緒。",
+       "自分にやさしく。今日できたぶんで、もう十分。"],
 };
 const PNOTIF_REMIND = {
-  tr: ["Su içmeyi unutma. Bedenin sana teşekkür edecek.",
-       "Bir kişiye tek cümle yaz: aklımdasın. O kadar.",
-       "Bugün bir şeye 'hayır' de. Alanını koru.",
-       "Üç şeye şükret, sessizce. Gün hafifler.",
-       "Telefonu bir saat uzağa koy. An geri gelsin."],
-  en: ["Remember to drink water. Your body will thank you.",
-       "Write one line to someone: thinking of you. That's all.",
-       "Say 'no' to one thing today. Protect your space.",
-       "Give thanks for three things, quietly. The day lightens.",
-       "Put the phone an arm away for an hour. Let the moment return."],
-  de: ["Denk daran, Wasser zu trinken. Dein Körper wird es dir danken.",
-       "Schreib jemandem eine Zeile: Ich denk an dich. Mehr nicht.",
-       "Sag heute zu einer Sache Nein. Schütze deinen Raum.",
-       "Danke still für drei Dinge. Der Tag wird leichter.",
-       "Leg das Handy für eine Stunde weg. Lass den Moment zurückkommen."],
-  es: ["No olvides beber agua. Tu cuerpo te lo agradecerá.",
-       "Escríbele una línea a alguien: pienso en ti. Nada más.",
-       "Di que no a una cosa hoy. Protege tu espacio.",
-       "Agradece tres cosas, en silencio. El día se aligera.",
-       "Deja el móvil lejos durante una hora. Deja que vuelva el momento."],
-  pt: ["Não te esqueças de beber água. O teu corpo agradece.",
-       "Escreve uma linha a alguém: estou a pensar em ti. Só isso.",
-       "Diz 'não' a uma coisa hoje. Protege o teu espaço.",
-       "Agradece três coisas, em silêncio. O dia fica mais leve.",
-       "Deixa o telemóvel longe durante uma hora. Deixa o momento voltar."],
-  fr: ["Pense à boire de l'eau. Ton corps te remerciera.",
-       "Écris une ligne à quelqu'un : je pense à toi. C'est tout.",
-       "Dis non à une chose aujourd'hui. Protège ton espace.",
-       "Remercie pour trois choses, en silence. La journée s'allège.",
-       "Pose ton téléphone loin de toi pendant une heure. Laisse l'instant revenir."],
-  ja: ["水を飲むのを忘れずに。からだが喜びます。",
-       "誰かにひとことだけ送ってみて。あなたを思っています、と。",
-       "今日はひとつだけ「いいえ」と言ってみて。自分の場所を守って。",
-       "三つのことに、静かに感謝を。一日が軽くなります。",
-       "一時間だけスマホを遠くに置いて。今この瞬間が戻ってきます。"],
+  tr: ["Şu an neredeysen, bir nefes senin. Kimse fark etmez, sen hissedersin.",
+       "Çenen gevşeyebilir, omuzların inebilir. Gün bir an bekleyebilir.",
+       "Aklından biri geçtiyse, o sevgi zaten ona ulaşıyor.",
+       "Bugünün içinde küçük bir güzellik var, fark etmesen de orada.",
+       "Gözlerini ekrandan bir an kaldırmak bile içini genişletir."],
+  en: ["Wherever you are, one breath is yours. No one will notice; you will feel it.",
+       "Your jaw can soften, your shoulders can drop. The day can wait a moment.",
+       "If someone crossed your mind, that love is already reaching them.",
+       "There's a small beauty in today, there even if you don't notice it.",
+       "Even lifting your eyes from the screen for a moment widens something inside."],
+  de: ["Wo immer du bist, ein Atemzug gehört dir. Niemand merkt es, du spürst es.",
+       "Dein Kiefer darf weich werden, deine Schultern dürfen sinken. Der Tag kann kurz warten.",
+       "Wenn dir jemand in den Sinn kam, erreicht ihn diese Liebe schon.",
+       "In diesem Tag steckt eine kleine Schönheit, auch wenn du sie nicht bemerkst.",
+       "Schon ein kurzer Blick weg vom Bildschirm macht innen etwas weiter."],
+  es: ["Estés donde estés, una respiración es tuya. Nadie lo notará, tú sí lo sentirás.",
+       "Tu mandíbula puede aflojarse, tus hombros pueden bajar. El día puede esperar un momento.",
+       "Si alguien pasó por tu mente, ese cariño ya le está llegando.",
+       "Hoy guarda una pequeña belleza; aunque no la notes, está ahí.",
+       "Solo levantar la vista de la pantalla un momento ya abre algo por dentro."],
+  pt: ["Estejas onde estiveres, uma respiração é tua. Ninguém repara, tu sentes.",
+       "O teu maxilar pode descontrair, os teus ombros podem descer. O dia pode esperar um momento.",
+       "Se alguém te passou pela cabeça, esse carinho já lhe está a chegar.",
+       "O dia de hoje guarda uma pequena beleza, mesmo que não repares nela.",
+       "Só levantar os olhos do ecrã por um instante já abre algo cá dentro."],
+  fr: ["Où que tu sois, une respiration t'appartient. Personne ne le verra, toi tu le sentiras.",
+       "Ta mâchoire peut se détendre, tes épaules peuvent descendre. La journée peut attendre un instant.",
+       "Si quelqu'un t'a traversé l'esprit, cette tendresse lui parvient déjà.",
+       "Cette journée cache une petite beauté, même si tu ne la remarques pas.",
+       "Lever les yeux de l'écran un instant suffit à ouvrir quelque chose en toi."],
+  ja: ["どこにいても、ひと呼吸はあなたのもの。誰も気づかなくても、あなたは感じられる。",
+       "あごをゆるめて、肩を下ろしていい。一日は少しだけ待ってくれる。",
+       "誰かが心に浮かんだなら、その想いはもう届いています。",
+       "今日の中に、小さな美しさがある。気づかなくても、そこにある。",
+       "画面から少し目を上げるだけで、心に少し余白が生まれる。"],
 };
 // EM: yalnızca aktif (Kp 4) ve fırtına (Kp>=5) bantları, 7 dilde.
 const PNOTIF_EM = {
@@ -5557,6 +5560,14 @@ function _isoWeekStamp(d = new Date()) {
 // Yerel takvim günü (YYYY-MM-DD) ve iki gün arasındaki fark (yaz saatinden etkilenmez).
 function _ymd(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
 function _dayDiff(a, b) { const [y1, m1, d1] = a.split("-").map(Number), [y2, m2, d2] = b.split("-").map(Number); return Math.round((Date.UTC(y2, m2 - 1, d2) - Date.UTC(y1, m1 - 1, d1)) / 86400000); }
+// Bildirim görev gibi mi? (ortam/süre/hazırlık isteyen kalıplar; 7 dilde kaba süzgeç).
+// Yakalanan AI satırı kullanılmaz. Kural: bildirim rahatlatır, iş yüklemez.
+const _PNOTIF_DEMAND_RE = new RegExp([
+  "rahat bir (ortam|yer|köşe)", "sessiz bir (ortam|yer|köşe|an)", "köşeye çekil", "\\d+\\s*dakika", "meditasyon yap", "yürüyüş", "günlük tut", "listele", "planla",
+  "quiet (place|spot|space|corner)", "comfortable (place|spot|space)", "\\d+\\s*min", "meditate", "go for a walk", "journal", "make a list", "plan ",
+  "ruhigen ort", "minuten", "meditiere", "lugar tranquilo", "minutos", "medita", "endroit calme", "médite", "静かな場所", "分間", "瞑想し",
+].join("|"), "i");
+function _pnotifTooDemanding(t) { return _PNOTIF_DEMAND_RE.test(String(t || "")); }
 async function _genPersonalNotifAI(lang, birthDate) {
   try {
     const sign = zodiacSign(birthDate);          // TR ad; prompta bağlam
@@ -5575,8 +5586,20 @@ async function _genPersonalNotifAI(lang, birthDate) {
       "yazarsın. Her metin tek cümle, en fazla ~110 karakter, ikinci tekil şahıs " +
       "(sen). HAM ASTROLOJİ SAYISI ya da teknik terim YAZMA (derece, Kp gibi); " +
       "yalnızca anlamını sıcak dille yansıt. Uzun çizgi (em dash) kullanma. " +
-      "Her gün için İKİ satır üret: F = o günü KOLAYLAŞTIRAN küçük bir öneri, " +
-      "R = ona özel kısa bir HATIRLATICI. Çıktı TAM olarak şu biçimde, başka hiçbir " +
+      // RAHATLAT, GÖREV VERME (kullanıcı, Eyl 2026: "kendini dinle, rahat bir ortamda
+      // meditasyon yap" bildirimi geldi; herkes böyle bir alan bulamaz, çalışıyor ya da
+      // yoğun olabilir, görev gibi hissedilir ve kullanıcı kaçar; biz her zaman
+      // rahatlatmalıyız). Çıktı süzgeci: _pnotifTooDemanding.
+      "EN ÖNEMLİ KURAL: bildirim RAHATLATIR, GÖREV VERMEZ. Okuyan kişi işte, yolda, " +
+      "kalabalıkta ya da çok yoğun olabilir. ASLA ortam, zaman ya da hazırlık isteme: " +
+      "'rahat/sessiz bir ortamda', 'bir köşeye çekil', 'X dakika ayır', 'meditasyon yap', " +
+      "'yürüyüşe çık', 'günlük tut', 'yaz', 'listele', 'planla', 'bitir' gibi şeyler YASAK. " +
+      "Emir kipiyle iş yükleme; ya içini ferahlatan bir cümle kur ya da olduğu yerde, " +
+      "kimse fark etmeden, tek bir nefeslik bir izin ver (ör. omuzların inebilir, " +
+      "bir nefes senin). Suçluluk, eksiklik ya da 'yapmalısın' duygusu uyandırma. " +
+      "Her gün için İKİ satır üret: F = o günü HAFİFLETEN, yük almayan sıcak bir cümle, " +
+      "R = gün ortasında içini yumuşatan kısa bir hatırlatma (yine görev değil). " +
+      "Çıktı TAM olarak şu biçimde, başka hiçbir " +
       "şey yazma: [1F] ... [1R] ... [2F] ... [2R] ... [7F] ... [7R]";
     const user =
       `Doğum burcu: ${sign}. Yaşam yolu teması: ${lp}. Kişisel yıl: ${py}.\n` +
@@ -5598,7 +5621,8 @@ async function _genPersonalNotifAI(lang, birthDate) {
       const clean = (x) => x && x.replace(/\s*[\u2013\u2014\u2015]\s*/g, ", ").trim();
       const f = fm && clean(fm[1]);
       const r = rm && clean(rm[1]);
-      days.push({ f: f || null, r: r || null });
+      // Görev/ortam isteyen satır atılır (gün şablona düşer ya da boş kalır).
+      days.push({ f: f && !_pnotifTooDemanding(f) ? f : null, r: r && !_pnotifTooDemanding(r) ? r : null });
     }
     // En az 5 günün ikisi de doluysa AI'yı kabul et; yoksa şablona düş.
     const full = days.filter((x) => x.f && x.r).length;
@@ -5714,7 +5738,8 @@ async function scheduleAllNotifications(lang, birthDate, opts = {}) {
     const hasBirth = !!birthDate;
     const prefs = readNotifPrefs();
     const week = _isoWeekStamp();
-    const contentStamp = hasBirth ? `${week}_${lang}_${birthDate}` : "-";
+    // "r2_": rahatlatıcı prompt (Eyl 2026); eski önbellekteki görev metinleri yenilensin.
+    const contentStamp = hasBirth ? `r2_${week}_${lang}_${birthDate}` : "-";
     // Kullanım parmak izi: bugün nefes/ses/çakra yapıldı mı, Ayna sayısı, mektup durumu.
     // Değişince plan yeniden kurulur ("3 gündür nefes yapmadın" bayat kalmasın).
     const _u = usageSnapshot();
@@ -8211,6 +8236,22 @@ export default function SakinApp() {
     }
     // Deep link: aynı açılış katmanı temizliği, sonra hedef ekran.
     const linkHandler = (url) => {
+      // sakin://soulid/<yol>?<sorgu> (1.4.3): web'deki SoulID sayfasının "Uygulaman varsa:
+      // uygulamada aç" bağlantısı (davet /match?i=..., bağlanma testi /attachment).
+      // Alt klasör doğrudan açılmaz (iOS'ta güvenilir değil), SoulID kökü ?go= ile yönlendirir.
+      const sm = /^sakin:\/\/soulid\/?([a-z-]*)\/?(\?[^#]*)?/i.exec(String(url || ""));
+      if (sm) {
+        const path = (sm[1] || "").toLowerCase();
+        const q = new URLSearchParams(sm[2] || "");
+        const go = ["match", "attachment", "pair", "sky"].includes(path) ? path : "";
+        const inv = q.get("i");
+        const qs = go === "match" ? (inv ? "?go=match&i=" + encodeURIComponent(inv) : "?go=pair") : go ? "?go=" + go : "";
+        try { track("deeplink_open", { s: "soulid" }); } catch(_) {}
+        clearEntryLayers();
+        try { setShowAilesi(false); } catch(_){}
+        setTimeout(() => { const f = handleOpenEmbedRef.current; if (f) f({ name: t("ailesi_soulid_name"), embed: "/embedded/soulid/index.html" + qs, color: "#e8c07a" }); }, 80);
+        return;
+      }
       const scr = deepLinkScreen(url);
       if (!scr) return;
       try { track("deeplink_open", { s: scr }); } catch(_) {}

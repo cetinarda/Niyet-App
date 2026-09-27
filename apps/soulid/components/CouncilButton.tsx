@@ -17,6 +17,7 @@ const COPY = {
     sub: 'Doğduğun neslin yedi çözümleyicisi seni okusun',
     tap: 'Meclisi Topla',
     loading: 'Meclis toplanıyor...',
+    done: 'Meclis toplandı',
     error: 'Meclis şu an toplanamadı. Bir an sonra tekrar dene.',
     retry: 'Tekrar dene',
     toReport: 'Detaylı Karnene Git',
@@ -27,6 +28,7 @@ const COPY = {
     sub: 'Let the seven analysts of your generation read you',
     tap: 'Convene the Council',
     loading: 'The council is gathering...',
+    done: 'The council has gathered',
     error: 'The council could not gather right now. Try again in a moment.',
     retry: 'Try again',
     toReport: 'Go to Your Detailed Card',
@@ -128,14 +130,29 @@ export function CouncilButton({ birthDate }: { birthDate: string }) {
   const c = COPY[locale === 'en' ? 'en' : 'tr'];
   const [state, setState] = useState<'idle' | 'loading' | 'done' | 'error'>('idle');
   const [sections, setSections] = useState<CouncilSection[]>([]);
+  const resultsRef = useRef<HTMLDivElement | null>(null);
+  // Okuma cihazda saklanır (doğum tarihi + dil): sayfa yeniden açılınca "toplandı"
+  // hâli ve aynı okuma geri gelir, her açılışta yeni AI çağrısı harcanmaz.
+  const cacheKey = `soulprofile.council.${birthDate}.${locale === 'en' ? 'en' : 'tr'}`;
+  useEffect(() => {
+    try {
+      const cached = JSON.parse(localStorage.getItem(cacheKey) || 'null');
+      if (Array.isArray(cached) && cached.length >= 4) { setSections(cached); setState('done'); }
+      else { setSections([]); setState('idle'); }
+    } catch { /* sessiz */ }
+  }, [cacheKey]);
 
   async function convene() {
     if (state === 'loading') return;
+    // Toplandıktan sonra düğme yeniden okuma başlatmaz (kullanıcı: "toplandı basılınca
+    // 'Meclis toplandı' çıksın, butonda hâlâ 'Meclisi topla' yazıyor"): sonuçlara kaydırır.
+    if (state === 'done') { resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
     setState('loading');
     try {
       const res = await runCouncil(birthDate, locale === 'en' ? 'en' : 'tr');
       setSections(res.sections);
       setState('done');
+      try { localStorage.setItem(cacheKey, JSON.stringify(res.sections)); } catch { /* sessiz */ }
     } catch {
       setState('error');
     }
@@ -163,6 +180,8 @@ export function CouncilButton({ birthDate }: { birthDate: string }) {
                 <span className="inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-gold/40 border-t-gold" />
                 {c.loading}
               </>
+            ) : state === 'done' ? (
+              <>✓ {c.done}</>
             ) : (
               <>✦ {c.tap}</>
             )}
@@ -184,7 +203,7 @@ export function CouncilButton({ birthDate }: { birthDate: string }) {
       )}
 
       {state === 'done' && sections.length > 0 && (
-        <div className="mt-5">
+        <div ref={resultsRef} className="mt-5 scroll-mt-4">
           <div className="flex flex-col gap-3">
             {sections.map((s) => (
               <article

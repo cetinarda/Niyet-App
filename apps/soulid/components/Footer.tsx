@@ -25,7 +25,7 @@ export function Footer() {
         <div className="flex flex-wrap items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-2 text-gold">
             <span>✦</span>
-            <span className="text-xs font-bold tracking-[0.3em]">SOULPROFILE</span>
+            <span className="text-xs font-bold tracking-[0.3em]">SOULID</span>
           </Link>
           <nav className="flex flex-wrap gap-x-5 gap-y-2">
             {links.map((l) => (
@@ -42,7 +42,7 @@ export function Footer() {
           {t('footer.family')}
         </p>
         <p className="mt-3 text-[11px] leading-relaxed text-faint">
-          {t('footer.disclaimer')} © {year ?? ''} SoulProfile.
+          {t('footer.disclaimer')} © {year ?? ''} Sakin.
         </p>
         <DevToggle />
       </div>

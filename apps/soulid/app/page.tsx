@@ -37,6 +37,16 @@ export default function Welcome() {
     try { return new URLSearchParams(window.location.search).get('go') === 'attachment'; } catch { return false; }
   });
   useEffect(() => { if (goAttach) nav.push('/attachment'); }, [goAttach]);
+  // ?go=match&i=<davet> (1.4.3): web'deki davet sayfasından "uygulamada aç" ile gelen
+  // (sakin://soulid/match?i=...). Davet sayfası kendi formunu gösterir, karne beklenmez.
+  useEffect(() => {
+    try {
+      const q = new URLSearchParams(window.location.search);
+      const inv = q.get('i');
+      if (q.get('go') === 'match' && inv) nav.push(`/match?i=${encodeURIComponent(inv)}`);
+    } catch { /* sessiz */ }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // HOST HANGİ EKRANI İSTEDİ: Keşfet'ten girilince artık PROFİL sekmesi
   // (varsayılan; kullanıcı kararı: "ilk açılış profil olsun, oraya bakan
@@ -405,7 +415,7 @@ export default function Welcome() {
                 <p className="mt-1 font-display text-lg text-ink">Generator</p>
                 <p className="text-[10px] text-muted">{locale === 'tr' ? 'Sakral Otorite · 3/5 Profil' : 'Sacral Authority · 3/5 Profile'}</p>
               </div>
-              <p className="mt-auto text-[9px] tracking-widest text-faint">soulprofile.life</p>
+              <p className="mt-auto text-[9px] tracking-widest text-faint">sakin.life</p>
             </div>
           </div>
 

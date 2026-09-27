@@ -101,7 +101,7 @@ export const CompatCard = forwardRef<
       <div className="relative flex flex-col items-center gap-4 text-center">
         <div className="flex items-center gap-2">
           <BrandMark size={16} className="text-gold" />
-          <p className="text-[10px] font-bold tracking-[0.5em] text-gold">SOULPROFILE</p>
+          <p className="text-[10px] font-bold tracking-[0.5em] text-gold">SOULID</p>
         </div>
         <p className="-mt-2 text-[10px] font-bold uppercase tracking-[0.4em] text-cosmic">
           {tr ? 'İKİ RUH · KOZMİK UYUM' : 'TWO SOULS · COSMIC MATCH'}
@@ -134,7 +134,7 @@ export const CompatCard = forwardRef<
 
         <p className="max-w-xs text-[12px] italic leading-relaxed text-muted">“{result.headline}”</p>
 
-        <p className="text-[9px] tracking-[0.25em] text-faint">soulprofile.life</p>
+        <p className="text-[9px] tracking-[0.25em] text-faint">sakin.life</p>
       </div>
     </div>
   );

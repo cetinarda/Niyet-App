@@ -124,7 +124,11 @@ export async function decodeInvite(token: string): Promise<BirthInput | null> {
 }
 
 export async function inviteUrl(birth: BirthInput, origin?: string): Promise<string> {
-  const base = origin ?? (typeof window !== 'undefined' ? window.location.origin : 'https://soulprofile.life');
+  // Taban HER ZAMAN sakin.life (1.4.3): uygulama içindeki gömülüde origin
+  // capacitor://localhost / https://localhost olur, link arkadaşta açılmazdı;
+  // soulprofile.life artık takip edilmiyor. sakin.life/match -> SoulID davet
+  // sayfası (netlify.toml 301), mobilde mağaza şeridi + "uygulamada aç".
+  const base = origin ?? 'https://sakin.life';
   const token = await encodeInvite(birth);
   // URL fragment'a koymak server log'larda PII bırakmaz: fakat sosyal medya
   // paylaşımlarında fragment bazı platformlarda korunmuyor. Compromise: query.

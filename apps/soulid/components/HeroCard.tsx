@@ -114,7 +114,7 @@ export const HeroCard = forwardRef<HTMLDivElement, { report: GalacticReport; por
                 margin: 0,
               }}
             >
-              ◆ SOULPROFILE ◆
+              ◆ SOULID ◆
             </p>
 
             {/* Portre */}
@@ -283,7 +283,7 @@ export const HeroCard = forwardRef<HTMLDivElement, { report: GalacticReport; por
                 color: 'rgba(232,200,119,0.75)',
               }}
             >
-              SOULPROFILE.LIFE
+              SAKIN.LIFE
             </p>
             <p
               style={{

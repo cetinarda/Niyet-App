@@ -167,6 +167,20 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    parantez veya ayrı cümle kullan. Bu kural mevcut kod tabanındaki temizlikten
    (bkz. Tasks #1-12) DAHA GENEL: sadece i18n değil, ürettiğin HER metin.
 
+9. **🌿 BİLDİRİMLER VE METİNLER RAHATLATIR, GÖREV VERMEZ (kullanıcı kuralı, Eyl 2026).**
+   Tetikleyen: "Kendini dinle, rahat bir ortamda meditasyon yap" bildirimi. Kullanıcı:
+   "herkes böyle bir alan bulamayabilir, çalışıyor/yoğun olabilir, görev gibi hissedilir
+   ve kullanıcı kaçar; biz her zaman rahatlatmalıyız." Yani bildirim (ve AI'ın ürettiği
+   bildirim metni) ASLA ortam ("sessiz/rahat bir yerde"), süre ("5 dakika ayır"), hazırlık
+   ya da iş ("bitir, planla, yaz, listele, yürüyüşe çık, telefonu uzağa koy") istemez,
+   suçluluk/eksiklik ("{n} gündür yapmadın") hissettirmez. Ya içi ferahlatan bir cümle
+   ya da olduğu yerde, kimse fark etmeden, tek nefeslik bir İZİN ("omuzların inebilir").
+   Uygulama özelliğine davet YUMUŞAK olur ("nefes istediğin an burada"). Uygulama:
+   `_genPersonalNotifAI` prompt'u + çıktı süzgeci `_pnotifTooDemanding` (7 dil kalıp),
+   içerik damgası `r2_`; statik havuzlar (PNOTIF_FACIL/REMIND, DAILY_REMINDERS,
+   MORNING_PINGS, FEATURE_PROMOS, NOTIF_NEFES, yaşam koçu `notif-coach*.js`) bu kurala
+   göre 7 dilde yeniden yazıldı. Yeni bildirim metni eklerken bu kurala göre yaz.
+
 1. **Ek istek/soru geldiğinde işi BIRAKMA, sıraya al.** Önce o an üzerinde çalıştığın işlemi bitir, sonra yeni isteği/soruyu ele al. İş ortasında dosya/branch yarım bırakma.
 2. **Soru sormak ≠ "dur".** Kullanıcı iş ortasında soru sorarsa: soruyu sıraya al, mevcut işi tamamla, **sonra** yanıtla. Sadece kullanıcı açıkça **"dur"** derse durdur.
 3. **Sürüm notları KISA olsun: 1-2 cümle, sadece en öne çıkanlar.** Hem mağaza
@@ -267,6 +281,23 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
       hatası = izin). Doğum bilgisi sunucuya GİTMEZ (çift kimliğinin cyrb53 özeti). ⚠️ CGNAT:
       aynı mobil IP'yi paylaşan yabancılar tek hakkı paylaşır; sorun olursa `WINDOW_DAYS`
       (0 = kalıcı). Gizlilik metinleri (3 yer, 7 dil) güncellendi.
+    - **7'LER MECLİSİ (1.4.3):** okuma bitince düğme "✓ Meclis toplandı" der, yeniden
+      basınca AI'ı tekrar çağırmaz, sonuçlara kaydırır. Okuma cihazda saklanır
+      (`soulprofile.council.<doğum>.<dil>`): sayfa yeniden açılınca aynı okuma + "toplandı".
+    - **WEB'DE SOULID BAŞLIĞI + DAVET LİNKLERİ (1.4.3, kullanıcı: "link gelen arkadaşın
+      uygulaması yoksa ne oluyor; webde geri tuşu farklı yerde, ana sayfaya dönüyor"):**
+      * `sakin.life/match?i=` artık `netlify.toml` 301 ile `/embedded/soulid/match/`'e gider
+        (ÖNCE SPA yedeğine düşüp Sakin web uygulamasını açıyordu, davet kayboluyordu).
+        `inviteUrl` tabanı HER ZAMAN `https://sakin.life` (gömülüde origin capacitor://).
+      * `TopBar` (yalnızca iframe DIŞINDA): geri SOLDA "← SAKİN". Sakin web uygulamasından
+        gelindiyse oraya (`sessionStorage soulid_back`, ilk girişteki referrer), linkten
+        gelindiyse sakin.life. Telefondan linkle gelene üstte mağaza şeridi (kendi
+        platformu) + "Uygulaman varsa: uygulamada aç" (`sakin://soulid/<yol>?<sorgu>`).
+      * Mağazaya OTOMATİK ATLAMA YOK (bilinçli): Apple/Google kurulumda linki taşımaz
+        (ertelenmiş derin bağlantı ücretli servis ister), davet kaybolurdu. Uyum web'de
+        hemen hesaplanır, indirme düğmesi hep üstte.
+      * Marka her yerde SOULID / sakin.life (eski SOULPROFILE, soulprofile.life kaldırıldı;
+        yalnızca `lib/api-base.ts` AI backend adresi soulprofile.life'ta duruyor).
     - **Keşfet giriş kapısı:** `SOULID_PREMIUM_GATE` (App.jsx başı) şu an `false` = herkese ücretsiz + "Ücretsiz" rozeti (`FREE_BADGE_TXT`, 7 dil; Eyl 2026'da "Yeni" yerine). `true` yapmak kilidi ve Premium rozetini geri getirir (tek satır).
     - ⚠️ **TEK MERKEZ = Niyet-App (kullanıcı kararı: "soulid reposunu unut").** `cetinarda/SoulProfile` reposu ve soulprofile.life sitesi ARTIK TAKİP EDİLMİYOR. Tüm SoulID geliştirmesi `apps/soulid` içinde yapılır, `public/embedded/soulid/`'e derlenir, sakin.life'tan yayınlanır. Sebep: iki yeri elle senkron tutmak main↔gdkpd ayrışmasının aynısını doğuruyordu; ayrıca bu oturumun git erişimi yalnızca niyet-app'e yetkili (SoulProfile'a push proxy tarafından reddediliyor).
     - **Bağlanma testinin paylaşılabilir adresi:** `sakin.life/baglanma` (EN girişi `/attachment`). `netlify.toml` bunu `/embedded/soulid/attachment/`'a **301** ile yollar. **200 rewrite KULLANMA:** embed `basePath=/embedded/soulid` ile derlendiği için farklı bir yolda Next istemci router'ı yolu eşleştiremez, hydration/gezinme bozulur. Adres uygulama içinde `TEST_URL` (app/attachment/page.tsx) + hikâye görselinde yazılı; değiştirirsen ikisini de güncelle.

@@ -132,7 +132,7 @@ export function mergeBatch(rec, body, now) {
     }
     // Deep link ile açılış (App Store etkinliği vb.): hedef ekran sayılır.
     else if (e === "deeplink_open") {
-      const s = ["mandala", "bugun", "nefes", "ses", "chakra"].includes(it.s) ? it.s : null;
+      const s = ["mandala", "bugun", "nefes", "ses", "chakra", "soulid"].includes(it.s) ? it.s : null;
       if (s) bump("deeplink_" + s);
     }
     else if (e === "nefes") {

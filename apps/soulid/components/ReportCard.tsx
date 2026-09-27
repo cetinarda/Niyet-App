@@ -26,7 +26,7 @@ export const ReportCard = forwardRef<HTMLDivElement, Props>(function ReportCard(
 
       <div className="relative flex flex-col gap-4">
         <div className="text-center">
-          <p className="text-[10px] font-bold tracking-[0.5em] text-gold">SOULPROFILE</p>
+          <p className="text-[10px] font-bold tracking-[0.5em] text-gold">SOULID</p>
           <p className="font-display text-xl text-ink">Galaktik Karne</p>
         </div>
 
@@ -126,7 +126,7 @@ export const ReportCard = forwardRef<HTMLDivElement, Props>(function ReportCard(
           Sembolik gözlem · Tıbbi/psikolojik tavsiye değildir
         </p>
         <p className="text-center text-[9px] tracking-[0.35em] text-faint">
-          soulprofile.life
+          sakin.life
         </p>
       </div>
     </div>

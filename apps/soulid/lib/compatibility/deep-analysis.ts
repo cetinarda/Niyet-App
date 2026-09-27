@@ -456,6 +456,6 @@ ${analysis.practiceForCouple.map((p) => `- ${p}`).join('\n')}
 
 ${L.disclaimer}
 
-SoulProfile · soulprofile.life
+SoulID · sakin.life
 `;
 }

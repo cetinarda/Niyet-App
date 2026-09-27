@@ -21,11 +21,16 @@ const tr: Dict = {
     'Eğlence ve farkındalık amaçlıdır. Tıbbi, psikolojik veya finansal tavsiye yerine geçmez. Verin sende kalır, istediğin zaman silebilirsin.',
   'topbar.family': 'Sakin ailesinin bir ferdi',
   'topbar.backToSakin': "Sakin'e dön",
+  'topbar.back': 'Sakin',
+  'topbar.getApp': "Sakin'i telefonuna indir",
+  'topbar.getAppSub': 'Nefes, günün kartları ve SoulID tek uygulamada.',
+  'topbar.store': 'İndir',
+  'topbar.openApp': 'Uygulaman varsa: uygulamada aç',
   'footer.family':
     'SoulID, Sakin ailesinin bir ferdidir. Nefes, çakra, sembol ve rüya çalışmalarının yanında burası ilişkilerin aynası.',
 
   // Home
-  'home.kicker': 'SOULPROFILE · İKİLİ KOZMİK UYUM',
+  'home.kicker': 'SOULID · İKİLİ KOZMİK UYUM',
   'home.attach.badge': 'YENİ',
   'home.attach.title': 'Bağlanma profilini çöz',
   'home.attach.desc': 'Uyum iki kişilik bir dans, ama yarısı sende başlıyor. 16 soru, 3 dakika.',
@@ -241,11 +246,16 @@ const en: Dict = {
     'For entertainment and self-awareness only. Not a substitute for medical, psychological, or financial advice. Your data stays with you and can be deleted anytime.',
   'topbar.family': 'Part of the Sakin family',
   'topbar.backToSakin': 'Back to Sakin',
+  'topbar.back': 'Sakin',
+  'topbar.getApp': 'Get Sakin on your phone',
+  'topbar.getAppSub': 'Breathing, daily cards and SoulID in one app.',
+  'topbar.store': 'Get',
+  'topbar.openApp': 'Already have it? Open in the app',
   'footer.family':
     'SoulID is part of the Sakin family. Alongside the breath, chakra, symbol and dream work, this is the mirror for relationships.',
 
   // Home
-  'home.kicker': 'SOULPROFILE · DUAL COSMIC COMPATIBILITY',
+  'home.kicker': 'SOULID · DUAL COSMIC COMPATIBILITY',
   'home.attach.badge': 'NEW',
   'home.attach.title': 'Decode your attachment profile',
   'home.attach.desc': 'Compatibility is a dance for two, but half of it starts in you. 16 questions, 3 minutes.',

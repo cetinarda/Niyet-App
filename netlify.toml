@@ -107,6 +107,17 @@
   status = 301
   force = false
 
+# ── İKİLİ UYUM DAVETİ (1.4.3): sakin.life/match?i=<token> ─────────────────────
+# SoulID'nin davet sayfası embed içinde (/embedded/soulid/match/). Bu kural yokken
+# istek SPA yedeğine düşüp Sakin web uygulamasını açıyordu: davet kayboluyor, linki
+# açan kendi Sakin profilini görüyordu. 301 (bağlanma testindeki basePath notu),
+# sorgu (?i=) Netlify'da kendiliğinden taşınır.
+[[redirects]]
+  from = "/match"
+  to = "/embedded/soulid/match/"
+  status = 301
+  force = false
+
 [[redirects]]
   from = "/attachment"
   to = "/embedded/soulid/attachment/"
