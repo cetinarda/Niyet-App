@@ -55,13 +55,21 @@ export default async (req, context) => {
   const letter = b.letter === true;
   // `ip_hash` sütunu (cember.sql, 1.4.3) henüz eklenmemişse sütunsuz, o da yoksa
   // `letter`sız tekrar denenir: şema güncellenmeden de sohbet durmaz.
+  // Rozetler (1.4.3): `stage` evrim aşaması 0-3 (Tohum/Fidan/Ağaç/Orman), `chord`
+  // bugün 7/7 tam akort. İstemci söyler (yerel veri), yalnızca takma adın yanındaki
+  // küçük rozetler için. Sütunlar yoksa (cember.sql sonundaki ALTER) onsuz denenir.
+  const stage = Number.isInteger(b.stage) && b.stage >= 0 && b.stage <= 3 ? b.stage : null;
+  const chord = b.chord === true;
   const base = { room, nick: nickFor(h, room), body: text, device_hash: h };
-  let ins = await rest(cfg, "chat_messages", { method: "POST", prefer: "return=representation", body: { ...base, letter, ip_hash: ik } });
-  if (!ins.ok && ins.status === 400) ins = await rest(cfg, "chat_messages", { method: "POST", prefer: "return=representation", body: { ...base, letter } });
-  if (!ins.ok && ins.status === 400) ins = await rest(cfg, "chat_messages", { method: "POST", prefer: "return=representation", body: base });
+  const tries = [{ ...base, letter, ip_hash: ik, stage, chord }, { ...base, letter, ip_hash: ik }, { ...base, letter }, base];
+  let ins;
+  for (const body of tries) {
+    ins = await rest(cfg, "chat_messages", { method: "POST", prefer: "return=representation", body });
+    if (ins.ok || ins.status !== 400) break;
+  }
   const row = ins.ok && Array.isArray(ins.data) ? ins.data[0] : null;
   if (!row) return json(headers, 200, { ok: false, reason: "db" });
-  const msg = { id: row.id, nick: row.nick, body: row.body, t: row.created_at, el: elementIndex(h), a: authorTag(h), l: row.letter === true ? 1 : 0 };
+  const msg = { id: row.id, nick: row.nick, body: row.body, t: row.created_at, el: elementIndex(h), a: authorTag(h), l: row.letter === true ? 1 : 0, s: Number.isInteger(row.stage) ? row.stage : -1, c: row.chord === true ? 1 : 0 };
   await broadcast(cfg, `room:${room}`, "msg", msg);
 
   // Ara sıra eski mesajları temizle (48 saatten eski; oda zaten 24 saati gösterir).

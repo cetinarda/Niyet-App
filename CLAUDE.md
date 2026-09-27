@@ -1136,6 +1136,19 @@ koruma sunucuda.
   Hak `openCember` ile açılışta harcanır; o oturum `cemberFreeSession` ile açık kalır, Çember
   hangi yoldan kapanırsa kapansın sıfırlanır. Bugün satırı bu sırada "İlk girişin serbest:
   odayla tanış" der (`CEMBER_TXT.firstFree`, 7 dil). 13 yaş kapısı bundan ÖNCE gelir.
+- **ROZETLER (1.4.3, kullanıcı: "takma adlara tohum fidan ağaç orman rozeti; niyet
+  kutusu varsa 2 rozet; özel hissettirsin"):** takma adın yanında en çok üç işaret:
+  evrim aşaması (`cemberStageOf`, Ben'deki dört aşamayla AYNI eşikler 0/3/7/21,
+  `streakData.current`), mühürlü mektup sandığı, bugün 7/7 ise nabız gibi parlayan
+  altın yıldız (`.sakin-chord-badge`). İstemci yalnızca `stage` (0-3) + `chord`
+  bayrağı yollar, sunucu doğrular, mesajla SAKLANIR (o anki hâl, geriye dönük
+  değişmez). Sütunlar `cember.sql` sonundaki ALTER (`stage smallint`, `chord
+  boolean`); yoksa send/history sütunsuz tekrar dener. Başlığın altındaki kendi
+  rozet düğmesi rehberi açar (`CEMBER_BADGE_TXT`, 7 dil; Android geri tuşu önce
+  rehberi kapatır). Aşama atlanınca Çember'de bir kez "Yeni rozetin: X"
+  (`sakin_cember_stage_seen`). Rozet düğmesi BAŞLIK satırında DEĞİL: 320 px'te oda
+  düğmeleriyle çakışıyordu. Gizlilik metinlerine (3 yer) rozet cümlesi eklendi.
+  Analitik `cember` a="badges".
 - **Presence anahtarı oturumluk rastgele** (`"p"+random`): presence anahtarı odadaki
   HERKESE görünür, anonim ölçüm kimliğini (`getAnonId`) buraya KOYMA.
 - Test: sahte Supabase + sahte Groq ile sunucu uçtan uca (yavaş mod, link, kriz,

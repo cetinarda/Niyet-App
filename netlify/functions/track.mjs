@@ -176,7 +176,7 @@ export function mergeBatch(rec, body, now) {
     // Anlık bildirim onayı (Ayarlar anahtarı ya da Bugün daveti): 1 açtı, 0 kapattı/istemedi.
     else if (e === "push_optin") { if (it.v === 1 || it.v === 0) bump("push_optin_" + it.v); }
     // Çember (canlı oda): açma, kural onayı, gönderme, bildirme, engelleme, kriz kartı.
-    else if (e === "cember") { if (["open", "rules", "send", "report", "block", "crisis"].includes(it.a)) bump("cember_" + it.a); }
+    else if (e === "cember") { if (["open", "rules", "send", "report", "block", "crisis", "badges"].includes(it.a)) bump("cember_" + it.a); }
     // Hata sınırına düşen çizim hatası (src/main.jsx): yalnızca hata TÜRÜ sayılır.
     else if (e === "js_error") { const k = typeof it.k === "string" && /^[A-Za-z]{1,20}$/.test(it.k) ? it.k : "Error"; bump("jserr_" + k); }
     else if (e === "fork_shown") bump("fork_shown");

@@ -35,7 +35,7 @@ Günlük hatırlatıcılar cihazınızda yerel olarak kurulur, içerikleri sunuc
 
 ### 2.4 Çember (Canlı Oda)
 
-Çember'e yazdığınız mesajlar odadaki herkese açıktır. Saklananlar: **mesaj metni (en çok 140 karakter), cihazınızdan türetilen takma ad, cihaz kimliğinizin geri çevrilemeyen özeti, zaman ve bildirim sayısı**. Mesajlar yayınlanmadan önce otomatik olarak denetlenir (bağlantı, küfür ve yapay zeka moderasyonu, Groq). Kendine zarar verme içeren mesajlar odaya düşmez ve saklanmaz. Mesajlar 24 saat görünür ve 48 saat içinde silinir; yasaklanan cihazların özeti, yasak kaldırılana kadar tutulur. Yasağı uygulayabilmek için her mesajla IP adresinizin geri çevrilemeyen özeti de saklanır (IP'nin kendisi değil); yasaklanan bir ağın özeti 48 saat tutulur. Çember verileri Supabase üzerinde Avrupa Birliği (Frankfurt) sunucusunda saklanır.
+Çember'e yazdığınız mesajlar odadaki herkese açıktır. Saklananlar: **mesaj metni (en çok 140 karakter), cihazınızdan türetilen takma ad, cihaz kimliğinizin geri çevrilemeyen özeti, zaman ve bildirim sayısı**. Mesajınızın yanında gün serinizden türeyen küçük rozetler (evrim aşaması, mühürlü mektup, günün 7/7 işareti) de görünür ve mesajla birlikte saklanır. Mesajlar yayınlanmadan önce otomatik olarak denetlenir (bağlantı, küfür ve yapay zeka moderasyonu, Groq). Kendine zarar verme içeren mesajlar odaya düşmez ve saklanmaz. Mesajlar 24 saat görünür ve 48 saat içinde silinir; yasaklanan cihazların özeti, yasak kaldırılana kadar tutulur. Yasağı uygulayabilmek için her mesajla IP adresinizin geri çevrilemeyen özeti de saklanır (IP'nin kendisi değil); yasaklanan bir ağın özeti 48 saat tutulur. Çember verileri Supabase üzerinde Avrupa Birliği (Frankfurt) sunucusunda saklanır.
 
 ### 2.5 Anonim Kullanım Ölçümü
 

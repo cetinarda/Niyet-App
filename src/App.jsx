@@ -1614,6 +1614,77 @@ const CEMBER_TXT = {
   firstFree: { tr:"İlk girişin serbest: odayla tanış", en:"Your first visit is open: meet the room", de:"Dein erster Besuch ist frei: lerne den Raum kennen", es:"Tu primera visita es libre: conoce la sala", pt:"A tua primeira visita é livre: conhece a sala", fr:"Ta première visite est libre : découvre le salon", ja:"最初の訪問は自由です。部屋をのぞいてみよう" },
   entryQuiet:{ tr:"Oda sessiz, ilk sen gel", en:"Quiet room, be the first", de:"Stiller Raum, sei der Erste", es:"Sala tranquila, sé el primero", pt:"Sala calma, sê o primeiro", fr:"Salon calme, sois le premier", ja:"静かな部屋、最初の一人に" },
 };
+// ROZETLER (1.4.3, kullanıcı: "takma adlara tohum fidan ağaç orman rozeti; niyet
+// kutusu varsa 2 rozet; özel hissettirsin"). Takma adın yanında en çok üç işaret:
+// evrim aşaması (Ben ekranındaki dört aşamayla AYNI eşikler 0/3/7/21, gün serisi),
+// mühürlü Niyet Mektubu sandığı ve o gün 7/7 "Tam akort" altın yıldızı. İstemci
+// yalnızca `stage` (0-3) ve `chord` bayrağını yollar; rozet mesajla birlikte saklanır
+// (o anki hâl). Başlıktaki kendi rozetlerine dokununca rehber açılır.
+const CEMBER_BADGE_TXT = {
+  title:  { tr:"Rozetler", en:"Badges", de:"Abzeichen", es:"Insignias", pt:"Insígnias", fr:"Badges", ja:"バッジ" },
+  intro:  { tr:"Takma adının yanındaki işaretler kim olduğunu değil, yolculuğunu anlatır.", en:"The marks next to your nickname tell your journey, not who you are.", de:"Die Zeichen neben deinem Spitznamen erzählen deinen Weg, nicht wer du bist.", es:"Las marcas junto a tu apodo cuentan tu camino, no quién eres.", pt:"As marcas junto à tua alcunha contam o teu caminho, não quem és.", fr:"Les signes à côté de ton pseudo racontent ton chemin, pas qui tu es.", ja:"ニックネームの横の印は、あなたが誰かではなく、あなたの歩みを語ります。" },
+  yours:  { tr:"Senin rozetlerin", en:"Your badges", de:"Deine Abzeichen", es:"Tus insignias", pt:"As tuas insígnias", fr:"Tes badges", ja:"あなたのバッジ" },
+  all:    { tr:"Tüm rozetler", en:"All badges", de:"Alle Abzeichen", es:"Todas las insignias", pt:"Todas as insígnias", fr:"Tous les badges", ja:"すべてのバッジ" },
+  names: [
+    { tr:"Tohum", en:"Seed", de:"Samen", es:"Semilla", pt:"Semente", fr:"Graine", ja:"種" },
+    { tr:"Fidan", en:"Sapling", de:"Setzling", es:"Brote", pt:"Muda", fr:"Pousse", ja:"苗" },
+    { tr:"Ağaç", en:"Tree", de:"Baum", es:"Árbol", pt:"Árvore", fr:"Arbre", ja:"木" },
+    { tr:"Orman", en:"Forest", de:"Wald", es:"Bosque", pt:"Floresta", fr:"Forêt", ja:"森" },
+  ],
+  descs: [
+    { tr:"Yolun başı. Her şey bir tohumla başlar.", en:"The start of the path. Everything begins with a seed.", de:"Der Anfang des Weges. Alles beginnt mit einem Samen.", es:"El comienzo del camino. Todo empieza con una semilla.", pt:"O início do caminho. Tudo começa com uma semente.", fr:"Le début du chemin. Tout commence par une graine.", ja:"道のはじまり。すべては一粒の種から。" },
+    { tr:"3 gün üst üste bağlantı.", en:"3 days of connection in a row.", de:"3 Tage Verbindung am Stück.", es:"3 días seguidos de conexión.", pt:"3 dias seguidos de ligação.", fr:"3 jours de connexion d'affilée.", ja:"3日連続のつながり。" },
+    { tr:"7 gün üst üste bağlantı. Gövde güçleniyor.", en:"7 days of connection in a row. The trunk grows strong.", de:"7 Tage Verbindung am Stück. Der Stamm wird stark.", es:"7 días seguidos de conexión. El tronco se fortalece.", pt:"7 dias seguidos de ligação. O tronco fica forte.", fr:"7 jours de connexion d'affilée. Le tronc se renforce.", ja:"7日連続のつながり。幹が強くなっていく。" },
+    { tr:"21 gün üst üste bağlantı. Kökler derinde.", en:"21 days of connection in a row. The roots run deep.", de:"21 Tage Verbindung am Stück. Die Wurzeln reichen tief.", es:"21 días seguidos de conexión. Las raíces son profundas.", pt:"21 dias seguidos de ligação. As raízes são profundas.", fr:"21 jours de connexion d'affilée. Les racines sont profondes.", ja:"21日連続のつながり。根は深く。" },
+  ],
+  letter:     { tr:"Niyet sandığı", en:"Intention chest", de:"Absichtstruhe", es:"Cofre de intención", pt:"Baú de intenção", fr:"Coffre d'intention", ja:"意図の箱" },
+  letterDesc: { tr:"Mühürlü bir Niyet Mektubu taşıyor. Mühür açılınca söner.", en:"Carries a sealed intention letter. It fades once the seal opens.", de:"Trägt einen versiegelten Absichtsbrief. Es verblasst, wenn das Siegel aufgeht.", es:"Lleva una carta de intención sellada. Se apaga cuando se abre el sello.", pt:"Leva uma carta de intenção selada. Apaga-se quando o selo abre.", fr:"Porte une lettre d'intention scellée. Il s'éteint quand le sceau s'ouvre.", ja:"封をした意図の手紙を持っています。封が開くと消えます。" },
+  chord:      { tr:"Tam akort", en:"Full chord", de:"Voller Akkord", es:"Acorde completo", pt:"Acorde completo", fr:"Accord complet", ja:"完全な和音" },
+  chordDesc:  { tr:"Bugün yedi adımın hepsini tamamladı. Gün bitince söner, yarın yeniden yanar.", en:"Completed all seven steps today. It fades when the day ends and can shine again tomorrow.", de:"Hat heute alle sieben Schritte abgeschlossen. Es verblasst am Tagesende und kann morgen wieder leuchten.", es:"Completó hoy los siete pasos. Se apaga al terminar el día y puede brillar de nuevo mañana.", pt:"Concluiu hoje os sete passos. Apaga-se no fim do dia e pode voltar a brilhar amanhã.", fr:"A terminé les sept étapes aujourd'hui. Il s'éteint en fin de journée et peut briller à nouveau demain.", ja:"今日、7つのステップをすべて終えました。一日の終わりに消え、明日また輝けます。" },
+  next:   { tr:"Sıradaki: {name} · {n} gün", en:"Next: {name} · {n} days", de:"Als Nächstes: {name} · {n} Tage", es:"Siguiente: {name} · {n} días", pt:"A seguir: {name} · {n} dias", fr:"Ensuite : {name} · {n} jours", ja:"次は{name}・あと{n}日" },
+  top:    { tr:"En olgun aşamadasın.", en:"You're at the fullest stage.", de:"Du bist in der reifsten Phase.", es:"Estás en la etapa más plena.", pt:"Estás na fase mais plena.", fr:"Tu es au stade le plus mûr.", ja:"いちばん成熟した段階です。" },
+  chordTip:{ tr:"Bugün yedi adımı tamamlarsan altın yıldız yanar.", en:"Complete all seven steps today and the golden star lights up.", de:"Schließe heute alle sieben Schritte ab, dann leuchtet der goldene Stern.", es:"Completa hoy los siete pasos y se enciende la estrella dorada.", pt:"Conclui hoje os sete passos e a estrela dourada acende-se.", fr:"Termine les sept étapes aujourd'hui et l'étoile dorée s'allume.", ja:"今日7つのステップを終えると、金の星が灯ります。" },
+  shown:  { tr:"Rozetlerin her mesajınla birlikte görünür.", en:"Your badges appear with every message you send.", de:"Deine Abzeichen erscheinen bei jeder Nachricht, die du sendest.", es:"Tus insignias aparecen con cada mensaje que envías.", pt:"As tuas insígnias aparecem em cada mensagem que envias.", fr:"Tes badges apparaissent avec chaque message que tu envoies.", ja:"バッジは送るメッセージごとに表示されます。" },
+  newOne: { tr:"Yeni rozetin: {name}", en:"New badge: {name}", de:"Neues Abzeichen: {name}", es:"Nueva insignia: {name}", pt:"Nova insígnia: {name}", fr:"Nouveau badge : {name}", ja:"新しいバッジ: {name}" },
+};
+const CEMBER_STAGE_DAYS = [0, 3, 7, 21];
+const CEMBER_STAGE_COLORS = ["#d4a373", "#a8e6b8", "#6fcf8e", "#46d6a6"];
+function cemberStageOf(days) { const d = days || 0; return d >= 21 ? 3 : d >= 7 ? 2 : d >= 3 ? 1 : 0; }
+// Rozet çizimleri (12 birimlik kare). FONKSİYON, bileşen değil (bkz. Bugün yardımcıları).
+function cemberStageGlyph(stage, size, title) {
+  const c = CEMBER_STAGE_COLORS[stage] || CEMBER_STAGE_COLORS[0];
+  const ground = <path d="M1.5 11 H10.5" stroke={c} strokeWidth="0.9" strokeLinecap="round" opacity="0.55" />;
+  let body = null;
+  if (stage === 0) body = <>{ground}<ellipse cx="6" cy="8.4" rx="2.3" ry="1.6" transform="rotate(-24 6 8.4)" fill={c} /><path d="M6.6 7 Q7.4 5.6 8.6 5.4" stroke={c} strokeWidth="0.8" fill="none" strokeLinecap="round" /></>;
+  else if (stage === 1) body = <>{ground}<path d="M6 11 V5.2" stroke={c} strokeWidth="1" strokeLinecap="round" /><path d="M6 7.6 Q2.8 7.4 2.4 4.8 Q5.2 4.9 6 7.6 Z" fill={c} /><path d="M6 6.2 Q9.2 6 9.6 3.2 Q6.8 3.3 6 6.2 Z" fill={c} /></>;
+  else if (stage === 2) body = <>{ground}<rect x="5.3" y="7" width="1.4" height="4" rx="0.5" fill={c} opacity="0.85" /><circle cx="6" cy="4.9" r="3.5" fill={c} /></>;
+  else body = <>{ground}<rect x="2.6" y="8" width="0.9" height="3" fill={c} opacity="0.8" /><rect x="8.5" y="8" width="0.9" height="3" fill={c} opacity="0.8" /><rect x="5.5" y="7.2" width="1" height="3.8" fill={c} opacity="0.85" /><circle cx="3" cy="6.6" r="2.2" fill={c} opacity="0.8" /><circle cx="9" cy="6.6" r="2.2" fill={c} opacity="0.8" /><circle cx="6" cy="4.6" r="3" fill={c} /></>;
+  return (
+    <svg viewBox="0 0 12 12" width={size} height={size} role="img" aria-label={title} style={{ flexShrink:0, overflow:"visible", filter: stage === 3 ? `drop-shadow(0 0 2px ${c})` : "none" }}>
+      <title>{title}</title>{body}
+    </svg>
+  );
+}
+function cemberChestGlyph(size, title) {
+  return (
+    <svg viewBox="0 0 14 12" width={size * 14 / 12} height={size} role="img" aria-label={title} style={{ flexShrink:0 }}>
+      <title>{title}</title>
+      <path d="M1.5 5.2 L1.5 3.6 Q1.5 1 7 1 Q12.5 1 12.5 3.6 L12.5 5.2 Z" fill="#3b2f7a" stroke="#e8c07a" strokeWidth="0.9" />
+      <rect x="1.5" y="5.2" width="11" height="5.6" rx="0.6" fill="#2a1f66" stroke="#e8c07a" strokeWidth="0.9" />
+      <circle cx="7" cy="5.6" r="1.5" fill="#e0ac5a" />
+    </svg>
+  );
+}
+function cemberChordGlyph(size, title, dim) {
+  return (
+    <svg viewBox="0 0 12 12" width={size} height={size} role="img" aria-label={title} className={dim ? "" : "sakin-chord-badge"} style={{ flexShrink:0, overflow:"visible", opacity: dim ? 0.28 : 1 }}>
+      <title>{title}</title>
+      <path d="M6 0.6 L7.25 4.75 L11.4 6 L7.25 7.25 L6 11.4 L4.75 7.25 L0.6 6 L4.75 4.75 Z" fill="#ffd97a" />
+      <circle cx="6" cy="6" r="1.2" fill="#fff6dc" />
+    </svg>
+  );
+}
+
 // Takma ad rengi = cihazın element dilimi (sunucu `el`, 0-7).
 const CEMBER_EL_COLORS = ["#f0a070", "#7ec8e8", "#b8c890", "#c8d8f0", "#d8cff5", "#f0d080", "#e8c07a", "#a8e0d0"];
 const CEMBER_BLOCK_KEY = "sakin_cember_blocked";      // ESKİ: takma ad listesi (yalnızca etiketsiz mesajlarda)
@@ -1669,7 +1740,7 @@ function watchCemberCount(cb) {
   return () => { stopped = true; getCember().then((c) => { if (c.ok) chans.forEach((ch) => c.sb.removeChannel(ch)); }); };
 }
 
-function CemberScreen({ lang, unlocked, minor, onClose, onGoBaglan, onGoNefes }) {
+function CemberScreen({ lang, unlocked, minor, onClose, onGoBaglan, onGoNefes, streakDays, chord }) {
   const L = (o) => pickLang(o, lang);
   const JOST = "'Jost',sans-serif", INTER = "'Inter',sans-serif", SERIF = "'Cormorant Garamond',Georgia,serif";
   const INK = "#f1ecf9", MUTE = "#8f88a3", GOLD = "#e8c07a", LAV = "#b8a4d8";
@@ -1694,6 +1765,27 @@ function CemberScreen({ lang, unlocked, minor, onClose, onGoBaglan, onGoNefes })
   // Hızlı oda değişiminde geç gelen eski oda geçmişi yeni odanın listesini ezmesin.
   const roomRef = useRef(room);
   roomRef.current = room;
+  // Kendi rozetlerin: aşama gün serisinden, sandık mühürlü mektuptan, yıldız bugünkü 7/7'den.
+  const myStage = cemberStageOf(streakDays);
+  const hasLetter = (() => { try { const l = JSON.parse(localStorage.getItem(LETTER_KEY) || "null"); return !!(l && !l.openedAt); } catch (_) { return false; } })();
+  const [badgeSheet, setBadgeSheet] = useState(false);
+  const [badgeNew, setBadgeNew] = useState("");
+  // Aşama atlanmışsa (Çember'de son görülenden büyükse) bir kez "Yeni rozetin" kutlaması.
+  useEffect(() => {
+    try {
+      const seen = parseInt(localStorage.getItem("sakin_cember_stage_seen") || "-1", 10);
+      if (seen >= 0 && myStage > seen) setBadgeNew(L(CEMBER_BADGE_TXT.newOne).replace("{name}", L(CEMBER_BADGE_TXT.names[myStage])));
+      localStorage.setItem("sakin_cember_stage_seen", String(myStage));
+    } catch (_) {}
+  }, [myStage]);
+  useEffect(() => { if (!badgeNew) return; const id = setTimeout(() => setBadgeNew(""), 5200); return () => clearTimeout(id); }, [badgeNew]);
+  // Android geri tuşu önce rozet rehberini kapatsın (Çember açık kalır).
+  useEffect(() => {
+    if (!badgeSheet) return;
+    const back = () => setBadgeSheet(false);
+    window.__sakinOverlayBack = back;
+    return () => { if (window.__sakinOverlayBack === back) window.__sakinOverlayBack = null; };
+  }, [badgeSheet]);
 
   useEffect(() => { try { track("cember", { a: "open" }); } catch (_) {} }, []);
   useEffect(() => { try { localStorage.setItem("sakin_cember_room", room); } catch (_) {} }, [room]);
@@ -1763,7 +1855,8 @@ function CemberScreen({ lang, unlocked, minor, onClose, onGoBaglan, onGoNefes })
       const r = await fetch(API_BASE + "/.netlify/functions/chat-send", { method: "POST", headers: { "Content-Type": "application/json" },
         // letter: mühürlü (henüz açılmamış) Niyet Mektubu var mı. Yalnızca bayrak;
         // mektubun içeriği ASLA gönderilmez. Takma adın yanında küçük sandık ikonu.
-        body: JSON.stringify({ id: conf.id, room, body, letter: (() => { try { const l = JSON.parse(localStorage.getItem(LETTER_KEY) || "null"); return !!(l && !l.openedAt); } catch (_) { return false; } })() }) });
+        // stage/chord: rozetler (evrim aşaması 0-3, bugün 7/7). Yalnızca küçük bayraklar.
+        body: JSON.stringify({ id: conf.id, room, body, letter: hasLetter, stage: myStage, chord: !!chord }) });
       const j = await r.json().catch(() => null);
       if (j && j.ok && j.msg) {
         setText("");
@@ -1827,6 +1920,18 @@ function CemberScreen({ lang, unlocked, minor, onClose, onGoBaglan, onGoNefes })
           <div style={{ fontFamily:SERIF,fontSize:22,lineHeight:1.1,color:INK }}>{L(CEMBER_TXT.title)}</div>
           {/* Tek satır: dar ekranda 4 satıra kırılıyordu, taşan kısım "…" olur. */}
           <div style={{ fontFamily:JOST,fontSize:10.5,letterSpacing:1.4,textTransform:"uppercase",color:MUTE,display:"flex",alignItems:"center",gap:6,marginTop:3,minWidth:0 }}>
+            {/* Kendi rozetlerin: dokununca rozet rehberi. Başlık satırında değil burada:
+                320 px'te oda düğmeleriyle çakışıyordu. */}
+            {!minor && (
+              <button onClick={() => { setBadgeSheet(true); try { track("cember", { a: "badges" }); } catch (_) {} }} aria-label={L(CEMBER_BADGE_TXT.title)}
+                style={{ ...BTN,display:"inline-flex",alignItems:"center",justifyContent:"center",gap:4,height:18,padding:"0 6px",marginRight:2,borderRadius:100,flexShrink:0,
+                  border:`1px solid ${chord ? "rgba(255,217,122,0.5)" : "rgba(184,164,216,0.22)"}`,
+                  background: chord ? "rgba(255,217,122,0.08)" : "rgba(255,255,255,0.03)" }}>
+                {cemberStageGlyph(myStage, 12, L(CEMBER_BADGE_TXT.names[myStage]))}
+                {hasLetter && cemberChestGlyph(10, L(CEMBER_BADGE_TXT.letter))}
+                {chord && cemberChordGlyph(11, L(CEMBER_BADGE_TXT.chord))}
+              </button>
+            )}
             <span style={{ width:6,height:6,borderRadius:"50%",background:"#82d9a3",boxShadow:"0 0 6px #82d9a3",flexShrink:0 }} />
             <span style={{ overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",minWidth:0 }}>
               {state === "ready" ? (count > 1 ? L(CEMBER_TXT.here).replace("{n}", String(count)) : L(CEMBER_TXT.alone)) : L(CEMBER_TXT.live)}
@@ -1841,6 +1946,64 @@ function CemberScreen({ lang, unlocked, minor, onClose, onGoBaglan, onGoNefes })
         )}
       </div>
       {children}
+      {badgeNew && (
+        <div style={{ position:"absolute",left:"50%",top:"calc(70px + var(--sat))",transform:"translateX(-50%)",zIndex:3,pointerEvents:"none",
+          display:"flex",alignItems:"center",gap:8,padding:"8px 14px",borderRadius:100,background:"rgba(20,16,34,0.94)",
+          border:"1px solid rgba(232,192,122,0.45)",boxShadow:"0 0 24px rgba(232,192,122,0.18)",animation:"fadeIn 0.5s ease",whiteSpace:"nowrap" }}>
+          {cemberStageGlyph(myStage, 16, L(CEMBER_BADGE_TXT.names[myStage]))}
+          <span style={{ fontFamily:JOST,fontSize:12.5,letterSpacing:0.8,color:"#f6dfb0" }}>{badgeNew}</span>
+        </div>
+      )}
+      {badgeSheet && (() => {
+        const nextStage = myStage < 3 ? myStage + 1 : null;
+        const left = nextStage != null ? Math.max(1, CEMBER_STAGE_DAYS[nextStage] - (streakDays || 0)) : 0;
+        const row = (glyph, name, desc, active, key) => (
+          <div key={key} style={{ display:"flex",alignItems:"center",gap:12,padding:"9px 0",opacity: active === false ? 0.55 : 1 }}>
+            <div style={{ width:34,height:34,borderRadius:"50%",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",
+              background: active ? "rgba(232,192,122,0.09)" : "rgba(255,255,255,0.03)",
+              border:`1px solid ${active ? "rgba(232,192,122,0.4)" : "rgba(184,164,216,0.14)"}` }}>{glyph}</div>
+            <div style={{ minWidth:0 }}>
+              <div style={{ fontFamily:JOST,fontSize:13,letterSpacing:0.6,color: active ? "#f6dfb0" : INK }}>{name}</div>
+              <div style={{ fontFamily:INTER,fontSize:12.5,lineHeight:1.45,color:"#a79fbd",marginTop:1 }}>{desc}</div>
+            </div>
+          </div>
+        );
+        return (
+          <div onClick={() => setBadgeSheet(false)} style={{ position:"fixed",inset:0,zIndex:100012,background:"rgba(4,3,10,0.66)",display:"flex",alignItems:"flex-end",justifyContent:"center",animation:"fadeIn 0.3s ease" }}>
+            <div onClick={(e) => e.stopPropagation()} style={{ width:"100%",maxWidth:460,maxHeight:"86vh",overflowY:"auto",boxSizing:"border-box",
+              padding:"18px 20px calc(18px + var(--sab))",borderRadius:"22px 22px 0 0",background:"#100c1c",
+              borderTop:"1px solid rgba(232,192,122,0.3)",boxShadow:"0 -12px 40px rgba(0,0,0,0.5)" }}>
+              <div style={{ width:38,height:4,borderRadius:4,background:"rgba(255,255,255,0.14)",margin:"0 auto 14px" }} />
+              <div style={{ fontFamily:SERIF,fontSize:24,color:INK,textAlign:"center" }}>{L(CEMBER_BADGE_TXT.title)}</div>
+              <div style={{ fontFamily:INTER,fontSize:13,lineHeight:1.55,color:"#b8aed0",textAlign:"center",margin:"6px 8px 16px" }}>{L(CEMBER_BADGE_TXT.intro)}</div>
+              {/* Kendi rozetlerin: büyük, ışıklı. */}
+              <div style={{ padding:"14px 14px 12px",borderRadius:16,background:"radial-gradient(ellipse 80% 90% at 50% 0%, rgba(232,192,122,0.1), transparent 70%), rgba(255,255,255,0.03)",
+                border:"1px solid rgba(232,192,122,0.22)",display:"flex",flexDirection:"column",alignItems:"center",gap:10 }}>
+                <div style={{ fontFamily:JOST,fontSize:10.5,letterSpacing:2.5,textTransform:"uppercase",color:GOLD }}>{L(CEMBER_BADGE_TXT.yours)}</div>
+                <div style={{ display:"flex",alignItems:"center",justifyContent:"center",gap:14 }}>
+                  {cemberStageGlyph(myStage, 34, L(CEMBER_BADGE_TXT.names[myStage]))}
+                  {hasLetter && cemberChestGlyph(28, L(CEMBER_BADGE_TXT.letter))}
+                  {chord && cemberChordGlyph(30, L(CEMBER_BADGE_TXT.chord))}
+                </div>
+                <div style={{ fontFamily:SERIF,fontSize:19,color:"#f6dfb0" }}>
+                  {[L(CEMBER_BADGE_TXT.names[myStage]), hasLetter ? L(CEMBER_BADGE_TXT.letter) : null, chord ? L(CEMBER_BADGE_TXT.chord) : null].filter(Boolean).join(" · ")}
+                </div>
+                <div style={{ fontFamily:INTER,fontSize:12,color:"#a79fbd",textAlign:"center" }}>
+                  {nextStage != null ? L(CEMBER_BADGE_TXT.next).replace("{name}", L(CEMBER_BADGE_TXT.names[nextStage])).replace("{n}", String(left)) : L(CEMBER_BADGE_TXT.top)}
+                </div>
+                {!chord && <div style={{ fontFamily:INTER,fontSize:12,color:"#8f88a3",textAlign:"center",display:"flex",alignItems:"center",gap:6 }}>{cemberChordGlyph(11, L(CEMBER_BADGE_TXT.chord), true)}{L(CEMBER_BADGE_TXT.chordTip)}</div>}
+              </div>
+              <div style={{ fontFamily:JOST,fontSize:10.5,letterSpacing:2.5,textTransform:"uppercase",color:MUTE,margin:"18px 0 4px" }}>{L(CEMBER_BADGE_TXT.all)}</div>
+              {[0,1,2,3].map((i) => row(cemberStageGlyph(i, 18, L(CEMBER_BADGE_TXT.names[i])), L(CEMBER_BADGE_TXT.names[i]), L(CEMBER_BADGE_TXT.descs[i]), i === myStage ? true : (i < myStage ? null : false), "s" + i))}
+              {row(cemberChestGlyph(15, L(CEMBER_BADGE_TXT.letter)), L(CEMBER_BADGE_TXT.letter), L(CEMBER_BADGE_TXT.letterDesc), hasLetter ? true : null, "l")}
+              {row(cemberChordGlyph(17, L(CEMBER_BADGE_TXT.chord)), L(CEMBER_BADGE_TXT.chord), L(CEMBER_BADGE_TXT.chordDesc), chord ? true : null, "c")}
+              <div style={{ fontFamily:INTER,fontSize:11.5,color:"#7d7692",textAlign:"center",margin:"12px 0 4px" }}>{L(CEMBER_BADGE_TXT.shown)}</div>
+              <button onClick={() => setBadgeSheet(false)} style={{ ...BTN,width:"100%",marginTop:8,padding:"11px",borderRadius:100,fontFamily:JOST,fontSize:12.5,letterSpacing:1.6,textTransform:"uppercase",
+                display:"flex",alignItems:"center",justifyContent:"center",color:"#cfc7e0",border:"1px solid rgba(255,255,255,0.12)" }}>{L(CEMBER_TXT.close)}</button>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
   const centerCard = (children) => (
@@ -1899,14 +2062,9 @@ function CemberScreen({ lang, unlocked, minor, onClose, onGoBaglan, onGoNefes })
               <div style={{ display:"flex",alignItems:"baseline",gap:8,marginBottom:3 }}>
                 <span style={{ fontFamily:JOST,fontSize:11.5,letterSpacing:0.4,color:col,display:"inline-flex",alignItems:"center",gap:4 }}>
                   {m.nick}
-                  {m.l ? (
-                    <svg viewBox="0 0 14 12" width="12" height="10" role="img" aria-label={L(CEMBER_TXT.letterIc)} style={{ flexShrink:0 }}>
-                      <title>{L(CEMBER_TXT.letterIc)}</title>
-                      <path d="M1.5 5.2 L1.5 3.6 Q1.5 1 7 1 Q12.5 1 12.5 3.6 L12.5 5.2 Z" fill="#3b2f7a" stroke="#e8c07a" strokeWidth="0.9" />
-                      <rect x="1.5" y="5.2" width="11" height="5.6" rx="0.6" fill="#2a1f66" stroke="#e8c07a" strokeWidth="0.9" />
-                      <circle cx="7" cy="5.6" r="1.5" fill="#e0ac5a" />
-                    </svg>
-                  ) : null}
+                  {m.s >= 0 && m.s <= 3 ? cemberStageGlyph(m.s, 13, L(CEMBER_BADGE_TXT.names[m.s])) : null}
+                  {m.l ? cemberChestGlyph(11, L(CEMBER_TXT.letterIc)) : null}
+                  {m.c ? cemberChordGlyph(12, L(CEMBER_BADGE_TXT.chord)) : null}
                   {mine ? ` · ${L(CEMBER_TXT.you)}` : ""}
                 </span>
                 <span style={{ fontFamily:INTER,fontSize:10,color:"#6f6a80" }}>{fmtT(m.t)}</span>
@@ -4505,6 +4663,10 @@ const GLOBAL_CSS = `
     animation: sakinTunnelBloom 2.6s ease-out forwards;
   }
   @media (prefers-reduced-motion: reduce) { .sakin-tunnel-bloom { animation:none; opacity:0; } }
+  /* Çember "Tam akort" rozeti: altın yıldız yavaşça nefes alır gibi parlar. */
+  .sakin-chord-badge { animation: chordTwinkle 3.2s ease-in-out infinite; transform-origin:center; }
+  @keyframes chordTwinkle { 0%,100% { filter:drop-shadow(0 0 1px rgba(255,217,122,0.5)); opacity:0.9; } 50% { filter:drop-shadow(0 0 4px rgba(255,217,122,0.95)); opacity:1; } }
+  @media (prefers-reduced-motion: reduce) { .sakin-chord-badge { animation:none; filter:drop-shadow(0 0 2px rgba(255,217,122,0.7)); } }
   /* TAM AKORT (7/7, kullanıcı: "7/7 tamamlanınca tünelde bir şey değişsin, özel hissettirsin;
      yukarıdan beyaz-altın bir enerji insin, renkler değişsin"). Tünel altın-beyaza döner,
      ekranın tepesinden taca doğru bir huzme iner (günün ilk görüşünde tören: descend + flash),
@@ -13435,6 +13597,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
       {/* ÇEMBER: canlı oda (tam ekran, alt barın üstünde). Kapı: bugünkü bağlantı. */}
       {showCember && (
         <CemberScreen lang={lang} unlocked={allStepsComplete || cemberFreeSession} minor={isCemberMinor(birthDate)}
+          streakDays={streakData.current || 0} chord={fullChord}
           onClose={() => { setShowCember(false); setCemberFreeSession(false); }}
           onGoBaglan={() => { setShowCember(false); setScreen("mandala"); }}
           onGoNefes={() => { setShowCember(false); setScreen("nefes"); }} />

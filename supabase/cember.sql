@@ -79,3 +79,10 @@ alter table public.chat_messages add column if not exists letter boolean not nul
 -- kullanıcıya aynı IP'yi verebildiği (CGNAT) için ağ yasağı 48 SAAT geçerli
 -- (chat-send süreyi kendisi kontrol eder), cihaz yasağı kalıcı.
 alter table public.chat_messages add column if not exists ip_hash text;
+
+-- ── ROZETLER (1.4.3) ──────────────────────────────────────────────────────────
+-- Takma adın yanındaki rozetler: evrim aşaması (0 Tohum, 1 Fidan, 2 Ağaç, 3 Orman)
+-- ve o gün 7/7 "tam akort". İkisi de cihazdaki yerel veriden gelen küçük bayraklar;
+-- mesaj metni dışında kişisel bilgi taşımaz.
+alter table public.chat_messages add column if not exists stage smallint;
+alter table public.chat_messages add column if not exists chord boolean not null default false;

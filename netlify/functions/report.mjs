@@ -210,7 +210,7 @@ export function aggregate(users) {
       forkBaglan: ch.fork_baglan || 0, forkKesfet: ch.fork_kesfet || 0,
       forkUntriedBaglan: ch.fork_untried_baglan || 0, forkUntriedKesfet: ch.fork_untried_kesfet || 0,
       pushYes: ch.push_optin_1 || 0, pushNo: ch.push_optin_0 || 0,
-      cember: ["open", "rules", "send", "report", "block", "crisis"].reduce((o, k) => (o[k] = ch["cember_" + k] || 0, o), {}),
+      cember: ["open", "rules", "send", "report", "block", "crisis", "badges"].reduce((o, k) => (o[k] = ch["cember_" + k] || 0, o), {}),
       jsErr: Object.keys(ch).filter((k) => k.indexOf("jserr_") === 0).reduce((n, k) => n + ch[k], 0),
       letterSeal: ch.letter_seal || 0, letterOpen: ch.letter_open || 0,
       letterR: { oldu: ch.letter_r_oldu || 0, yolda: ch.letter_r_yolda || 0, donustu: ch.letter_r_donustu || 0 },
@@ -443,6 +443,7 @@ export function renderHTML(r, truncated) {
        <tr><td>Bugün doğum kapısı gösterildi</td><td class="num">${c.gateShown || 0}</td></tr>
        <tr><td>Çember: açılış / kural onayı / mesaj</td><td class="num">${(c.cember || {}).open || 0} / ${(c.cember || {}).rules || 0} / ${(c.cember || {}).send || 0}</td></tr>
        <tr><td>Çember: bildirim / engelleme / kriz kartı</td><td class="num">${(c.cember || {}).report || 0} / ${(c.cember || {}).block || 0} / ${(c.cember || {}).crisis || 0}</td></tr>
+       <tr><td>Çember: rozet rehberi açılışı</td><td class="num">${(c.cember || {}).badges || 0}</td></tr>
        <tr><td>Uygulama hatası (hata ekranına düşen)</td><td class="num">${c.jsErr || 0}</td></tr>
        <tr><td>Anlık mesajlar (varsayılan açık): elle açtı / kapattı</td><td class="num">${c.pushYes || 0} / ${c.pushNo || 0}</td></tr>
        <tr><td>Niyet mektubu: mühürlendi / açıldı</td><td class="num">${c.letterSeal || 0} / ${c.letterOpen || 0}</td></tr>
