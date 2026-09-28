@@ -25,7 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } catch {
             print("AVAudioSession setup failed: \(error)")
         }
-        // Meta App Events (Facebook SDK) — App ID/Client Token Info.plist'ten okunur.
+        // Meta App Events (Facebook SDK): App ID/Client Token Info.plist'ten okunur.
         #if canImport(FacebookCore)
         ApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
         #endif
@@ -47,11 +47,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
-        // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-        // Meta App Events: app install/launch/session tracking (Meta Ads Manager).
-        #if canImport(FacebookCore)
-        AppEvents.shared.activateApp()
-        #endif
+        // Sahne (UIScene) yaşam döngüsünde bu metod ÇAĞRILMAZ; Meta activateApp
+        // artık SceneDelegate.sceneDidBecomeActive içinde.
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
@@ -89,4 +86,65 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         NotificationCenter.default.post(name: .capacitorDidFailToRegisterForRemoteNotifications, object: error)
     }
 
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SAHNE (UIScene) YAŞAM DÖNGÜSÜ (1.4.3, Apple 2.1(a) reddi, 28 Eyl 2026).
+// iOS 27, sahneye geçmemiş uygulamayı açılışta durduruyor
+// (`_UIApplicationEvaluateRuntimeIssueForNoSceneLifecycleAdoption`, EXC_BREAKPOINT).
+// Info.plist `UIApplicationSceneManifest` bu sınıfı + Main.storyboard'u gösterir;
+// pencereyi UIKit kurar (AppDelegate.window artık nil kalır, kod ona dayanmıyor).
+// Sahneli uygulamada URL ve evrensel bağlantılar AppDelegate'e DEĞİL buraya gelir:
+// hepsi aynen Capacitor'a (App eklentisi: appUrlOpen + getLaunchUrl) ve Meta'ya
+// iletilir. Ayrı dosya DEĞİL: pbxproj'a yeni dosya eklemeden derlensin diye burada.
+class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+
+    var window: UIWindow?
+
+    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        // Soğuk açılış: sakin:// ile açıldıysa URL burada gelir (eskiden
+        // application(_:open:options:)). lastURL'e yazılır, getLaunchUrl okur.
+        for context in connectionOptions.urlContexts {
+            forward(context)
+        }
+        for activity in connectionOptions.userActivities {
+            _ = ApplicationDelegateProxy.shared.application(UIApplication.shared, continue: activity, restorationHandler: { _ in })
+        }
+    }
+
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        for context in URLContexts {
+            forward(context)
+        }
+    }
+
+    func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
+        _ = ApplicationDelegateProxy.shared.application(UIApplication.shared, continue: userActivity, restorationHandler: { _ in })
+    }
+
+    func sceneDidBecomeActive(_ scene: UIScene) {
+        // Meta App Events: app install/launch/session tracking (Meta Ads Manager).
+        #if canImport(FacebookCore)
+        AppEvents.shared.activateApp()
+        #endif
+    }
+
+    private func forward(_ context: UIOpenURLContext) {
+        var options: [UIApplication.OpenURLOptionsKey: Any] = [:]
+        if let source = context.options.sourceApplication {
+            options[.sourceApplication] = source
+        }
+        if let annotation = context.options.annotation {
+            options[.annotation] = annotation
+        }
+        _ = ApplicationDelegateProxy.shared.application(UIApplication.shared, open: context.url, options: options)
+        #if canImport(FacebookCore)
+        ApplicationDelegate.shared.application(
+            UIApplication.shared,
+            open: context.url,
+            sourceApplication: context.options.sourceApplication,
+            annotation: context.options.annotation
+        )
+        #endif
+    }
 }
