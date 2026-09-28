@@ -1,7 +1,7 @@
 // ÇEMBER: istemci ayarları. Realtime'a bağlanmak için Supabase adresi + anon
 // anahtarı (herkese açık, RLS yüzünden tablolara erişemez) ve cihazın iki
 // odadaki takma adı. Env eksikse { ok:false } döner, uygulama "kapalı" gösterir.
-import { chatConfig, corsFor, json, validDeviceId, deviceHash, nickFor, elementIndex, ROOMS, MAX_LEN, SLOW_MS } from "./_chat.mjs";
+import { chatConfig, corsFor, json, validDeviceId, deviceHash, nickFor, elementIndex, authorTag, ROOMS, MAX_LEN, SLOW_MS } from "./_chat.mjs";
 
 export default async (req) => {
   const { ok: originOk, headers } = corsFor(req);
@@ -15,6 +15,9 @@ export default async (req) => {
     const h = deviceHash(id);
     out.nick = { tr: nickFor(h, "tr"), global: nickFor(h, "global") };
     out.el = elementIndex(h);
+    // Kendi yazar etiketi (mesajlardaki `a` ile aynı, tek yönlü özet): Pong daveti
+    // bu etikete gelir (`pong:inv:<a>`) ve Çember presence'ında "çevrimiçi" işaretidir.
+    out.a = authorTag(h);
   }
   return json(headers, 200, out);
 };

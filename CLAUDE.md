@@ -1241,6 +1241,46 @@ koruma sunucuda.
   + presence çalışıyor, sahte broadcast dinleyiciye ULAŞMIYOR; kullanıcı iki
   cihazda canlı mesajlaşmayı doğruladı (Eyl 2026).
 
+## 🎼 ORKESTRA MERKEZİ + SAKİN ODALAR + PONG DAVETİ (1.4.3, kullanıcı: "orkestra modu fikrini geliştir: çember, pong, sakin odalar, ortak nefesler, veriler hepsi bir bütün olsun")
+
+- **Bugün > Orkestra kartı = tek merkez:** motto ("Evren bir orkestradır. Senin sessizliğin
+  bile bir nota.", `ROOMS_MOTTO`) → ortak nabız (pulse: kişi, nefes, ses, çakra) → senin
+  akordun (7 nokta) + payın → "Orkestrada yerini al" altında sırayla **Çember · Sakin
+  Odalar · Pong** satırları (`ORCH_HUB_TXT`). Ayrı Pong kartı KALDIRILDI. Odalar satırı
+  sıradaki buluşmayı, Pong satırı canlı açık oda sayısını (`watchPongLobby`, yalnızca Bugün'de,
+  Çember istemcisiyle `pong:lobby` presence DİNLER) gösterir.
+- **Sakin Odalar** (kaynak: kullanıcının diğer projesi Kozmik Gemi "Gemi Odaları",
+  kozmikgemi.netlify.app): `src/rooms-data.js` (8 oda, 7 dil, `SEED_EVENTS`), `src/rooms.jsx`
+  (tembel parça, tam ekran: oda ızgarası 2 sütun + yaklaşan buluşmalar → oda sayfası: hero,
+  "Bu frekansı Sakin'de dene" (`practice`: reiki→çakra, kundalini/tantra/beden→nefes, ses→ses,
+  su→sabah, yaratım→Niyet Mektubu/harita) + öğretiler + odanın buluşmaları + rehberler →
+  tüm buluşmalar süzgeçli). Tantra yalnızca 18+ (`minAge`). ⚠️ Kozmik Gemi'deki sağlık
+  iddiaları ("%30 bağışıklık", "528 Hz DNA", "45 dk = 4 saat uyku") BİLEREK çıkarıldı;
+  oradaki rehber ad/telefon/adresleri ve etkinlikler KOPYALANMADI (örnek veri, gerçekmiş gibi
+  göstermek yanıltıcı). Rehber + buluşma YALNIZCA panelden.
+- **Panel:** `netlify/functions/rooms-admin.mjs?token=PUSH_ADMIN_TOKEN` (Buluşmalar /
+  Rehberler sekmeleri; Kozmik Gemi GitHub'a JSON yazıyordu, burada Blobs `sakin-rooms` "data",
+  anında yayında). Tarih İstanbul saatiyle girilir, bağlantı yalnızca https, 30 günden eski
+  buluşma silinir. Oda "Çember" seçilen buluşmaya dokununca canlı oda açılır. Uygulama
+  `rooms.mjs?lang=` okur (CORS *, 2 dk önbellek, kişisel veri yok).
+- **Sabit başlangıç buluşması** (kullanıcı: "1 Ekim 21:00 tanışma çemberine bir selam ver"):
+  `SEED_EVENTS` (kodda, tarihi geçince gizlenir, sunucu buluşmalarıyla birleşir).
+- **Çember'den Pong daveti** (kullanıcı: "Çember'deki çevrimiçi kullanıcı diğer mesaj yazanın
+  üstüne tıklayıp Pong oyna teklifi gönderebilsin"): `chat-config` artık kişinin kendi yazar
+  etiketini (`a`, tek yönlü özet) döndürür; Çember presence'ı `{n, a}` taşır. Başkasının
+  mesajına dokununca menüde "🏓 Pong'a davet et" YALNIZCA yazar şu an odadaysa çıkar.
+  Davet `pong:inv:<etiket>` kanalına gider (20 sn'de bir), davet eden özel odada bekler
+  (`PongOverlay invite={role:"host", rid}`, lobiye düşmez). Davet edilen Çember'deyken
+  "X seni Pong'a davet ediyor · Oyna / Şimdi değil" kartını görür (45 sn); Oyna → aynı
+  özel odaya katılır; Şimdi değil → davet edene "Şimdi değil dedi". Engellenenin daveti
+  yok sayılır. Oda sahibi 12 sn'de yoksa "Bu davet artık geçerli değil".
+- Test kancaları (yalnızca Puppeteer): `window.__sakinFakeCember` (getCember) +
+  `window.__pongFakeClient`. İki sekme aynı depolamayı paylaşır: testte bağlantıyı
+  tamamlanmış say (ilk giriş hakkı sekmeler arasında tükenir). Uçtan uca doğrulandı: menü,
+  davet, gelen kart, kabul, iki ekranda ayna skor.
+- Analitik: `rooms` {open/room/event/practice}, `pong` a="invite", `cember`
+  a="pong_invite"/"pong_accept" (track + rapor).
+
 ## 🏓 PONG (1.4.3, kullanıcı: "iki kullanıcı karşılıklı oynayabilsin; biri oda açar diğeri boş tarafa geçer ya da tek oyuncu; Bugün'de ikili uyumun altına, tam ekran")
 
 - Kod `src/pong.jsx` (TEMBEL parça, `lazy(() => import("./pong.jsx"))`, ~8 KB gzip; açılış

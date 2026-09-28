@@ -1612,6 +1612,13 @@ const CEMBER_TXT = {
   // İLK GİRİŞ SERBEST (kullanıcı, Eyl 2026: "ilk giriş şartsız olsun, kişi chatle tanışsın;
   // sonraki girişlerde temel görevleri yapsın").
   firstFree: { tr:"İlk girişin serbest: odayla tanış", en:"Your first visit is open: meet the room", de:"Dein erster Besuch ist frei: lerne den Raum kennen", es:"Tu primera visita es libre: conoce la sala", pt:"A tua primeira visita é livre: conhece a sala", fr:"Ta première visite est libre : découvre le salon", ja:"最初の訪問は自由です。部屋をのぞいてみよう" },
+  // PONG DAVETİ (1.4.3, kullanıcı: "Çember'deki çevrimiçi kullanıcı diğerinin mesajına
+  // dokunup Pong oyna teklifi gönderebilsin").
+  pongInvite:{ tr:"Pong'a davet et", en:"Invite to Pong", de:"Zu Pong einladen", es:"Invitar a Pong", pt:"Convidar para Pong", fr:"Inviter au Pong", ja:"ポンに誘う" },
+  pongIncoming:{ tr:"{nick} seni Pong'a davet ediyor", en:"{nick} invites you to Pong", de:"{nick} lädt dich zu Pong ein", es:"{nick} te invita a Pong", pt:"{nick} convida-te para Pong", fr:"{nick} t'invite au Pong", ja:"{nick}さんがポンに誘っています" },
+  pongPlay: { tr:"Oyna", en:"Play", de:"Spielen", es:"Jugar", pt:"Jogar", fr:"Jouer", ja:"遊ぶ" },
+  pongNotNow:{ tr:"Şimdi değil", en:"Not now", de:"Jetzt nicht", es:"Ahora no", pt:"Agora não", fr:"Pas maintenant", ja:"いまはやめておく" },
+  pongWait: { tr:"Az önce bir davet gönderdin, biraz sonra tekrar deneyebilirsin.", en:"You just sent an invite, try again in a moment.", de:"Du hast gerade eingeladen, versuch es gleich noch einmal.", es:"Acabas de invitar, inténtalo de nuevo en un momento.", pt:"Acabaste de convidar, tenta de novo daqui a pouco.", fr:"Tu viens d'inviter, réessaie dans un instant.", ja:"いま招待したばかりです。少ししてからまた試してね。" },
   entryQuiet:{ tr:"Oda sessiz, ilk sen gel", en:"Quiet room, be the first", de:"Stiller Raum, sei der Erste", es:"Sala tranquila, sé el primero", pt:"Sala calma, sê o primeiro", fr:"Salon calme, sois le premier", ja:"静かな部屋、最初の一人に" },
 };
 // ROZETLER (1.4.3, kullanıcı: "takma adlara tohum fidan ağaç orman rozeti; niyet
@@ -1698,6 +1705,18 @@ const CEMBER_MINE_KEY = "sakin_cember_mine";
 
 // Pong (1.4.3): ayrı parça, yalnızca açılınca iner (src/pong.jsx).
 const PongOverlay = lazy(() => import("./pong.jsx"));
+// Sakin Odalar (1.4.3): ayrı parça (src/rooms.jsx); Orkestra satırı için yalnızca
+// küçük sabitler ana pakete girer (Rollup kullanılmayan ROOMS gövdesini atar).
+const RoomsOverlay = lazy(() => import("./rooms.jsx"));
+import { ROOMS_TXT, ROOMS_MOTTO, SEED_EVENTS } from "./rooms-data.js";
+// ORKESTRA MERKEZİ (1.4.3, kullanıcı: "orkestra modu fikrini geliştir: çember, pong,
+// sakin odalar, ortak nefesler, veriler hepsi bir bütün olsun"). Kart: motto → ortak
+// nabız → senin akordun + payın → "Orkestrada yerini al": Çember · Sakin Odalar · Pong.
+const ORCH_HUB_TXT = {
+  join:     { tr:"Orkestrada yerini al", en:"Take your place in the orchestra", de:"Nimm deinen Platz im Orchester ein", es:"Ocupa tu lugar en la orquesta", pt:"Toma o teu lugar na orquestra", fr:"Prends ta place dans l'orchestre", ja:"オーケストラに加わる" },
+  next:     { tr:"Sıradaki", en:"Next", de:"Als Nächstes", es:"Próximo", pt:"A seguir", fr:"Prochain", ja:"次は" },
+  pongOpen: { tr:"{n} açık oda, biri seni bekliyor", en:"{n} open rooms, someone is waiting", de:"{n} offene Räume, jemand wartet", es:"{n} salas abiertas, alguien te espera", pt:"{n} salas abertas, alguém está à espera", fr:"{n} salons ouverts, quelqu'un t'attend", ja:"{n}つの部屋が開いています。だれかが待っています" },
+};
 const PONG_CARD_TXT = {
   section: { tr:"Oyun", en:"Play", de:"Spiel", es:"Juego", pt:"Jogo", fr:"Jeu", ja:"ゲーム" },
   title:   { tr:"Pong", en:"Pong", de:"Pong", es:"Pong", pt:"Pong", fr:"Pong", ja:"ポン" },
@@ -1707,6 +1726,9 @@ const PONG_CARD_TXT = {
 // yalnızca Çember/sayaç gerektiğinde yüklenir, açılış paketini büyütmez.
 let __cemberPromise = null;
 function getCember() {
+  // Test kancası (Puppeteer): sahte Realtime ile iki sekmeyi Çember'de buluşturmak için.
+  // Üretimde tanımlı değil, etkisiz. Biçim: { ok, id, cfg, sb } (pong.jsx'teki kancayla eş).
+  if (typeof window !== "undefined" && window.__sakinFakeCember) return Promise.resolve(window.__sakinFakeCember);
   if (__cemberPromise) return __cemberPromise;
   __cemberPromise = (async () => {
     let id = null;
@@ -1732,6 +1754,21 @@ function isCemberMinor(bd) {
   if (now.getMonth() + 1 < mo || (now.getMonth() + 1 === mo && now.getDate() < d)) age--;
   return age >= 0 && age < 13;
 }
+// Pong lobisindeki açık oda sayısı (Orkestra satırı). Yalnızca DİNLER (Çember istemcisi);
+// `pong:%` politikası yoksa kanal hata verir, sayı 0 kalır.
+function watchPongLobby(cb) {
+  let stopped = false, ch = null;
+  getCember().then((c) => {
+    if (stopped || !c.ok) return;
+    ch = c.sb.channel("pong:lobby", { config: { private: true } });
+    ch.on("presence", { event: "sync" }, () => {
+      const st = ch.presenceState(); let n = 0;
+      for (const k of Object.keys(st)) for (const m of st[k] || []) if (m && m.rid) n++;
+      cb(n);
+    }).subscribe();
+  });
+  return () => { stopped = true; if (ch) getCember().then((c) => { if (c.ok) c.sb.removeChannel(ch); }); };
+}
 function watchCemberCount(cb) {
   let stopped = false; const chans = [];
   getCember().then((c) => {
@@ -1749,7 +1786,7 @@ function watchCemberCount(cb) {
   return () => { stopped = true; getCember().then((c) => { if (c.ok) chans.forEach((ch) => c.sb.removeChannel(ch)); }); };
 }
 
-function CemberScreen({ lang, unlocked, minor, onClose, onGoBaglan, onGoNefes, streakDays, chord }) {
+function CemberScreen({ lang, unlocked, minor, onClose, onGoBaglan, onGoNefes, streakDays, chord, onPongInvite }) {
   const L = (o) => pickLang(o, lang);
   const JOST = "'Jost',sans-serif", INTER = "'Inter',sans-serif", SERIF = "'Cormorant Garamond',Georgia,serif";
   const INK = "#f1ecf9", MUTE = "#8f88a3", GOLD = "#e8c07a", LAV = "#b8a4d8";
@@ -1780,6 +1817,11 @@ function CemberScreen({ lang, unlocked, minor, onClose, onGoBaglan, onGoNefes, s
   const [badgeSheet, setBadgeSheet] = useState(false);
   // Başkasının (ya da kendi) takma adına dokununca o mesajın rozet özeti (1.4.3).
   const [badgeOf, setBadgeOf] = useState(null);
+  // Pong daveti: çevrimiçi yazar etiketleri (presence), gelen davet, son gönderim zamanı.
+  const [onlineTags, setOnlineTags] = useState([]);
+  const [pongIn, setPongIn] = useState(null);          // { rid, fromTag, fromNick }
+  const lastInviteRef = useRef(0);
+  const invChanRef = useRef(null);
   const [badgeNew, setBadgeNew] = useState("");
   // Aşama atlanmışsa (Çember'de son görülenden büyükse) bir kez "Yeni rozetin" kutlaması.
   useEffect(() => {
@@ -1837,8 +1879,14 @@ function CemberScreen({ lang, unlocked, minor, onClose, onGoBaglan, onGoNefes, s
       ch.on("broadcast", { event: "hide" }, ({ payload }) => {
         if (payload) setMsgs((prev) => prev.filter((m) => m.id !== payload.id));
       });
-      ch.on("presence", { event: "sync" }, () => setCount(Object.keys(ch.presenceState()).length));
-      ch.subscribe((status) => { if (status === "SUBSCRIBED") ch.track({ n: (c.cfg.nick && c.cfg.nick[room]) || "" }); });
+      ch.on("presence", { event: "sync" }, () => {
+        const st = ch.presenceState();
+        setCount(Object.keys(st).length);
+        // Çevrimiçi yazar etiketleri: "Pong'a davet et" yalnızca şu an odada olana çıkar.
+        const tags = []; for (const k of Object.keys(st)) for (const m of st[k] || []) if (m && m.a) tags.push(m.a);
+        setOnlineTags(tags);
+      });
+      ch.subscribe((status) => { if (status === "SUBSCRIBED") ch.track({ n: (c.cfg.nick && c.cfg.nick[room]) || "", a: c.cfg.a || "" }); });
       chanRef.current = ch;
     });
     // Arka plandan dönünce kaçırılanları çek (soket uykudayken gelenler).
@@ -1851,6 +1899,45 @@ function CemberScreen({ lang, unlocked, minor, onClose, onGoBaglan, onGoNefes, s
       if (ch) getCember().then((c) => { if (c.ok) c.sb.removeChannel(ch); });
     };
   }, [room, unlocked, rulesOk]);
+  // Kendi davet kanalım `pong:inv:<etiketim>`: gelen davet + reddedilen davetin haberi.
+  useEffect(() => {
+    if (!unlocked || !rulesOk || !conf || !conf.cfg || !conf.cfg.a || minor) return;
+    const ch = conf.sb.channel("pong:inv:" + conf.cfg.a, { config: { private: true, broadcast: { self: false } } });
+    ch.on("broadcast", { event: "invite" }, ({ payload }) => {
+      if (!payload || !payload.rid || !payload.fromTag || blockedTags.includes(payload.fromTag)) return;
+      setPongIn({ rid: String(payload.rid).slice(0, 16), fromTag: payload.fromTag, fromNick: String(payload.fromNick || "Sakin").slice(0, 40) });
+      try { haptic(); } catch (_) {}
+    });
+    ch.on("broadcast", { event: "decline" }, ({ payload }) => {
+      if (payload && payload.rid) { try { window.dispatchEvent(new CustomEvent("sakin-pong-decline", { detail: { rid: payload.rid } })); } catch (_) {} }
+    });
+    ch.subscribe();
+    invChanRef.current = ch;
+    return () => { invChanRef.current = null; try { conf.sb.removeChannel(ch); } catch (_) {} };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [unlocked, rulesOk, conf, minor]);
+  // Gelen davet 45 sn sonra kendiliğinden kapanır.
+  useEffect(() => { if (!pongIn) return; const id = setTimeout(() => setPongIn(null), 45000); return () => clearTimeout(id); }, [pongIn]);
+  // Karşının davet kanalına tek bir olay gönder (abone ol, gönder, bırak).
+  const sendToTag = (tag, event, payload) => {
+    if (!conf || !tag) return;
+    const ch = conf.sb.channel("pong:inv:" + tag, { config: { private: true, broadcast: { self: false } } });
+    ch.subscribe((status) => {
+      if (status === "SUBSCRIBED") { try { ch.send({ type: "broadcast", event, payload }); } catch (_) {} setTimeout(() => { try { conf.sb.removeChannel(ch); } catch (_) {} }, 1500); }
+      else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") { try { conf.sb.removeChannel(ch); } catch (_) {} setNotice(L(CEMBER_TXT.err.net)); }
+    });
+  };
+  const invitePong = (m) => {
+    setMenuFor(null);
+    if (!m || !m.a || !conf || !conf.cfg.a) return;
+    if (Date.now() - lastInviteRef.current < 20000) { setNotice(L(CEMBER_TXT.pongWait)); return; }
+    lastInviteRef.current = Date.now();
+    const rid = "i" + Math.random().toString(36).slice(2, 12);
+    const myNick = (conf.cfg.nick && conf.cfg.nick[room]) || "Sakin";
+    sendToTag(m.a, "invite", { rid, fromTag: conf.cfg.a, fromNick: myNick });
+    try { track("cember", { a: "pong_invite" }); } catch (_) {}
+    if (onPongInvite) onPongInvite({ role: "host", rid, nick: m.nick });
+  };
 
   // Yeni mesajda en alta kaydır (kullanıcı yukarıda okumuyorsa).
   useEffect(() => {
@@ -2133,7 +2220,8 @@ function CemberScreen({ lang, unlocked, minor, onClose, onGoBaglan, onGoNefes, s
               <div style={{ fontFamily:INTER,fontSize:14.5,lineHeight:1.5,color:INK,whiteSpace:"pre-wrap",overflowWrap:"anywhere" }}>{m.body}</div>
             </div>
             {menuFor === m.id && (
-              <div style={{ display:"flex",gap:6,marginTop:6 }}>
+              <div style={{ display:"flex",flexWrap:"wrap",gap:6,marginTop:6 }}>
+                {m.a && conf && conf.cfg.a && m.a !== conf.cfg.a && onlineTags.includes(m.a) && !minor && pillBtn("🏓 " + L(CEMBER_TXT.pongInvite), () => invitePong(m), true)}
                 {pillBtn(L(CEMBER_TXT.report), () => report(m))}
                 {pillBtn(L(CEMBER_TXT.block), () => block(m))}
                 {pillBtn(L(CEMBER_TXT.cancel), () => setMenuFor(null))}
@@ -2162,6 +2250,27 @@ function CemberScreen({ lang, unlocked, minor, onClose, onGoBaglan, onGoNefes, s
           color: text.trim() && !secsLeft ? "#1a1030" : "#6f6a80", background: text.trim() && !secsLeft ? GOLD : "rgba(255,255,255,0.06)",
           opacity: sending ? 0.6 : 1 }}>{secsLeft ? `${secsLeft}s` : L(CEMBER_TXT.send)}</button>
     </div>
+    {/* GELEN PONG DAVETİ: yalnızca Çember açıkken; 45 sn sonra kendiliğinden kapanır. */}
+    {pongIn && (
+      <div style={{ position:"fixed",left:12,right:12,bottom:"calc(84px + var(--sab))",zIndex:100011,display:"flex",justifyContent:"center",animation:"fadeUp 0.35s ease-out" }}>
+        <div style={{ width:"100%",maxWidth:420,display:"flex",flexDirection:"column",gap:10,padding:"14px 16px",borderRadius:18,background:"#141026",
+          border:"1px solid rgba(232,192,122,0.4)",boxShadow:"0 10px 40px rgba(0,0,0,0.55), 0 0 24px rgba(232,192,122,0.12)" }}>
+          <div style={{ display:"flex",alignItems:"center",gap:10 }}>
+            <span style={{ fontSize:18 }}>🏓</span>
+            <span style={{ flex:1,minWidth:0,fontFamily:JOST,fontSize:14,letterSpacing:0.4,color:INK }}>{L(CEMBER_TXT.pongIncoming).replace("{nick}", pongIn.fromNick)}</span>
+          </div>
+          <div style={{ display:"flex",gap:8 }}>
+            <button onClick={() => { const inv = pongIn; setPongIn(null); try { track("cember", { a: "pong_accept" }); } catch (_) {}
+                if (onPongInvite) onPongInvite({ role: "guest", rid: inv.rid, nick: inv.fromNick }); }}
+              style={{ ...BTN,flex:1,padding:"10px",borderRadius:100,fontFamily:JOST,fontSize:12.5,letterSpacing:1.4,textTransform:"uppercase",display:"flex",alignItems:"center",justifyContent:"center",
+                color:"#1a1030",background:GOLD,border:`1px solid ${GOLD}` }}>{L(CEMBER_TXT.pongPlay)}</button>
+            <button onClick={() => { const inv = pongIn; setPongIn(null); sendToTag(inv.fromTag, "decline", { rid: inv.rid }); }}
+              style={{ ...BTN,flex:1,padding:"10px",borderRadius:100,fontFamily:JOST,fontSize:12.5,letterSpacing:1.4,textTransform:"uppercase",display:"flex",alignItems:"center",justifyContent:"center",
+                color:"#cfc7e0",border:"1px solid rgba(255,255,255,0.14)" }}>{L(CEMBER_TXT.pongNotNow)}</button>
+          </div>
+        </div>
+      </div>
+    )}
     {/* KRİZ: mesaj odaya gitmedi; yalnızca yazana özel, nazik destek kartı. */}
     {crisis && (
       <div style={{ position:"fixed",inset:0,zIndex:100011,background:"rgba(0,0,0,0.8)",backdropFilter:"blur(10px)",display:"flex",alignItems:"center",justifyContent:"center",padding:22 }}>
@@ -8270,6 +8379,11 @@ export default function SakinApp() {
   // ÇEMBER (canlı oda) tam ekran katmanı + Bugün kartındaki "şu an N kişi" sayacı.
   const [showCember, setShowCember] = useState(false);
   const [showPong, setShowPong] = useState(false);
+  const [showRooms, setShowRooms] = useState(false);
+  // Çember'den gelen/giden Pong daveti: { role, rid, nick } (PongOverlay invite).
+  const [pongInvite, setPongInvite] = useState(null);
+  // Orkestra satırındaki canlı Pong lobisi (açık oda sayısı). Politika yoksa sessizce 0.
+  const [pongOpenRooms, setPongOpenRooms] = useState(0);
   const [cemberCount, setCemberCount] = useState(null);
   // İlk giriş serbest: hiç girmemiş kişi bağlantısını tamamlamadan da BİR KEZ girer.
   // Hak açılışta harcanır (oturum boyunca açık kalır, sonraki girişte temel görevler şart).
@@ -9641,6 +9755,10 @@ export default function SakinApp() {
     if (isCemberMinor(bd)) return; // 13 yaş altı: oda hiç izlenmez
     return watchCemberCount(setCemberCount);
   }, [screen, allStepsComplete, cemberFirstFree, showCember]);
+  useEffect(() => {
+    if (screen !== "bugun" || showPong) return;
+    return watchPongLobby(setPongOpenRooms);
+  }, [screen, showPong]);
 
   // ── GÜNÜN SAATİNE GÖRE GİRİŞ EKRANI ─────────────────────────────────────────
   // Kullanıcı: "appe akşam girdim bağlanmak istedim ama 'bugünü nasıl geçirmek
@@ -13948,15 +14066,24 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
       {inboxOpen && <InboxSheet lang={lang} items={inboxItems} seenAt={inboxSeenAtOpen} onClose={() => setInboxOpen(false)}
         onGo={(scr) => { setInboxOpen(false); if (PUSH_SCREENS.includes(scr)) { try { setShowAilesi(false); } catch (_) {} setScreen(scr); } }} />}
       {/* ÇEMBER: canlı oda (tam ekran, alt barın üstünde). Kapı: bugünkü bağlantı. */}
+      {showRooms && (
+        <Suspense fallback={null}>
+          <RoomsOverlay lang={lang} apiBase={API_BASE} birthDate={birthDate} track={track} locale={localeFromLang(lang)}
+            onClose={() => setShowRooms(false)}
+            onCember={() => { setShowRooms(false); openCember(); }}
+            onPractice={(scr) => { setShowRooms(false); try { setShowAilesi(false); } catch (_) {} setScreen(scr); }} />
+        </Suspense>
+      )}
       {showPong && (
         <Suspense fallback={null}>
-          <PongOverlay lang={lang} getCember={getCember} haptic={haptic} track={track}
-            onClose={() => setShowPong(false)} />
+          <PongOverlay key={pongInvite ? pongInvite.rid : "menu"} lang={lang} getCember={getCember} haptic={haptic} track={track} invite={pongInvite}
+            onClose={() => { setShowPong(false); setPongInvite(null); }} />
         </Suspense>
       )}
       {showCember && (
         <CemberScreen lang={lang} unlocked={allStepsComplete || cemberFreeSession} minor={isCemberMinor(birthDate)}
           streakDays={streakData.current || 0} chord={fullChord}
+          onPongInvite={(inv) => { setShowCember(false); setPongInvite(inv); setShowPong(true); }}
           onClose={() => { setShowCember(false); setCemberFreeSession(false); }}
           onGoBaglan={() => { setShowCember(false); setScreen("mandala"); }}
           onGoNefes={() => { setShowCember(false); setScreen("nefes"); }} />
@@ -19376,6 +19503,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
             <section style={SEC}>
               {eyebrow(pickLang(ORKESTRA_TXT.label, lang))}
               <div style={{ ...SURF,padding:"18px 18px 16px" }}>
+                <div style={{ fontFamily:SERIF,fontStyle:"italic",fontSize:16.5,lineHeight:1.45,color:"#d9cdf0",marginBottom:14 }}>“{pickLang(ROOMS_MOTTO, lang)}”</div>
                 {orkestra && orkestra.activeUsers >= 1 ? (<>
                   <div style={{ display:"flex",alignItems:"center",gap:14,marginBottom:14 }}>
                     <span style={{ fontFamily:SERIF,fontSize:44,lineHeight:1,color:INK,flexShrink:0 }}>{orkestra.activeUsers}</span>
@@ -19440,9 +19568,10 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                 {/* ÇEMBER GİRİŞİ: bağlantıyı tamamlayana canlı oda + anlık kişi sayısı;
                     tamamlamayana kilitli davet (dokununca açıklamalı kilit ekranı). */}
                 {/* 13 yaş altına Çember satırı HİÇ gösterilmez (kilitli oda merak uyandırmasın). */}
+                <div style={{ marginTop:16,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.12)",fontFamily:JOST,fontSize:10.5,letterSpacing:2.2,textTransform:"uppercase",color:GOLD }}>{pickLang(ORCH_HUB_TXT.join, lang)}</div>
                 {!isCemberMinor(birthDate) && (
                 <button onClick={() => { try { haptic(); } catch (_) {} openCember(); }}
-                  style={{ ...BTN,marginTop:14,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.12)",display:"flex",alignItems:"center",gap:12 }}>
+                  style={{ ...BTN,marginTop:8,display:"flex",alignItems:"center",gap:12 }}>
                   {icon("◌", (allStepsComplete || cemberFirstFree) ? "#82d9a3" : LAV, 36, 15)}
                   <span style={{ flex:1,minWidth:0 }}>
                     <span style={{ display:"block",fontSize:15,color:INK,fontFamily:JOST,fontWeight:300 }}>
@@ -19457,6 +19586,48 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                   {chevron()}
                 </button>
                 )}
+                {/* SAKİN ODALAR: 8 oda + buluşmalar (src/rooms.jsx). Alt satırda sıradaki buluşma. */}
+                {(() => {
+                  let nextEv = null;
+                  try {
+                    const cache = JSON.parse(localStorage.getItem("sakin_rooms_cache") || "null");
+                    const all = [...SEED_EVENTS, ...((cache && cache.events) || [])].filter(e => e && new Date(e.date).getTime() >= Date.now() - 2 * 3600e3)
+                      .sort((a, b) => new Date(a.date) - new Date(b.date));
+                    nextEv = all[0] || null;
+                  } catch (_) {}
+                  const evTitle = nextEv ? (typeof nextEv.title === "object" ? pickLang(nextEv.title, lang) : nextEv.title) : "";
+                  let evDate = "";
+                  try { if (nextEv) evDate = new Date(nextEv.date).toLocaleString(localeFromLang(lang), { day:"numeric", month:"short", hour:"2-digit", minute:"2-digit" }); } catch (_) {}
+                  return (
+                    <button onClick={() => { try { haptic(); } catch (_) {} setShowRooms(true); }}
+                      style={{ ...BTN,marginTop:12,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.12)",display:"flex",alignItems:"center",gap:12 }}>
+                      {icon("✧", GOLD, 36, 15)}
+                      <span style={{ flex:1,minWidth:0 }}>
+                        <span style={{ display:"block",fontSize:15,color:INK,fontFamily:JOST,fontWeight:300 }}>{pickLang(ROOMS_TXT.title, lang)}</span>
+                        <span style={{ display:"block",fontSize:12,color:MUTE,fontFamily:INTER,marginTop:2,lineHeight:1.45 }}>
+                          {nextEv ? `${pickLang(ORCH_HUB_TXT.next, lang)}: ${evDate} · ${evTitle}` : pickLang(ROOMS_TXT.sub, lang).replace("{n}", "8")}
+                        </span>
+                      </span>
+                      {chevron()}
+                    </button>
+                  );
+                })()}
+                {/* PONG (Bugün'deki ayrı karttan buraya taşındı, kullanıcı: "Çember'in altına"). */}
+                <button onClick={() => { try { haptic(); } catch (_) {} setShowPong(true); }}
+                  style={{ ...BTN,marginTop:12,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.12)",display:"flex",alignItems:"center",gap:12 }}>
+                  <span aria-hidden="true" style={{ position:"relative",width:36,height:36,flexShrink:0,borderRadius:"50%",border:`1px solid ${LAV}55`,background:"rgba(12,9,26,0.85)",overflow:"hidden" }}>
+                    <span style={{ position:"absolute",left:11,top:8,width:14,height:2.5,borderRadius:2,background:LAV }} />
+                    <span style={{ position:"absolute",left:15.5,top:15.5,width:5,height:5,borderRadius:"50%",background:"#fff4d6",boxShadow:`0 0 7px ${GOLD}` }} />
+                    <span style={{ position:"absolute",left:10,bottom:8,width:14,height:2.5,borderRadius:2,background:GOLD }} />
+                  </span>
+                  <span style={{ flex:1,minWidth:0 }}>
+                    <span style={{ display:"block",fontSize:15,color:INK,fontFamily:JOST,fontWeight:300 }}>{pickLang(PONG_CARD_TXT.title, lang)}</span>
+                    <span style={{ display:"block",fontSize:12,color: pongOpenRooms > 0 ? "#82d9a3" : MUTE,fontFamily:INTER,marginTop:2,lineHeight:1.45 }}>
+                      {pongOpenRooms > 0 ? pickLang(ORCH_HUB_TXT.pongOpen, lang).replace("{n}", String(pongOpenRooms)) : pickLang(PONG_CARD_TXT.sub, lang)}
+                    </span>
+                  </span>
+                  {chevron()}
+                </button>
               </div>
             </section>
 
@@ -19641,25 +19812,6 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                 <span style={{ flex:1,minWidth:0 }}>
                   <span style={{ display:"block",fontSize:16,color:INK,fontFamily:JOST,fontWeight:300,marginBottom:3 }}>{pickLang(SOUL_TXT.pair, lang)}</span>
                   <span style={{ display:"block",fontSize:12.5,color:MUTE,fontFamily:INTER,lineHeight:1.45 }}>{pickLang(SOUL_TXT.pairSub, lang)}</span>
-                </span>
-                {chevron()}
-              </button>
-            </section>
-
-            {/* ── 9) PONG (1.4.3, kullanıcı: "ikili uyumun altına; tıklanınca tam ekran") ──
-                Tek oyuncu ya da iki kişi (oda aç / boş odaya katıl). src/pong.jsx. */}
-            <section style={SEC}>
-              {eyebrow(pickLang(PONG_CARD_TXT.section, lang))}
-              <button onClick={()=>{ try{haptic();}catch(_){} setShowPong(true); }}
-                style={{ ...BTN,...SURF,padding:"15px 16px",display:"flex",alignItems:"center",gap:14 }}>
-                <span aria-hidden="true" style={{ position:"relative",width:42,height:42,flexShrink:0,borderRadius:12,border:`1px solid ${LAV}55`,background:"rgba(12,9,26,0.85)",overflow:"hidden" }}>
-                  <span style={{ position:"absolute",left:12,top:6,width:18,height:3,borderRadius:2,background:LAV }} />
-                  <span style={{ position:"absolute",left:17,top:18,width:6,height:6,borderRadius:"50%",background:"#fff4d6",boxShadow:`0 0 8px ${GOLD}` }} />
-                  <span style={{ position:"absolute",left:10,bottom:6,width:18,height:3,borderRadius:2,background:GOLD }} />
-                </span>
-                <span style={{ flex:1,minWidth:0 }}>
-                  <span style={{ display:"block",fontSize:16,color:INK,fontFamily:JOST,fontWeight:300,marginBottom:3 }}>{pickLang(PONG_CARD_TXT.title, lang)}</span>
-                  <span style={{ display:"block",fontSize:12.5,color:MUTE,fontFamily:INTER,lineHeight:1.45 }}>{pickLang(PONG_CARD_TXT.sub, lang)}</span>
                 </span>
                 {chevron()}
               </button>

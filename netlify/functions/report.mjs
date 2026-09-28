@@ -119,7 +119,7 @@ export function aggregate(users) {
         }
       // ⚠️ cember_/letter_/deeplink_/push_optin_/jserr_ bu süzgeçte YOKTU: track.mjs
       // onları sayıyordu ama rapor hep 0 gösteriyordu (Eyl 2026 düzeltmesi).
-      } else if (/^(fork_|bgate_|ayna_|notif_|cember_|letter_|deeplink_|push_optin_|jserr_|inbox_|pong_)/.test(k)) {
+      } else if (/^(fork_|bgate_|ayna_|notif_|cember_|letter_|deeplink_|push_optin_|jserr_|inbox_|pong_|rooms_)/.test(k)) {
         ch[k] = (ch[k] || 0) + c[k];
       }
     }
@@ -211,8 +211,9 @@ export function aggregate(users) {
       forkUntriedBaglan: ch.fork_untried_baglan || 0, forkUntriedKesfet: ch.fork_untried_kesfet || 0,
       pushYes: ch.push_optin_1 || 0, pushNo: ch.push_optin_0 || 0,
       inboxOpen: ch.inbox_open || 0,
-      pong: ["open", "single", "host", "join", "end"].reduce((o, k) => (o[k] = ch["pong_" + k] || 0, o), {}),
-      cember: ["open", "rules", "send", "report", "block", "crisis", "badges", "badgeof"].reduce((o, k) => (o[k] = ch["cember_" + k] || 0, o), {}),
+      rooms: ["open", "room", "event", "practice"].reduce((o, k) => (o[k] = ch["rooms_" + k] || 0, o), {}),
+      pong: ["open", "single", "host", "join", "end", "invite"].reduce((o, k) => (o[k] = ch["pong_" + k] || 0, o), {}),
+      cember: ["open", "rules", "send", "report", "block", "crisis", "badges", "badgeof", "pong_invite", "pong_accept"].reduce((o, k) => (o[k] = ch["cember_" + k] || 0, o), {}),
       jsErr: Object.keys(ch).filter((k) => k.indexOf("jserr_") === 0).reduce((n, k) => n + ch[k], 0),
       letterSeal: ch.letter_seal || 0, letterOpen: ch.letter_open || 0,
       letterR: { oldu: ch.letter_r_oldu || 0, yolda: ch.letter_r_yolda || 0, donustu: ch.letter_r_donustu || 0 },
@@ -445,7 +446,8 @@ export function renderHTML(r, truncated) {
        <tr><td>Bugün doğum kapısı gösterildi</td><td class="num">${c.gateShown || 0}</td></tr>
        <tr><td>Çember: açılış / kural onayı / mesaj</td><td class="num">${(c.cember || {}).open || 0} / ${(c.cember || {}).rules || 0} / ${(c.cember || {}).send || 0}</td></tr>
        <tr><td>Çember: bildirim / engelleme / kriz kartı</td><td class="num">${(c.cember || {}).report || 0} / ${(c.cember || {}).block || 0} / ${(c.cember || {}).crisis || 0}</td></tr>
-       <tr><td>Pong: açılış / tek oyuncu / oda açma / katılma / biten maç</td><td class="num">${["open","single","host","join","end"].map((k) => (c.pong || {})[k] || 0).join(" / ")}</td></tr>
+       <tr><td>Sakin Odalar: açılış / oda / buluşma / pratiğe geçiş</td><td class="num">${["open","room","event","practice"].map((k) => (c.rooms || {})[k] || 0).join(" / ")}</td></tr>
+       <tr><td>Pong: açılış / tek oyuncu / oda açma / katılma / biten maç / davetle</td><td class="num">${["open","single","host","join","end","invite"].map((k) => (c.pong || {})[k] || 0).join(" / ")}</td></tr>
        <tr><td>Bildirim merkezi (zil) açılışı</td><td class="num">${c.inboxOpen || 0}</td></tr>
        <tr><td>Çember: rozet rehberi / takma ada dokunup rozet özeti</td><td class="num">${(c.cember || {}).badges || 0} / ${(c.cember || {}).badgeof || 0}</td></tr>
        <tr><td>Uygulama hatası (hata ekranına düşen)</td><td class="num">${c.jsErr || 0}</td></tr>

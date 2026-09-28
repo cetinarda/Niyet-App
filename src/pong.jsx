@@ -47,6 +47,9 @@ const TXT = {
   lose:      { tr:"Bu sefer o kazandı", en:"This time they won", de:"Diesmal hat der andere gewonnen", es:"Esta vez ganó el otro", pt:"Desta vez ganhou o outro", fr:"Cette fois, l'autre a gagné", ja:"今回は相手の勝ち" },
   again:     { tr:"Tekrar", en:"Again", de:"Nochmal", es:"Otra vez", pt:"Outra vez", fr:"Encore", ja:"もう一度" },
   hint:      { tr:"Parmağını kaydır, raketin takip etsin. 7 sayıya ilk ulaşan kazanır.", en:"Slide your finger and your paddle follows. First to 7 wins.", de:"Wisch mit dem Finger, dein Schläger folgt. Wer zuerst 7 hat, gewinnt.", es:"Desliza el dedo y tu pala te sigue. Gana quien llegue antes a 7.", pt:"Desliza o dedo e a raquete segue-te. Ganha quem chegar primeiro a 7.", fr:"Fais glisser ton doigt, ta raquette suit. Le premier à 7 gagne.", ja:"指をすべらせるとラケットがついてきます。先に7点で勝ち。" },
+  invited:   { tr:"Davetin gitti. Kabul etmesini bekle.", en:"Your invite is on its way. Wait for them to accept.", de:"Deine Einladung ist unterwegs. Warte, bis sie angenommen wird.", es:"Tu invitación está en camino. Espera a que la acepte.", pt:"O teu convite foi enviado. Espera que o aceite.", fr:"Ton invitation est partie. Attends qu'elle soit acceptée.", ja:"招待を送りました。受けてくれるのを待ってね。" },
+  declined:  { tr:"Şimdi değil dedi. Belki başka zaman.", en:"They said not now. Maybe another time.", de:"Gerade nicht, hieß es. Vielleicht ein andermal.", es:"Dijo que ahora no. Quizá en otro momento.", pt:"Disse que agora não. Talvez noutra altura.", fr:"Pas maintenant, a-t-on répondu. Une autre fois peut-être.", ja:"いまは遊べないそうです。また今度。" },
+  expired:   { tr:"Bu davet artık geçerli değil.", en:"This invite is no longer active.", de:"Diese Einladung ist nicht mehr gültig.", es:"Esta invitación ya no está activa.", pt:"Este convite já não está ativo.", fr:"Cette invitation n'est plus active.", ja:"この招待はもう有効ではありません。" },
   close:     { tr:"Kapat", en:"Close", de:"Schließen", es:"Cerrar", pt:"Fechar", fr:"Fermer", ja:"閉じる" },
 };
 
@@ -70,7 +73,9 @@ async function pongClient(getCember) {
   return __pongClient;
 }
 
-export default function PongOverlay({ lang, onClose, getCember, haptic, track }) {
+// `invite` (Çember'den davet, 1.4.3): { role: "host"|"guest", rid, nick }. Oda LOBİYE
+// DÜŞMEZ (özel oda); host davet edene, guest daveti kabul edene açılır.
+export default function PongOverlay({ lang, onClose, getCember, haptic, track, invite }) {
   const L = (o) => (o && (o[lang] || o.en)) || "";
   const JOST = "'Jost',sans-serif", INTER = "'Inter',sans-serif", SERIF = "'Cormorant Garamond',Georgia,serif";
   const INK = "#f1ecf9", MUTE = "#8f88a3", GOLD = "#e8c07a", LAV = "#b8a4d8";
@@ -92,7 +97,23 @@ export default function PongOverlay({ lang, onClose, getCember, haptic, track })
   const buzz = () => { try { haptic && haptic(); } catch (_) {} };
   const tr = (a, extra) => { try { track && track("pong", { a, ...(extra || {}) }); } catch (_) {} };
 
-  useEffect(() => { tr("open"); }, []);
+  useEffect(() => { tr(invite ? "invite" : "open"); }, []);
+  // Davetle açıldıysa menüyü atla: doğrudan özel odayı aç ya da ona katıl.
+  useEffect(() => {
+    if (!invite || !invite.rid) return;
+    let alive = true;
+    setView("hosting"); setMode(invite.role === "host" ? "host" : "guest");
+    pongClient(getCember).catch(() => null).then((cl) => {
+      if (!alive) return;
+      if (!cl) { setMsg(L(TXT.closed)); setView("msg"); return; }
+      client.current = cl;
+      if (invite.role === "host") hostRoom(invite.rid); else joinRoom({ rid: invite.rid, nick: invite.nick || "Sakin" }, true);
+    });
+    // Davet edilen "şimdi değil" derse (App, Çember davet kanalından iletir).
+    const onDecline = (e) => { if (e && e.detail && e.detail.rid === invite.rid && !(G.current)) { removeChan("game"); setMsg(L(TXT.declined)); setView("msg"); } };
+    window.addEventListener("sakin-pong-decline", onDecline);
+    return () => { alive = false; window.removeEventListener("sakin-pong-decline", onDecline); };
+  }, []);
   // Android geri tuşu: oyun/lobi içindeyse bir adım geri, menüdeyse kapat.
   useEffect(() => {
     const back = () => { if (view === "menu") onClose(); else leaveAll(true); };
@@ -136,11 +157,12 @@ export default function PongOverlay({ lang, onClose, getCember, haptic, track })
   }
 
   // ── ODA AÇ (host) ──
-  async function hostRoom() {
+  async function hostRoom(inviteRid) {
     const cl = client.current; if (!cl) return;
-    const rid = Math.random().toString(36).slice(2, 12);
-    setMode("host"); setView("hosting"); tr("host");
-    try { await chans.current.lobby.track({ rid, nick: cl.nick, t: Date.now() }); } catch (_) {}
+    const rid = inviteRid || Math.random().toString(36).slice(2, 12);
+    setMode("host"); setView("hosting"); if (!inviteRid) tr("host");
+    // Davet odası lobiye yazılmaz (yalnızca davet edilen katılabilir).
+    if (!inviteRid) { try { await chans.current.lobby.track({ rid, nick: cl.nick, t: Date.now() }); } catch (_) {} }
     const ch = cl.sb.channel("pong:r:" + rid, { config: { private: true, broadcast: { self: false }, presence: { key: "host" } } });
     let guestKey = null;
     ch.on("presence", { event: "sync" }, () => {
@@ -169,9 +191,14 @@ export default function PongOverlay({ lang, onClose, getCember, haptic, track })
   }
 
   // ── ODAYA KATIL (guest) ──
-  function joinRoom(room) {
+  function joinRoom(room, viaInvite) {
     const cl = client.current; if (!cl) return;
-    setMode("guest"); setView("hosting"); tr("join");
+    setMode("guest"); setView("hosting"); if (!viaInvite) tr("join");
+    // Davet odasında oda sahibi 12 sn içinde yoksa davet artık geçerli değil.
+    if (viaInvite) setTimeout(() => {
+      const ch = chans.current.game;
+      if (ch && !G.current) { try { if (!ch.presenceState().host) { removeChan("game"); setMsg(L(TXT.expired)); setView("msg"); } } catch (_) {} }
+    }, 12000);
     const myKey = "g" + Math.random().toString(36).slice(2, 10);
     const ch = cl.sb.channel("pong:r:" + room.rid, { config: { private: true, broadcast: { self: false }, presence: { key: myKey } } });
     let started = false;
@@ -492,7 +519,7 @@ export default function PongOverlay({ lang, onClose, getCember, haptic, track })
         <div style={{ display:"flex", justifyContent:"center", marginBottom:4 }}>
           <span className="pong-wait" style={{ width:14, height:14, borderRadius:"50%", background:"#fff4d6", boxShadow:`0 0 18px ${GOLD}` }} />
         </div>
-        <div style={{ textAlign:"center", fontFamily:SERIF, fontSize:20, color:INK, lineHeight:1.4 }}>{mode === "host" ? L(TXT.waiting) : L(TXT.connecting)}</div>
+        <div style={{ textAlign:"center", fontFamily:SERIF, fontSize:20, color:INK, lineHeight:1.4 }}>{mode === "host" ? L(invite ? TXT.invited : TXT.waiting) : L(TXT.connecting)}</div>
         <div style={{ display:"flex", justifyContent:"center", marginTop:8 }}>{pill(L(TXT.cancel), () => leaveAll(true))}</div>
       </>)}
 
