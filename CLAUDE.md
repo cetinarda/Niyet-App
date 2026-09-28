@@ -1343,6 +1343,10 @@ koruma sunucuda.
   yazılı PNG (`img/<dil>/blog-*.png`) kullanıyordu, karanlık temada neredeyse
   görünmüyordu (kullanıcı: "dil değiştirince blog resimleri gidiyor"). O PNG'ler
   artık YALNIZCA og:image/twitter:image (paylaşım önizlemesi, dilli başlık).
+- **Sosyal medya (Eyl 2026):** alt bilginin (`footer.foot`) EN ALTINDA, bağlantı satırına
+  dokunmadan ayrı `.foot-social` satırı: Instagram (sakin.app) · X (sakinlifeapp) · LinkedIn
+  (company/122234304, herkese açık adres; yönetici panel adresi KOYMA). 29 sayfada aynı blok
+  (home + 28 blog). Yeni sayfa eklersen bu bloğu da kopyala.
 - **Gizlilik / Şartlar** (tr+en, kendi düğmeleri): `sakin_lang` ya da tarayıcı
   dili tr değilse İngilizce açılır. Tanıtım (`/tanitim`) yalnızca Türkçe.
 - Dil denetimi (Eyl 2026): 10 sayfa x 7 dil dil menüsünden gezildi; kırık görsel,

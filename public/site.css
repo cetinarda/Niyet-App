@@ -353,6 +353,19 @@ h3 { font-size:19px; font-weight:600; line-height:1.4; letter-spacing:-.1px; col
 .foot-links a { font-size:14.5px; color:var(--muted); transition:color .25s; }
 .foot-links a:hover { color:var(--accent); }
 .foot-note { font-size:13.5px; color:var(--muted-2); line-height:1.8; max-width:440px; }
+.foot-social {
+  width:calc(min(var(--maxw), 100%) - 52px); margin:30px auto 0; padding:22px 0 0;
+  display:flex; justify-content:center; gap:14px;
+  border-top:1px solid var(--line-soft);
+}
+.foot-social a {
+  width:38px; height:38px; border-radius:50%;
+  display:inline-flex; align-items:center; justify-content:center;
+  color:var(--muted); border:1px solid var(--line-soft);
+  transition:color .25s, border-color .25s, transform .25s;
+}
+.foot-social a:hover, .foot-social a:focus-visible { color:var(--accent); border-color:var(--accent); transform:translateY(-1px); }
+.foot-social svg { width:16px; height:16px; display:block; }
 
 /* ── Blog ──────────────────────────────────────────────────────────────── */
 .post { padding:44px 0 0; }
