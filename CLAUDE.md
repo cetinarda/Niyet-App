@@ -667,6 +667,12 @@ günde 4, yeni kullanıcıya 5 bildirim gidiyordu. Artık TEK fonksiyon:
 - **Sabah tarot bildirimi (`TAROT_NOTIF`) "tek bir kart ayrıldı" DEMEZ** (kullanıcı
   bildirdi: gün içinde birden fazla kart açılıyor). Kalıp: "Günün rehber kartlarını
   çek, tarot kartını aç ve mesajını al" (3 varyant, 7 dil).
+- **ANLIK NİYET HAVUZU (`NOTIF_NIYET`, 10 cümle, 7 dil, 1.4.3; kullanıcı: "Kendine bir söz
+  ver şimdi (sempatik emoji) + kişinin kendini o an manifestleyip olmak istediği kişiyi
+  çağırabilmesi için birkaç bildirim"):** "istediği kişi" = OLMAK istediği kendisi (başka
+  birini "programlamak" DEĞİL). Altın kural 9'a uygun: tek nefeslik iç hareket, emoji
+  sonda. Akşam/gün ortası havuzuna davet · söz · niyet sırasıyla ARALIKLI karışır,
+  dokununca Sabah niyeti (`screen:"sabah"`) + tam metin kartı (`note:1`).
 - **SÖZ HAVUZU (`NOTIF_SOZ`, 32 söz, 7 dil; Türkçe asıl metin kullanıcının):**
   akşam 18:00 / gün ortası 13:00 havuzuna diğer mesajlarla ARALIKLI dizilir (sona
   eklenirse `pick()` 32 gün üst üste söz verirdi). Dokununca Bağlan.

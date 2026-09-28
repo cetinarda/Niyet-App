@@ -5286,6 +5286,97 @@ const NOTIF_NEFES = {
 // 32 söz, Türkçe asıl metin kullanıcının; diğer 6 dil çeviri). Akşam/gün ortası
 // havuzunda diğer mesajlarla ARALIKLI dizilir (bkz. scheduleAllNotifications),
 // dokununca Bağlan açılır. Sırayı değiştirmek serbest; dillerde uzunluk 32 kalmalı.
+// ANLIK NİYET / SÖZ HAVUZU (kullanıcı, Eyl 2026: "Kendine bir söz ver şimdi (sempatik
+// bir emoji); kişinin kendini o an manifestleyip olmak istediği kişiyi çağırabilmesi
+// için birkaç bildirim daha"). Altın kural 9'a uygun: yer/süre/hazırlık istemez, olduğu
+// yerde tek nefeslik bir iç hareket. Akşam/gün ortası havuzuna ARALIKLI karışır, dokununca
+// Sabah niyeti açılır + metnin tamamı kartta (note:1). 7 dilde, sıra ve sayı BİREBİR.
+const NOTIF_NIYET = {
+  tr: [
+    "Kendine bir söz ver şimdi 🤝 Kimse duymasa da sen duyarsın.",
+    "Olmak istediğin kişi zaten içinde bir yerde. Bir nefeslik ona selam ver ✨",
+    "İçinden tek bir cümle: \"Ben ... olan biriyim.\" Gerisini hayat tamamlar 🌙",
+    "Omuzların insin, çenen gevşesin. Olmak istediğin sen de böyle nefes alıyor 🌿",
+    "Bugün kendine fısıldayacağın tek bir söz seç. Sadece senin olsun 💫",
+    "İstediğin hayatı yaşayan sen, şu an nasıl nefes alırdı? Bir nefesi öyle al 🕊️",
+    "Niyetin bir tohum. İçinden bir kez söyle, toprak gerisini bilir 🌱",
+    "Sanki olmuş gibi, bir anlığına gülümse. Beden inanmaya başlar 😊",
+    "Kendine verdiğin sözler en sessiz ve en güçlü olanlardır 🤍",
+    "Şu an olduğun yer, olmak istediğin kişiye giden yolun tam içi 🌠",
+  ],
+  en: [
+    "Make yourself a promise right now 🤝 Even if no one hears it, you do.",
+    "The person you want to be is already somewhere inside you. Greet them for one breath ✨",
+    "One sentence, silently: \"I am someone who...\" Life fills in the rest 🌙",
+    "Let your shoulders drop, your jaw soften. The you you're becoming breathes like this 🌿",
+    "Pick one promise to whisper to yourself today. Let it be only yours 💫",
+    "How would the you living the life you want breathe right now? Take one breath like that 🕊️",
+    "Your intention is a seed. Say it once inside, the soil knows the rest 🌱",
+    "As if it has already happened, smile for a moment. The body starts to believe 😊",
+    "The promises you make to yourself are the quietest and the strongest 🤍",
+    "Where you are right now is right on the path to who you want to be 🌠",
+  ],
+  de: [
+    "Gib dir jetzt ein Versprechen 🤝 Auch wenn es niemand hört, du hörst es.",
+    "Der Mensch, der du sein willst, ist schon irgendwo in dir. Grüß ihn für einen Atemzug ✨",
+    "Ein Satz, ganz still: \"Ich bin jemand, der...\" Den Rest ergänzt das Leben 🌙",
+    "Lass die Schultern sinken, den Kiefer weich werden. Dein künftiges Ich atmet genau so 🌿",
+    "Wähle heute ein Versprechen, das du dir zuflüsterst. Nur für dich 💫",
+    "Wie würde das Ich atmen, das das Leben lebt, das du willst? Nimm einen Atemzug genau so 🕊️",
+    "Deine Absicht ist ein Samen. Sag sie einmal innerlich, die Erde weiß den Rest 🌱",
+    "Als wäre es schon geschehen: lächle einen Moment. Der Körper beginnt zu glauben 😊",
+    "Die Versprechen an dich selbst sind die leisesten und die stärksten 🤍",
+    "Wo du gerade bist, liegt mitten auf dem Weg zu dem, der du sein willst 🌠",
+  ],
+  es: [
+    "Hazte una promesa ahora mismo 🤝 Aunque nadie la oiga, tú sí.",
+    "La persona que quieres ser ya está en algún lugar dentro de ti. Salúdala durante una respiración ✨",
+    "Una frase, en silencio: \"Soy alguien que...\" La vida completa el resto 🌙",
+    "Deja caer los hombros, suelta la mandíbula. El tú que estás llegando a ser respira así 🌿",
+    "Elige una promesa para susurrarte hoy. Que sea solo tuya 💫",
+    "¿Cómo respiraría el tú que vive la vida que quieres? Toma una respiración así 🕊️",
+    "Tu intención es una semilla. Dila una vez por dentro, la tierra sabe el resto 🌱",
+    "Como si ya hubiera pasado, sonríe un momento. El cuerpo empieza a creer 😊",
+    "Las promesas que te haces son las más silenciosas y las más fuertes 🤍",
+    "Donde estás ahora está en pleno camino hacia quien quieres ser 🌠",
+  ],
+  pt: [
+    "Faz-te uma promessa agora mesmo 🤝 Mesmo que ninguém a ouça, tu ouves.",
+    "A pessoa que queres ser já está algures dentro de ti. Cumprimenta-a durante uma respiração ✨",
+    "Uma frase, em silêncio: \"Sou alguém que...\" A vida completa o resto 🌙",
+    "Deixa os ombros descer, solta o maxilar. O tu que estás a tornar-te respira assim 🌿",
+    "Escolhe uma promessa para sussurrares a ti hoje. Que seja só tua 💫",
+    "Como respiraria o tu que vive a vida que queres? Faz uma respiração assim 🕊️",
+    "A tua intenção é uma semente. Di-la uma vez por dentro, a terra sabe o resto 🌱",
+    "Como se já tivesse acontecido, sorri por um momento. O corpo começa a acreditar 😊",
+    "As promessas que fazes a ti são as mais silenciosas e as mais fortes 🤍",
+    "Onde estás agora fica em pleno caminho para quem queres ser 🌠",
+  ],
+  fr: [
+    "Fais-toi une promesse maintenant 🤝 Même si personne ne l'entend, toi tu l'entends.",
+    "La personne que tu veux être est déjà quelque part en toi. Salue-la le temps d'une respiration ✨",
+    "Une phrase, en silence : \"Je suis quelqu'un qui...\" La vie complète le reste 🌙",
+    "Laisse tes épaules descendre, ta mâchoire se détendre. Le toi que tu deviens respire ainsi 🌿",
+    "Choisis une promesse à te murmurer aujourd'hui. Qu'elle ne soit qu'à toi 💫",
+    "Comment respirerait le toi qui vit la vie que tu veux ? Prends une respiration comme ça 🕊️",
+    "Ton intention est une graine. Dis-la une fois intérieurement, la terre sait le reste 🌱",
+    "Comme si c'était déjà arrivé, souris un instant. Le corps commence à y croire 😊",
+    "Les promesses que tu te fais sont les plus silencieuses et les plus fortes 🤍",
+    "Là où tu es maintenant se trouve en plein sur le chemin de qui tu veux être 🌠",
+  ],
+  ja: [
+    "いま、自分にひとつ約束してみよう 🤝 誰に聞こえなくても、あなたには届く。",
+    "なりたい自分は、もうあなたの中のどこかにいる。ひと呼吸ぶん、あいさつを ✨",
+    "心の中でひとこと：「わたしは…な人」。残りは人生が満たしてくれる 🌙",
+    "肩をおろして、あごをゆるめて。なりたいあなたも、こんなふうに呼吸している 🌿",
+    "今日、自分にささやく約束をひとつ選んで。あなただけのものに 💫",
+    "望む人生を生きるあなたなら、いまどう呼吸する？ひと呼吸だけ、そうしてみて 🕊️",
+    "意図は種。心の中で一度だけ言えば、土が残りを知っている 🌱",
+    "もう叶ったかのように、少しだけ微笑んで。からだが信じはじめる 😊",
+    "自分への約束は、いちばん静かで、いちばん強い 🤍",
+    "いまいる場所は、なりたい自分へ続く道のまんなか 🌠",
+  ],
+};
 const NOTIF_SOZ = {
   tr: [
     "Bazen şifa, çözerek değil bırakarak gelir.",
@@ -5962,10 +6053,13 @@ async function scheduleAllNotifications(lang, birthDate, opts = {}) {
     // note:1 = İÇERİK bildirimi (bir özelliğe götürmüyor): dokununca uygulama açılır ve
     // metnin tamamı kartta görünür (NotifNoteCard). Özelliğe götürenlerde note YOK.
     const sozArr = (NOTIF_SOZ[lang] || NOTIF_SOZ.en).map(b => ({ body: b, extra: { screen: "mandala", note: 1 } }));
+    // Anlık niyet/söz cümleleri de ARALIKLI (davet, söz, niyet...); dokununca Sabah niyeti.
+    const niyetArr = (NOTIF_NIYET[lang] || NOTIF_NIYET.en).map(b => ({ body: b, extra: { screen: "sabah", note: 1 } }));
     const eveningPool = [];
-    for (let i = 0; i < Math.max(basePool.length, sozArr.length); i++) {
+    for (let i = 0; i < Math.max(basePool.length, sozArr.length, niyetArr.length); i++) {
       if (i < basePool.length) eveningPool.push(basePool[i]);
       if (i < sozArr.length) eveningPool.push(sozArr[i]);
+      if (i < niyetArr.length) eveningPool.push(niyetArr[i]);
     }
     // TEKRARSIZ AKIŞ (kullanıcı: "aynı yapının bilgilerin gitmesini engelle, sonsuz
     // ve tekrarlanmayan bir havuz"): eskiden pick() havuzu HER TUR AYNI sırayla
