@@ -114,7 +114,7 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    - `ios/App/App.xcodeproj/project.pbxproj`: `MARKETING_VERSION` ve `CURRENT_PROJECT_VERSION` (her biri 2 occurrence)
    - `src/App.jsx`: `APP_VERSION` (~satır 14)
    - `android/app/build.gradle`: `versionCode` (artan tamsayı) ve `versionName`
-   - **CANLI (27 Eyl 2026): Play Store `1.4.2` (versionCode 20) · App Store `1.4.2` İNCELEMEDE** (1.4.1 geri çekildi, hiç yayınlanmadı). Repoda hazırlanan: `1.4.3 / build 1`, Android `versionCode 21`. `WHATS_NEW` 1.4.3 notları yazıldı (`since = 1.4.3`: Ayna'yla sohbet, tam akort, rozetler + zil); aynı not bildirim merkezinde de görünür. 1.4.2 = deep link + 1.4.1'den SONRA gelen görünür özellikler (Çember, Niyet Mektubu, bildirim ayarları, anlık mesajlar); "Ne yeni" kartı bunları anlatır, `WHATS_NEW.since = "1.4.2"`. `latest-ios-version.json` otomatik, ELLE bump etme.
+   - **CANLI (27 Eyl 2026): Play Store `1.4.2` (versionCode 20) · App Store `1.4.2` İNCELEMEDE** (1.4.1 geri çekildi, hiç yayınlanmadı). ⚠️ **iOS 1.4.2 (1) REDDEDİLDİ (28 Eyl 2026, 2.1(a) açılış çökmesi, iOS 27 sahne zorunluluğu, aşağıdaki UIScene maddesine bak).** Kullanıcı kararıyla repo sürümü 1.4.3'ten **`1.4.2 / build 2`**'ye geri çekildi (Android `versionName 1.4.2`, `versionCode 21` ayrılmış, henüz yüklenmedi). Aynı daldan derlendiği için 1.4.3 için yazılan her şey (Pong, Odalar, rozetler, zil, Ayna devam sorusu) bu pakete GİRER. `WHATS_NEW` notları (Ayna'yla sohbet, tam akort, rozetler + zil) `version/since = 1.4.2`. Bir sonraki sürümde iOS + Android birlikte 1.4.3'e çekilir (Android 1.4.2 kullanıcıları `seen=1.4.2` olduğu için vc 21'i 1.4.2 adıyla gönderirsen Ne yeni kartını görmez). 1.4.2 = deep link + 1.4.1'den SONRA gelen görünür özellikler (Çember, Niyet Mektubu, bildirim ayarları, anlık mesajlar); "Ne yeni" kartı bunları anlatır, `WHATS_NEW.since = "1.4.2"`. `latest-ios-version.json` otomatik, ELLE bump etme.
    - ⚠️ **Sürüm bump'ında `WHATS_NEW.version` (src/App.jsx) da AYNI değere çekilmeli**, eşleşmezse "Ne yeni" kartı hiç görünmez (bayat not koruması).
    - ⚠️ **Play Console'a bir kez yüklenen `versionCode` KALICI OLARAK yanar**: reddedilse,
      silinse, taslak olarak kalsa bile o sayı bir daha ASLA kullanılamaz ("sürüm X kullanıldı"
@@ -155,6 +155,21 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
      YENİ BÜYÜK GİZLİ DEĞER EKLEME İHTİYACI olursa env'e DEĞİL, `SECRET_NAMES`
      listesine ekle. v1 (`export const handler`) fonksiyonda Blobs için
      `connectLambda(event)` ŞART (verify-entitlement'ta var).
+6b. **🚨 iOS 27 = UIScene ZORUNLU (28 Eyl 2026, Apple 2.1(a) reddi, kullanıcı onayladı).**
+   Crash log: `_UIApplicationEvaluateRuntimeIssueForNoSceneLifecycleAdoption_block_invoke`
+   (EXC_BREAKPOINT, açılışta). iOS 27 sahneye geçmemiş uygulamayı açmıyor. Çözüm:
+   `Info.plist` `UIApplicationSceneManifest` (tek sahne, `UISceneStoryboardFile=Main`,
+   `$(PRODUCT_MODULE_NAME).SceneDelegate`; `UIMainStoryboardFile` kaldırıldı) +
+   `AppDelegate.swift` SONUNDAKİ `SceneDelegate` sınıfı (ayrı dosya DEĞİL, pbxproj'a
+   dokunmamak için). Sahneli uygulamada `application(_:open:)`, `continue userActivity`
+   ve `applicationDidBecomeActive` ÇAĞRILMAZ: URL/evrensel bağlantı sahne metodlarından
+   `ApplicationDelegateProxy`'ye + Meta'ya iletilir (soğuk açılış URL'si `willConnectTo`
+   içindeki `urlContexts`ten, `getLaunchUrl` bunu okur), Meta `activateApp`
+   `sceneDidBecomeActive`'de. `UIApplication.didBecomeActiveNotification` sahnede de
+   gelir (App eklentisi `appStateChange` çalışır). Pencere `SceneDelegate.window`'da,
+   `AppDelegate.window` nil: kod ona DAYANMASIN (SplashScreen zaten sahneye düşüyor).
+   Bunu GERİ ALMA. Cihazda test: açılış, `sakin://bugun` (Safari'den), bildirime dokunma,
+   arka plandan dönüş, Meta olayları.
 7. **App Store onayını riske atan değişiklikler için onay al:**
    - `ios/App/App/Info.plist` (özellikle `UIBackgroundModes`)
    - `ios/App/App/AppDelegate.swift` (AVAudioSession vb.)
