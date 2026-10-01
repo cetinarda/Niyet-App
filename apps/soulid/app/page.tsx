@@ -71,12 +71,35 @@ export default function Welcome() {
     if (!connecting) return;
     let cancelled = false;
     if (sakinNeedsNameOnly() && !goAttach) { setAskName(true); setConnecting(false); return () => { cancelled = true; }; }
-    tryAutoConnectFromSakin().then((res) => {
-      if (cancelled) return;
-      if (res.ok) { nav.push(target()); return; }
-      markSakinBridgeSkipped();
-      setConnecting(false);
-    });
+    // HEDEFLİ AÇILIŞ + KAYITLI KARNE (Eki 2026): ?go=pair/sky ile gelindiyse ve
+    // cihazda zaten bir karne varsa köprüyü BEKLEMEDEN hedefe git; köprü arka
+    // planda karneyi tazeler. Eskiden her soğuk açılışta köprü baştan koşuyor,
+    // yavaş AI yüzünden süre dolunca ana sayfaya düşüyordu.
+    const runBridge = () => {
+      tryAutoConnectFromSakin().then((res) => {
+        if (cancelled) return;
+        if (res.ok) { nav.push(target()); return; }
+        markSakinBridgeSkipped();
+        setConnecting(false);
+      });
+    };
+    let goParam: string | null = null;
+    try { goParam = new URLSearchParams(window.location.search).get('go'); } catch { /* sessiz */ }
+    if (goParam === 'pair' || goParam === 'sky') {
+      listReports()
+        .then((rs) => {
+          if (cancelled) return;
+          if (rs[0]) {
+            nav.push(target());
+            tryAutoConnectFromSakin().catch(() => { /* arka plan tazeleme */ });
+            return;
+          }
+          runBridge();
+        })
+        .catch(() => { if (!cancelled) runBridge(); });
+    } else {
+      runBridge();
+    }
     return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connecting]);

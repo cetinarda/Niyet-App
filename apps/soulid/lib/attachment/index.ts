@@ -209,9 +209,12 @@ function axisScore(answers: Answers, axis: Axis): { score: number; answered: num
   return { score: Math.round(((sum / n - 1) / 4) * 100), answered: n };
 }
 
+// EŞİTLİK GÜVENLİ TARAFA (Eki 2026): eskiden `>= MID` idi; her soruya "Bazen"
+// (3) diyen kişi tam 50/50 alıp en ağır sonuca ("düzensiz") düşüyordu. Kesim
+// noktası nüfus normu değil ölçek ortası olduğu için belirsizlikte güvenli taraf.
 export function quadrant(anxiety: number, avoidance: number): AttachmentStyle {
-  const hiAnx = anxiety >= MID;
-  const hiAvo = avoidance >= MID;
+  const hiAnx = anxiety > MID;
+  const hiAvo = avoidance > MID;
   if (!hiAnx && !hiAvo) return 'secure';
   if (hiAnx && !hiAvo) return 'anxious';
   if (!hiAnx && hiAvo) return 'avoidant';
@@ -234,8 +237,8 @@ export function scoreAttachment(answers: Answers): AttachmentResult {
   if (blend > 0) {
     secondary =
       dAnx <= dAvo
-        ? quadrant(anx.score >= MID ? MID - 1 : MID + 1, avo.score)
-        : quadrant(anx.score, avo.score >= MID ? MID - 1 : MID + 1);
+        ? quadrant(anx.score > MID ? MID : MID + 1, avo.score)
+        : quadrant(anx.score, avo.score > MID ? MID : MID + 1);
     if (secondary === style) secondary = null;
   }
 
@@ -446,7 +449,10 @@ export const STYLES: Record<AttachmentStyle, StyleContent> = {
   },
 
   disorganized: {
-    name: { tr: 'Düzensiz bağlanma', en: 'Disorganized attachment' },
+    // Ad (Eki 2026): "düzensiz" çocuk bağlanması terimi ve incitici; yetişkin
+    // karşılığı korkulu-kaçıngan (Bartholomew). Anahtar 'disorganized' KALIR
+    // (kayıtlı sonuçlar bozulmasın).
+    name: { tr: 'Korkulu-kaçıngan bağlanma', en: 'Fearful-avoidant attachment' },
     emoji: '🌗',
     color: '#7aa2f7',
     essence: {
@@ -551,8 +557,8 @@ const PAIR: Record<string, PairDynamic> = {
   'secure|disorganized': {
     headline: { tr: 'Sabır ve fırtına', en: 'Patience and storm' },
     body: {
-      tr: 'Güvenli tarafın tutarlılığı iyileştiricidir ama tek başına yeterli olmayabilir. Düzensiz tarafın profesyonel destek alması bu eşleşmeyi gerçekten dönüştürür.',
-      en: 'The secure partner’s consistency heals, but may not be enough alone. Professional support for the disorganized partner genuinely transforms this pairing.',
+      tr: 'Güvenli tarafın tutarlılığı iyileştiricidir ama tek başına yeterli olmayabilir. Korkulu-kaçıngan tarafın profesyonel destek alması bu eşleşmeyi gerçekten dönüştürür.',
+      en: 'The secure partner’s consistency heals, but may not be enough alone. Professional support for the fearful-avoidant partner genuinely transforms this pairing.',
     },
   },
   'anxious|disorganized': {
@@ -565,8 +571,8 @@ const PAIR: Record<string, PairDynamic> = {
   'avoidant|disorganized': {
     headline: { tr: 'Kapanan ve savrulan', en: 'The one who closes and the one who swings' },
     body: {
-      tr: 'Kaçıngan taraf kapandıkça düzensiz tarafın en derin korkusu (terk) tetiklenir, o da hem yaklaşır hem saldırır. Kırılma noktası yine aynı: kaçıngan tarafın "döneceğim" sözünü tutması.',
-      en: 'As the avoidant closes, the disorganized partner’s deepest fear (abandonment) fires, and they both reach and lash out. The break point is the same: the avoidant keeping the promise to return.',
+      tr: 'Kaçıngan taraf kapandıkça korkulu-kaçıngan tarafın en derin korkusu (terk) tetiklenir, o da hem yaklaşır hem saldırır. Kırılma noktası yine aynı: kaçıngan tarafın "döneceğim" sözünü tutması.',
+      en: 'As the avoidant closes, the fearful-avoidant partner’s deepest fear (abandonment) fires, and they both reach and lash out. The break point is the same: the avoidant keeping the promise to return.',
     },
   },
   'disorganized|disorganized': {

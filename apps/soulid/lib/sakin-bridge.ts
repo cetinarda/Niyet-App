@@ -61,9 +61,13 @@ export async function tryAutoConnectFromSakin(): Promise<BridgeResult> {
   // asılı bırakmamalı. Geocoding ağı yavaş/engelliyse (uçak modu, review ağı,
   // WKWebView içinde takılan istek) 8 saniyede pes edip normal karşılama
   // ekranına düşeriz. Kullanıcı formu elle doldurabilir; kilitlenme YOK.
+  // 14 sn (Eki 2026, eskiden 8): köprü içindeki anlatı AI çağrısı kendi 12 sn
+  // sınırıyla bekliyor (sonra yedek metne düşüyor). 8 sn onu bitmeden kesiyordu:
+  // İkili uyuma ilk dokunuş SoulID ana sayfasına düşüyor, köprü arka planda
+  // bitince ikinci dokunuş doğrudan /pair açıyordu (kullanıcı bildirdi).
   return Promise.race([
     runBridge(fullName, birthDate, birthTime, birthCityRaw, locale),
-    new Promise<BridgeResult>((resolve) => setTimeout(() => resolve({ ok: false }), 8000)),
+    new Promise<BridgeResult>((resolve) => setTimeout(() => resolve({ ok: false }), 14000)),
   ]);
 }
 

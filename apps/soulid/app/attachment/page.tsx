@@ -322,7 +322,7 @@ export default function AttachmentPage() {
         />
         <div className="mx-auto max-w-2xl px-5 md:px-6">
           <p className="text-[11px] font-bold uppercase tracking-[0.5em] text-gold">
-            {tr ? 'SONUCUN' : 'YOUR RESULT'}
+            {tr ? 'ŞU ANKİ EĞİLİMİN' : 'YOUR CURRENT TENDENCY'}
           </p>
           <h1 className="mt-3 flex items-center gap-3 font-display text-4xl leading-tight text-ink md:text-5xl">
             <span>{s.emoji}</span>
