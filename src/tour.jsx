@@ -34,7 +34,9 @@ export const TOUR_TXT = {
 export const TOUR_STEPS = [
   { tab: "bugun",  targets: ["tab-bugun"],              t: "s1t", b: "s1b" },
   { tab: "baglan", targets: ["tab-baglan", "steps"],    t: "s2t", b: "s2b" },
-  { tab: null,     targets: ["tab-kesfet", "tab-ayna"], t: "s3t", b: "s3b" },
+  // Keşfet adımı Keşfet panelini AÇAR (kullanıcı: "Ailesi seni bekliyor yazısı çıkınca Bağlan'da
+  // kalıyor"). Panel tam ekran ama alt bar üstte kaldığı için sekme pencereleri görünür.
+  { tab: "kesfet", targets: ["tab-kesfet", "tab-ayna"], t: "s3t", b: "s3b" },
   { tab: "ben",    targets: ["settings", "tab-ben"],    t: "s4t", b: "s4b" },
 ];
 

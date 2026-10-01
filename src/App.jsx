@@ -5447,7 +5447,8 @@ const NOTIF_SOZ = {
     "Hayatla uyum içindeyim. Her şey benim en yüksek hayrıma işliyor.",
     "Gerçek güzellik görülemez, yalnızca hissedilir.",
     "En güzel hazineler, en sevdiğimiz yerlerde gizlenir.",
-    "Derler ki: yaşamın sırrı, duracağın yeri bilmekmiş."
+    "Derler ki: yaşamın sırrı, duracağın yeri bilmekmiş.",
+    "Bir şey kalbindeki huzuru bozduğunda ondan vazgeç. Zor günlerde neyin önemli olduğunu hatırla ve seni mutlu etmeyen şeyleri geride bırak.",
   ],
   en: [
     "Sometimes healing comes not by solving, but by letting go.",
@@ -5481,7 +5482,8 @@ const NOTIF_SOZ = {
     "I am in harmony with life. Everything is working for my highest good.",
     "True beauty cannot be seen, only felt.",
     "The finest treasures are hidden in the places we love most.",
-    "They say the secret of life is knowing where to stop."
+    "They say the secret of life is knowing where to stop.",
+    "When something disturbs the peace in your heart, let it go. On hard days, remember what truly matters and leave behind what doesn't bring you joy.",
   ],
   de: [
     "Manchmal kommt Heilung nicht durch Lösen, sondern durch Loslassen.",
@@ -5515,7 +5517,8 @@ const NOTIF_SOZ = {
     "Ich bin im Einklang mit dem Leben. Alles wirkt zu meinem höchsten Wohl.",
     "Wahre Schönheit kann man nicht sehen, nur fühlen.",
     "Die schönsten Schätze verbergen sich an den Orten, die wir am meisten lieben.",
-    "Man sagt, das Geheimnis des Lebens sei zu wissen, wo man innehält."
+    "Man sagt, das Geheimnis des Lebens sei zu wissen, wo man innehält.",
+    "Wenn etwas den Frieden in deinem Herzen stört, lass es los. Erinnere dich an schweren Tagen daran, was wirklich zählt, und lass zurück, was dich nicht glücklich macht.",
   ],
   es: [
     "A veces la sanación no llega resolviendo, sino soltando.",
@@ -5549,7 +5552,8 @@ const NOTIF_SOZ = {
     "Estoy en armonía con la vida. Todo obra para mi mayor bien.",
     "La verdadera belleza no se ve, solo se siente.",
     "Los tesoros más bellos se esconden en los lugares que más amamos.",
-    "Dicen que el secreto de la vida es saber dónde detenerse."
+    "Dicen que el secreto de la vida es saber dónde detenerse.",
+    "Cuando algo perturbe la paz de tu corazón, suéltalo. En los días difíciles, recuerda lo que de verdad importa y deja atrás lo que no te hace feliz.",
   ],
   pt: [
     "Às vezes a cura não vem de resolver, mas de largar.",
@@ -5583,7 +5587,8 @@ const NOTIF_SOZ = {
     "Estou em harmonia com a vida. Tudo trabalha para o meu bem maior.",
     "A verdadeira beleza não se vê, apenas se sente.",
     "Os tesouros mais belos escondem-se nos lugares que mais amamos.",
-    "Dizem que o segredo da vida é saber onde parar."
+    "Dizem que o segredo da vida é saber onde parar.",
+    "Quando algo perturbar a paz do teu coração, deixa-o ir. Nos dias difíceis, lembra-te do que realmente importa e deixa para trás o que não te faz feliz.",
   ],
   fr: [
     "Parfois la guérison ne vient pas en résolvant, mais en lâchant prise.",
@@ -5617,7 +5622,8 @@ const NOTIF_SOZ = {
     "Je suis en harmonie avec la vie. Tout œuvre pour mon plus grand bien.",
     "La vraie beauté ne se voit pas, elle se ressent.",
     "Les plus beaux trésors se cachent dans les endroits que nous aimons le plus.",
-    "On dit que le secret de la vie, c'est de savoir où s'arrêter."
+    "On dit que le secret de la vie, c'est de savoir où s'arrêter.",
+    "Quand quelque chose trouble la paix de ton cœur, laisse-le partir. Les jours difficiles, souviens-toi de ce qui compte vraiment et laisse derrière toi ce qui ne te rend pas heureux.",
   ],
   ja: [
     "癒しは、解決することではなく、手放すことで訪れることがある。",
@@ -5651,7 +5657,8 @@ const NOTIF_SOZ = {
     "私は人生と調和している。すべては私の最高の善のために働いている。",
     "本当の美しさは、見るものではなく、感じるもの。",
     "いちばん美しい宝物は、いちばん愛する場所に隠れている。",
-    "人生の秘密は、立ち止まる場所を知ることだという。"
+    "人生の秘密は、立ち止まる場所を知ることだという。",
+    "何かが心の平穏を乱すなら、それを手放して。つらい日には、本当に大切なものを思い出し、あなたを幸せにしないものは後ろに置いていこう。",
   ]
 };
 const NOTIF_KESFET = {
@@ -17172,6 +17179,10 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
               en altındaki ikinci galaktik kimlik butonu da kaldırıldı, tek
               giriş bu kartın içindeki buton. */}
           <div style={{ marginBottom:28 }}>{kimlikKarti}</div>
+          {/* KOD GÜNCELLEME (1.4.3, src/codes.jsx): 7 yansıma sırayla (1. kendini sevme),
+              Kod karnem sayfası; kimlik kartının hemen altı, Bağlanma Profili'nin ÜSTÜ (kullanıcı, Eki 2026). */}
+          <CodeUpdateCard lang={lang} haptic={haptic} onTrack={(e, d) => { try { track(e, d); } catch (_) {} }}
+            onPractice={(scr) => { if (scr) setScreen(scr); }} />
           {/* BAĞLANMA PROFİLİ (kullanıcı isteği): test çözülmediyse teste davet,
               çözüldüyse stil + öz + iki eksen. Dokununca SoulID'nin test sayfası
               açılır (kayıtlı sonucu ve ayrıntıları orada gösterir). */}
@@ -17229,10 +17240,6 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
             );
           })()}
           {/* NİYET MEKTUBU: 21 gün mühürlü kalan mektup (bkz. NiyetMektubu). */}
-          {/* KOD GÜNCELLEME (1.4.3, src/codes.jsx): 7 yansıma sırayla (1. kendini sevme),
-              Kod karnem sayfası; bağlanma kutusunun altı. */}
-          <CodeUpdateCard lang={lang} haptic={haptic} onTrack={(e, d) => { try { track(e, d); } catch (_) {} }}
-            onPractice={(scr) => { if (scr) setScreen(scr); }} />
           <NiyetMektubu lang={lang} />
           {/* İÇSEL HARİTA: artık açılır-kapanır ve KAPALI başlıyor (kullanıcı
               isteği). Ekrandaki diğer bölümlerle (haftalık rapor, 12. ev,

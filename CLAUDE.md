@@ -195,6 +195,13 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    içerik damgası `r2_`; statik havuzlar (PNOTIF_FACIL/REMIND, DAILY_REMINDERS,
    MORNING_PINGS, FEATURE_PROMOS, NOTIF_NEFES, yaşam koçu `notif-coach*.js`) bu kurala
    göre 7 dilde yeniden yazıldı. Yeni bildirim metni eklerken bu kurala göre yaz.
+9b. **💗 SAKİN'İN RUHU (kullanıcı, Eki 2026: "bu mantığı, ruhu aklında tut, ileride lazım
+   olacak"):** "Bir şey kalbindeki huzuru bozduğunda ondan vazgeç. Zor günlerde neyin önemli
+   olduğunu hatırla ve seni mutlu etmeyen şeyleri geride bırak." Yani: kalbin huzuru ölçüttür;
+   önemli olanı hatırlamak ve huzuru bozanı sevgiyle bırakmak. Yeni metin, bildirim, Ayna
+   cevabı, Kod Güncelleme ya da özellik tasarlarken bu sesi taşı (görev değil, izin ve hatırlatma).
+   Cümle `NOTIF_SOZ`'ün 33. maddesi (7 dil); kullanıcının "hatırlayın/sizi" karışık hitabı "sen"e
+   birleştirildi.
 
 1. **Ek istek/soru geldiğinde işi BIRAKMA, sıraya al.** Önce o an üzerinde çalıştığın işlemi bitir, sonra yeni isteği/soruyu ele al. İş ortasında dosya/branch yarım bırakma.
 2. **Soru sormak ≠ "dur".** Kullanıcı iş ortasında soru sorarsa: soruyu sıraya al, mevcut işi tamamla, **sonra** yanıtla. Sadece kullanıcı açıkça **"dur"** derse durdur.
@@ -538,6 +545,8 @@ menüleri, Bağlan'ın üst menülerini, en son Ben'de ayarları gösterir, baş
 - Teklif: yol seçimi kapatılınca ya da tanışma bitince `sakin_tour_pending`; ana sekmede başka
   katman yokken 1,4 sn sonra BİR KEZ (`sakin_tour_offered`). Başlayınca Bugün ipucu kapanır.
   Bitince/atlanınca başladığı ekrana döner. Ayarlar > GENEL > "Tanıtım turunu yeniden izle".
+- Keşfet adımı (`tab: "kesfet"`) Keşfet panelini AÇAR (kullanıcı: "Ailesi seni bekliyor yazısı çıkınca
+  Bağlan'da kalıyor"); alt bar panelin üstünde kaldığı için sekme pencereleri görünür, Ben adımı paneli kapatır.
 - Analitik `tour` {offer/start/later/skip/done} (track + rapor). Hedef eleman eklerken/silerken
   `data-tour` adlarını koru.
 
@@ -1036,7 +1045,7 @@ orada değişirse burayı da değiştir. Test ekranının kendisi yalnızca tr/e
 değişsin; sırayla testler çözdürülsün, bir testi çözen diğerine geçer; sonuçlara sürekli ulaşılan bir sayfa;
 veriler haftalık rapora ve bir yerde karneleştirilsin; ilkinin adı kendini sevme yansıması")
 
-- `src/codes.jsx` `CodeUpdateCard` (Bağlanma Profili ile Niyet Mektubu arasında) + `CodeKarne` (tam ekran
+- `src/codes.jsx` `CodeUpdateCard` (Ben'de kimlik kartının hemen ALTI, Bağlanma Profili'nin ÜSTÜ; kullanıcı, Eki 2026) + `CodeKarne` (tam ekran
   "Kod karnem", portal zIndex 100010, Android geri tuşu önce akışı kapatır). YEDİ KOD, KALPTEN TACA:
   1 Kendini sevme (kalp) · 2 Güven (kök) · 3 Bedeni dinleme (sakral) · 4 Sınır (solar) · 5 İfade (boğaz) ·
   6 Şimdide kalma (üçüncü göz) · 7 Anlam (taç). Her biri 8 ÖZGÜN cümle (2 x 4 alan, birer ters madde),
@@ -1051,6 +1060,11 @@ veriler haftalık rapora ve bir yerde karneleştirilsin; ilkinin adı kendini se
 - KÖPRÜLER: haftalık rapor (`codesReportText`: yalnızca kod adı, alanlar, yeni kod; cevap GİTMEZ; rapor
   istenince AI'a gider), akşam hatırlatması (`codesEveningLine`: EN SON güncellenen kodun 2./9. akşamı yeni
   kod, 5. akşamı taşınacak cümle; akşam slotunun YERİNE, günlük sayı artmaz, tema "ic").
+- **KART DÜZENİ (Eki 2026, kullanıcı):** başlık İKİ SATIR ("Kod güncelleme" + yedi nokta / "Yedi kod, kalpten
+  taca"), açıklama paragrafı YOK. Yedisi bitince kart AÇILIR-KAPANIR menü olur, varsayılan KAPALI (başlık
+  düğme + ok). EKRAN ATLAMASI: sorular -> sonuç -> sıradaki kod geçişinde kartın boyu çok değişiyor, sayfa
+  kartın ortasında kalıyordu; artık kullanıcı eylemiyle olan her geçişte kartın başı ekranın üstüne
+  kaydırılır (`anchorRef` + `scrollMarginTop` 104 px, hareketi azalt'ta anında).
 - Analitik `codes` {a: start/done/practice (c = kod, w = şefkat isteyen alan) / karne} (track beyaz liste
   `AREAS`, rapor "Kod ..." satırları). Eski `selflove` olayı 1. kod için sürüyor. Kod/alan eklersen track.mjs
   `AREAS` + report.mjs `ids` listesini de güncelle. Gizlilik s2l (3 yer x 7 dil) "Kod Güncelleme" satırı.
@@ -1504,6 +1518,10 @@ koruma sunucuda.
   dokunmadan ayrı `.foot-social` satırı: Instagram (sakin.app) · X (sakinlifeapp) · LinkedIn
   (company/122234304, herkese açık adres; yönetici panel adresi KOYMA). 29 sayfada aynı blok
   (home + 28 blog). Yeni sayfa eklersen bu bloğu da kopyala.
+- **Yazı sonu gezinmesi (Eki 2026, kullanıcı: "mobilde okuma bitince önceki/sonraki yazı tuşu"):**
+  21 yazı sayfasında (3 yazı x 7 dil) `.bridge` kutusunun altında `nav.post-nav` (Önceki / Sonraki, döngüsel,
+  sıra blog dizinindeki gibi: sevgiyi, içindeki, nefes) + "Tüm yazılar". Etiketler ve başlıklar dosyaya o
+  dilde STATİK yazılı. Yeni yazı eklersen sırayı ve komşu yazıların nav'ını da güncelle. CSS `site.css`.
 - **Gizlilik / Şartlar** (tr+en, kendi düğmeleri): `sakin_lang` ya da tarayıcı
   dili tr değilse İngilizce açılır. Tanıtım (`/tanitim`) yalnızca Türkçe.
 - Dil denetimi (Eyl 2026): 10 sayfa x 7 dil dil menüsünden gezildi; kırık görsel,

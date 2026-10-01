@@ -13,7 +13,7 @@
 // yeniden bakma) + haftalık rapor (`codesReportText`, yalnızca alan adları + yeni kod, cevap
 // GİTMEZ) + akşam hatırlatması (`codesEveningLine`, en son güncellenen kodun 2./5./9. akşamı,
 // günlük sınırın İÇİNDE).
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import BackButton from "./back-button.jsx";
 import { SELFLOVE_KEY, SL_SCALE, SL_TXT } from "./selflove-data.js";
@@ -315,6 +315,8 @@ export function CodeUpdateCard({ lang, haptic, onTrack, onPractice }) {
   const [flow, setFlow] = useState(null);
   const [justId, setJustId] = useState(null);
   const [karne, setKarne] = useState(false);
+  const [open, setOpen] = useState(false);       // yedisi bittiyse kart açılır-kapanır menü
+  const boxRef = useRef(null), anchorRef = useRef(false);
   const L = (o) => P(o, lang);
   const tap = () => { try { haptic && haptic(); } catch (_) {} };
   const tr = (d) => { try { onTrack && onTrack("codes", d); } catch (_) {} };
@@ -334,21 +336,39 @@ export function CodeUpdateCard({ lang, haptic, onTrack, onPractice }) {
     if (code.id === "selflove") { try { onTrack && onTrack("selflove", { a: "done", w: sc.weak }); } catch (_) {} }
   };
   const begin = (code) => {
-    tap(); setJustId(null); setFlow(code.id);
+    tap(); anchorRef.current = true; setJustId(null); setFlow(code.id);
     tr({ a: "start", c: code.id });
     if (code.id === "selflove") { try { onTrack && onTrack("selflove", { a: "start" }); } catch (_) {} }
   };
   const practice = (code) => { tap(); tr({ a: "practice", c: code.id }); setKarne(false); onPractice && onPractice(code.practice); };
   const openKarne = () => { tap(); setKarne(true); tr({ a: "karne" }); };
 
-  const box = { marginBottom:20, padding:"18px 18px 16px", borderRadius:16, background:"rgba(224,170,190,0.045)", border:"1px solid rgba(232,170,190,0.2)" };
+  // scrollMarginTop: kart başına kaydırırken üst çubuğun altında kalmasın.
+  const box = { marginBottom:20, padding:"18px 18px 16px", borderRadius:16, background:"rgba(224,170,190,0.045)", border:"1px solid rgba(232,170,190,0.2)",
+    scrollMarginTop:"calc(104px + var(--sat, 0px))" };
+  const allDone = done === CODES.length;
+  const collapsed = allDone && !open && !flow && !justId;
+  // EKRAN ATLAMASI (kullanıcı, Eki 2026: "testler bitince ekran genişliyor, yeni teste başla
+  // deyince ekranda atlama oluyor"): sorular -> sonuç -> yeni soru geçişinde kartın boyu çok
+  // değişiyor, sayfa kartın ortasında kalıyordu. Kullanıcı eylemiyle olan her geçişte kartın
+  // BAŞI ekranın üstüne sabitlenir.
+  useEffect(() => {
+    if (!anchorRef.current) return;
+    anchorRef.current = false;
+    const el = boxRef.current; if (!el) return;
+    const r = el.getBoundingClientRect();
+    if (r.top >= 70 && r.top < window.innerHeight * 0.35) return;   // zaten yerinde
+    let reduce = false; try { reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (_) {}
+    try { el.scrollIntoView({ block: "start", behavior: reduce ? "auto" : "smooth" }); } catch (_) {}
+  }, [flow, justId, open]);
+  const toggle = () => { tap(); anchorRef.current = true; if (open || justId) { setOpen(false); setJustId(null); } else setOpen(true); };
   const flowCode = flow && CODES.find((c) => c.id === flow);
   const just = justId && CODES.find((c) => c.id === justId);
 
   let body;
   if (flowCode) {
     body = <ReflectionFlow code={flowCode} lang={lang} haptic={haptic} onCancel={() => setFlow(null)}
-      onDone={(ans) => { complete(flowCode, ans); setFlow(null); setJustId(flowCode.id); }} />;
+      onDone={(ans) => { anchorRef.current = true; complete(flowCode, ans); setFlow(null); setJustId(flowCode.id); }} />;
   } else if (just && latest(m, just.id)) {
     body = (
       <div style={{ padding:"16px 16px 14px", borderRadius:14, background:rgba(just.color, 0.05), border:`1px solid ${rgba(just.color, 0.25)}` }}>
@@ -381,18 +401,33 @@ export function CodeUpdateCard({ lang, haptic, onTrack, onPractice }) {
     body = <div style={{ fontFamily:SERIF, fontSize:19, lineHeight:1.4, color:INK }}>{L(CODE_UI.allDone)}</div>;
   }
 
-  return (
-    <div style={box}>
+  // BAŞLIK İKİ SATIR (kullanıcı): "Kod güncelleme" + "Yedi kod, kalpten taca". Açıklama
+  // paragrafı kaldırıldı; ilerleme yedi noktada görünüyor. Yedisi bittiyse başlık
+  // açılır-kapanır menünün düğmesi olur (varsayılan kapalı).
+  const head = (
+    <>
       <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:6 }}>
         <span style={{ flex:1, fontFamily:JOST, fontSize:10.5, letterSpacing:3, textTransform:"uppercase", color:"#e0a9bd" }}>{L(CODE_UI.eyebrow)}</span>
         <CodeDots m={m} size={8} gap={5} />
       </div>
-      <div style={{ fontFamily:SERIF, fontSize:20, lineHeight:1.3, color:INK, marginBottom:4 }}>{L(CODE_UI.title)}</div>
-      <div style={{ fontFamily:INTER, fontSize:12.5, lineHeight:1.5, color:MUTE, marginBottom:14 }}>
-        {L(CODE_UI.sub)}{done > 0 ? " " + L(CODE_UI.progress).replace("{d}", String(done)) + "." : ""}
+      <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+        <span style={{ flex:1, fontFamily:SERIF, fontSize:20, lineHeight:1.3, color:INK }}>{L(CODE_UI.title)}</span>
+        {allDone && (
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"
+            style={{ display:"block", flexShrink:0, color:MUTE, transform: collapsed ? "none" : "rotate(180deg)", transition:"transform .25s" }}>
+            <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )}
       </div>
-      {body}
-      {done > 0 && !flowCode && (
+    </>
+  );
+  return (
+    <div ref={boxRef} style={box}>
+      {allDone ? (
+        <button onClick={toggle} aria-expanded={!collapsed} style={{ ...BTN, display:"block", width:"100%", padding:0, background:"transparent", border:"none", textAlign:"left", color:"inherit" }}>{head}</button>
+      ) : head}
+      {!collapsed && <div style={{ marginTop:14 }}>{body}</div>}
+      {!collapsed && done > 0 && !flowCode && (
         <button onClick={openKarne} style={{ ...BTN, width:"100%", marginTop:12, gap:10, padding:"11px 14px", borderRadius:100, background:"transparent",
           border:"1px solid rgba(232,192,122,0.4)", color:"#f0dcae", fontFamily:JOST, fontSize:12, letterSpacing:1.6, textTransform:"uppercase" }}>
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" style={{ display:"block" }}>
@@ -402,7 +437,7 @@ export function CodeUpdateCard({ lang, haptic, onTrack, onPractice }) {
           {L(CODE_UI.karneBtn)}
         </button>
       )}
-      <div style={{ fontFamily:INTER, fontSize:11, lineHeight:1.5, color:"#6f6a80", marginTop:12 }}>{L(CODE_UI.note)}</div>
+      {!collapsed && <div style={{ fontFamily:INTER, fontSize:11, lineHeight:1.5, color:"#6f6a80", marginTop:12 }}>{L(CODE_UI.note)}</div>}
       {karne && <CodeKarne lang={lang} m={m} haptic={haptic} onClose={() => setKarne(false)} onPractice={practice}
         onComplete={(code, ans) => { complete(code, ans); }} />}
     </div>
