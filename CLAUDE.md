@@ -846,7 +846,9 @@ kişisel günün altına, sonra orkestra; meditasyon şükranın üstüne"):** K
 Güncel geçiş → Pusula → Kişisel gün → **Tarot → Günün şükranı** → Pazar özeti →
 Orkestra (+Çember) → Günün yorumu → Gökyüzü → Rehberler → I Ching → **Meditasyon
 pratiği** (kullanıcı: "I Ching'in altına taşı"; tek meditasyon olduğu için "günlük"
-DEĞİL) → İkili uyum → Bugünün ilk adımı. Aşağıdaki numaralar tarihsel.
+DEĞİL) → Bugünün ilk adımı. Aşağıdaki numaralar tarihsel. ⚠️ **İKİLİ UYUM BEN'E TAŞINDI
+(Eki 2026, kullanıcı):** Ben ekranında Drakonik Harita kartının hemen altında (altın çerçeveli
+kart, `?go=pair`); Bugün'de artık yok.
 - **Günün şükranı** (`GRATITUDE_TXT`): her giriş akşam kapanışının `sukur` alanına
   (sakin_sukur_<gün>) YENİ SATIR olarak eklenir. Yazılınca giriş kutusunun YERİNE
   geçer (kullanıcı): en yeni üstte, kapalıyken 2 satır, dokununca tamamı; sağdaki +

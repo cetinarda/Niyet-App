@@ -17549,6 +17549,33 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
             )}
           </div>
           )}
+          {/* ── İKİLİ UYUM (Eki 2026, kullanıcı: "ikili uyum menüsünü Ben ekranına draconic
+              haritanın altına taşı"; eskiden Bugün'deydi). İki halka: sen (burcun) + boş halka
+              "?"; SoulID eşleşmesini açar (?go=pair; ilk dokunuş sorunu A2'de çözüldü). */}
+          <div style={{ marginBottom:20 }}>
+            <button onClick={()=>{ try{haptic();}catch(_){}
+                handleOpenEmbed({ name:t("ailesi_soulid_name"), embed:"/embedded/soulid/index.html?go=pair", color:"#e8c07a" }); }}
+              style={{ WebkitAppearance:"none",appearance:"none",width:"100%",textAlign:"left",cursor:"pointer",
+                background:"rgba(232,192,122,0.06)",border:"1px solid rgba(232,192,122,0.26)",borderRadius:14,
+                padding:"13px 16px",display:"flex",alignItems:"center",gap:14,color:"inherit",font:"inherit" }}>
+              <span style={{ position:"relative",width:62,height:38,flexShrink:0 }}>
+                <span style={{ position:"absolute",left:0,top:0,width:38,height:38,borderRadius:"50%",
+                  border:"1px solid rgba(232,192,122,0.66)",background:"rgba(232,192,122,0.08)",
+                  display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,lineHeight:1,color:"#f0d29a" }}>
+                  {ZODIAC_GLYPH[astro?.burc] ? ZODIAC_GLYPH[astro.burc] + "\uFE0E" : "✦"}
+                </span>
+                <span style={{ position:"absolute",left:24,top:0,width:38,height:38,borderRadius:"50%",
+                  border:"1px dashed rgba(184,164,216,0.66)",background:"rgba(12,9,26,0.85)",
+                  display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,lineHeight:1,color:"#b8a4d8" }}>?</span>
+              </span>
+              <span style={{ flex:1,minWidth:0,display:"flex",flexDirection:"column",gap:3 }}>
+                <span style={{ fontFamily:"'Jost',sans-serif",fontSize:10.5,letterSpacing:2.5,textTransform:"uppercase",color:"#c9a86a" }}>{pickLang(TODAY_HERO_TXT.pairSection, lang)}</span>
+                <span style={{ fontSize:15,color:"#ece6f6",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>{pickLang(SOUL_TXT.pair, lang)}</span>
+                <span style={{ fontSize:12,color:"#8e8e99",fontFamily:"'Inter',sans-serif",lineHeight:1.45 }}>{pickLang(SOUL_TXT.pairSub, lang)}</span>
+              </span>
+              <span aria-hidden="true" style={{ color:"#c9a86a",fontSize:18,lineHeight:1,flexShrink:0 }}>›</span>
+            </button>
+          </div>
           {/* Buradaki açıktaki "doğum bilgilerini gir/değiştir" bağlantısı KALDIRILDI
               (kullanıcı: "mantık olarak gerek kalmadı"). Artık gereken yerde
               gereken anda soruluyor: kilitli kartların içindeki buton, kimlik
@@ -20013,30 +20040,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
             {/* Çalarken kart KALIR (gece yarısı ya da dil değişince denetimsiz ses kalmasın). */}
             {((lang === "tr" && medVisible()) || (typeof window !== "undefined" && window.__sakinMed && !window.__sakinMed.paused)) && <MeditationCard lang={lang} S={{ SEC, SURF, BTN, eyebrow, SERIF, INTER, INK, MUTE, GOLD }} />}
 
-            {/* ── 8) İKİLİ UYUM ── (I Ching ile yer değiştirdi, kullanıcı isteği) iki halka: sen (burcun) + boş halka "?".
-                Eksik ikinci kişi görsel olarak duruyor; SoulID eşleşmesini açar. */}
-            <section style={SEC}>
-              {eyebrow(pickLang(TODAY_HERO_TXT.pairSection, lang))}
-              <button onClick={()=>{ try{haptic();}catch(_){}
-                  handleOpenEmbed({ name:t("ailesi_soulid_name"), embed:"/embedded/soulid/index.html?go=pair", color:"#e8c07a" }); }}
-                style={{ ...BTN,...SURF,padding:"15px 16px",display:"flex",alignItems:"center",gap:14 }}>
-                <span style={{ position:"relative",width:68,height:42,flexShrink:0 }}>
-                  <span style={{ position:"absolute",left:0,top:0,width:42,height:42,borderRadius:"50%",
-                    border:`1px solid ${GOLD}aa`,background:`${GOLD}14`,
-                    display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,lineHeight:1,color:"#f0d29a" }}>
-                    {ZODIAC_GLYPH[astro?.burc] || "✦"}
-                  </span>
-                  <span style={{ position:"absolute",left:26,top:0,width:42,height:42,borderRadius:"50%",
-                    border:`1px dashed ${LAV}aa`,background:"rgba(12,9,26,0.85)",
-                    display:"flex",alignItems:"center",justifyContent:"center",fontSize:15,lineHeight:1,color:LAV }}>?</span>
-                </span>
-                <span style={{ flex:1,minWidth:0 }}>
-                  <span style={{ display:"block",fontSize:16,color:INK,fontFamily:JOST,fontWeight:300,marginBottom:3 }}>{pickLang(SOUL_TXT.pair, lang)}</span>
-                  <span style={{ display:"block",fontSize:12.5,color:MUTE,fontFamily:INTER,lineHeight:1.45 }}>{pickLang(SOUL_TXT.pairSub, lang)}</span>
-                </span>
-                {chevron()}
-              </button>
-            </section>
+            {/* İKİLİ UYUM buradan Ben ekranına (Drakonik'in altı) taşındı (Eki 2026, kullanıcı isteği). */}
 
             {/* ── 10) BUGÜNÜN İLK ADIMI (en altta, kullanıcı isteği: "mantık olarak
                 devam etsin", Güne Başla kaldırıldı). Sayfayı okuyan kullanıcıyı
