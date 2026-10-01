@@ -204,7 +204,7 @@ export function aggregate(users) {
         }
       // ⚠️ cember_/letter_/deeplink_/push_optin_/jserr_ bu süzgeçte YOKTU: track.mjs
       // onları sayıyordu ama rapor hep 0 gösteriyordu (Eyl 2026 düzeltmesi).
-      } else if (/^(fork_|bgate_|ayna_|notif_|cember_|letter_|deeplink_|push_optin_|jserr_|inbox_|pong_|rooms_|tour_|selflove_)/.test(k)) {
+      } else if (/^(fork_|bgate_|ayna_|notif_|cember_|letter_|deeplink_|push_optin_|jserr_|inbox_|pong_|rooms_|tour_|selflove_|codes_)/.test(k)) {
         ch[k] = (ch[k] || 0) + c[k];
       }
     }
@@ -297,6 +297,7 @@ export function aggregate(users) {
       pushYes: ch.push_optin_1 || 0, pushNo: ch.push_optin_0 || 0,
       inboxOpen: ch.inbox_open || 0, inboxUpdate: ch.inbox_update || 0,
       tour: ["offer", "start", "later", "skip", "done"].reduce((o, k) => (o[k] = ch["tour_" + k] || 0, o), {}),
+      codes: Object.keys(ch).filter((k) => k.indexOf("codes_") === 0).reduce((o, k) => (o[k.slice(6)] = ch[k], o), {}),
       selflove: ["start", "done", "w_kind", "w_bond", "w_calm", "w_see"].reduce((o, k) => (o[k] = ch["selflove_" + k] || 0, o), {}),
       rooms: ["open", "room", "event", "practice"].reduce((o, k) => (o[k] = ch["rooms_" + k] || 0, o), {}),
       pong: ["open", "single", "host", "join", "end", "invite"].reduce((o, k) => (o[k] = ch["pong_" + k] || 0, o), {}),
@@ -571,6 +572,10 @@ export function renderHTML(r, truncated) {
        <tr><td>Bildirim merkezi (zil) açılışı</td><td class="num">${c.inboxOpen || 0}</td></tr>
        <tr><td>Zilden "Güncelle"ye dokunma</td><td class="num">${c.inboxUpdate || 0}</td></tr>
        <tr><td>Kendini sevme yansıması: başladı / bitirdi (şefkat isteyen: nezaket · bağ · denge · görme)</td><td class="num">${c.selflove ? `${c.selflove.start} / ${c.selflove.done} (${c.selflove.w_kind} · ${c.selflove.w_bond} · ${c.selflove.w_calm} · ${c.selflove.w_see})` : "-"}</td></tr>
+       ${(() => { const cd = c.codes || {}; const ids = [["selflove","Kendini sevme"],["guven","Güven"],["beden","Bedeni dinleme"],["sinir","Sınır"],["ifade","İfade"],["simdi","Şimdide kalma"],["anlam","Anlam"]];
+         return `<tr><td>Kod güncelleme: karne açılışı</td><td class="num">${cd.karne || 0}</td></tr>` + ids.map(([id, nm]) => {
+           const ws = Object.keys(cd).filter((k) => k.indexOf("w_" + id + "_") === 0).map((k) => `${esc(k.slice(id.length + 3))} ${cd[k]}`).join(" · ");
+           return `<tr><td>Kod ${esc(nm)}: başladı / bitirdi / pratiğe geçti${ws ? ` (şefkat isteyen: ${ws})` : ""}</td><td class="num">${cd[id + "_start"] || 0} / ${cd[id + "_done"] || 0} / ${cd[id + "_practice"] || 0}</td></tr>`; }).join(""); })()}
        <tr><td>Tanıtım turu: teklif / başladı / sonra / atladı / bitirdi</td><td class="num">${c.tour ? [c.tour.offer, c.tour.start, c.tour.later, c.tour.skip, c.tour.done].join(" / ") : "-"}</td></tr>
        <tr><td>Çember: rozet rehberi / takma ada dokunup rozet özeti</td><td class="num">${(c.cember || {}).badges || 0} / ${(c.cember || {}).badgeof || 0}</td></tr>
        <tr><td>Uygulama hatası (hata ekranına düşen)</td><td class="num">${c.jsErr || 0}</td></tr>

@@ -57,6 +57,14 @@ const TXT = {
 // Saha: genişlik 1, yükseklik H (dikey telefon). Tüm fizik bu birimlerde.
 const H = 1.6, PW = 0.24, PH = 0.022, BR = 0.02, PY = 0.075;
 const S0 = 0.62, SMAX = 1.45, WIN = 7;
+// KADEMELİ HIZ (Eki 2026, kullanıcı: "kademe kademe hızlansın; skordan sonra her yeni oyunda
+// en yavaştan başlasın"). Eskiden HER SAYIDAN sonra servis S0'a dönüyordu, maç hiç
+// ısınmıyordu. Artık servis hızı maçta atılan sayıyla kademe kademe artar (sayı başına
+// %7, servis tavanı SERVE_MAX); ralli içinde her vuruş %5 ekler (tavan maç ilerledikçe
+// SMAX'tan biraz yukarı açılır). Yeni maç (rövanş dahil) skor 0-0 olduğu için en yavaştan.
+const SERVE_STEP = 0.07, SERVE_MAX = 1.12, CAP_STEP = 0.02, CAP_MAX = 1.7;
+const serveSpeed = (pts) => Math.min(SERVE_MAX, S0 * (1 + SERVE_STEP * pts));
+const rallyCap = (pts) => Math.min(CAP_MAX, SMAX + CAP_STEP * pts);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
 let __pongClient = null;
@@ -291,9 +299,10 @@ export default function PongOverlay({ lang, onClose, getCember, haptic, track, i
   // Servis: `dir` +1 = alttakine (host/ben) doğru, -1 = üsttekine.
   function serve(dir) {
     const g = G.current; if (!g) return;
-    g.speed = S0;
+    const pts = (g.sc ? g.sc.h + g.sc.g : 0);
+    g.speed = serveSpeed(pts);
     const ang = (Math.random() * 0.8 - 0.4);
-    g.ball = { x: 0.5, y: H / 2, vx: Math.sin(ang) * S0, vy: Math.cos(ang) * S0 * dir };
+    g.ball = { x: 0.5, y: H / 2, vx: Math.sin(ang) * g.speed, vy: Math.cos(ang) * g.speed * dir };
     g.waitUntil = performance.now() + 900; g.trail = [];
     if (g.role === "host") sendG("b", { ...g.ball, d: 900 });
   }
@@ -390,7 +399,7 @@ export default function PongOverlay({ lang, onClose, getCember, haptic, track, i
     };
     function hit(g, px, dirY) {
       const off = clamp((g.ball.x - px) / (PW / 2), -1, 1);
-      g.speed = Math.min(SMAX, g.speed * 1.05);
+      g.speed = Math.min(rallyCap(g.sc.h + g.sc.g), g.speed * 1.05);
       const ang = off * 1.0;
       g.ball.vx = Math.sin(ang) * g.speed;
       g.ball.vy = Math.cos(ang) * g.speed * dirY;
@@ -408,6 +417,16 @@ export default function PongOverlay({ lang, onClose, getCember, haptic, track, i
       ctx.strokeRect(X(0) + 0.5, Y(0) + 0.5, scale - 1, scale * H - 1);
       ctx.setLineDash([4, 8]); ctx.beginPath(); ctx.moveTo(X(0.04), Y(H / 2)); ctx.lineTo(X(0.96), Y(H / 2)); ctx.stroke(); ctx.setLineDash([]);
       if (!g) return;
+      // Hız kademesi: orta çizginin sağında 7 küçük nokta (yazısız, her dilde aynı). Topun
+      // anlık hızından hesaplanır, konukta da doğru (konuk hız sayacını değil topu bilir).
+      {
+        const sp = Math.hypot(g.ball.vx, g.ball.vy) || S0;
+        const lit = Math.max(1, Math.min(7, 1 + Math.round(((sp - S0) / (CAP_MAX - S0)) * 6)));
+        for (let i = 0; i < 7; i++) {
+          ctx.fillStyle = i < lit ? `rgba(232,192,122,${0.45 + 0.08 * i})` : "rgba(184,164,216,0.16)";
+          ctx.beginPath(); ctx.arc(X(0.955) - (6 - i) * 7, Y(H / 2) - 8, 2, 0, Math.PI * 2); ctx.fill();
+        }
+      }
       // Konukta top görüntüsü çevrilir (kendi raketi altta).
       const bx = g.role === "guest" ? 1 - g.ball.x : g.ball.x;
       const by = g.role === "guest" ? H - g.ball.y : g.ball.y;

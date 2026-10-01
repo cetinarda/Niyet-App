@@ -137,6 +137,18 @@ export function mergeBatch(rec, body, now) {
       if (it.a === "start" || it.a === "done") bump("selflove_" + it.a);
       if (it.a === "done" && ["kind", "bond", "calm", "see"].includes(it.w)) bump("selflove_w_" + it.w);
     }
+    // KOD GÜNCELLEME (1.4.3): 7 yansıma. Yalnızca sayaç: hangi kod başladı/bitti, şefkat isteyen
+    // alan kategorisi, karne açılışı, pratiğe geçiş. Cevap ya da metin GELMEZ.
+    else if (e === "codes") {
+      const AREAS = { selflove: ["kind", "bond", "calm", "see"], guven: ["ground", "rise", "unknown", "support"],
+        beden: ["signal", "gentle", "breath", "trust"], sinir: ["no", "need", "approval", "rest"],
+        ifade: ["feel", "true", "ask", "voice"], simdi: ["now", "nojudge", "senses", "return"], anlam: ["meaning", "way", "thanks", "whole"] };
+      if (it.a === "karne") bump("codes_karne");
+      else if (AREAS[it.c] && ["start", "done", "practice"].includes(it.a)) {
+        bump("codes_" + it.c + "_" + it.a);
+        if (it.a === "done" && AREAS[it.c].includes(it.w)) bump("codes_w_" + it.c + "_" + it.w);
+      }
+    }
     else if (e === "tour") { if (["offer", "start", "later", "skip", "done"].includes(it.a)) bump("tour_" + it.a); }
     // BAĞLANMA TESTİ ÖLÇÜM SAĞLIĞI (1.4.3, Eki 2026). Kullanıcı: "bağlanma stili doğru
     // sonuç vermiyor, bilimsel doğrula". 16 cevap YALNIZCA rakam dizisi (a1..a8, v1..v8;

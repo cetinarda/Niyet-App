@@ -17,6 +17,7 @@ Aşağıdakiler yalnızca cihazınızda saklanır ve sunucularımıza gönderilm
 - **Günlük niyet ve kelimeler**, akşam kapanış ve şükür notları
 - **Niyet Mektubu**: 21 gün mühürlü mektubunuz ve önceki mektuplarınız
 - **İçsel Ayna soru geçmişi** ve **bağlanma stili testi sonucu**
+- **Kod Güncelleme yansımaları ve kod karnesi** (haftalık raporu isterseniz yalnızca kısa bir özeti rapora katılır)
 - **Nefes, ses ve çakra kayıtları**, gün serisi, haftalık istatistikler
 - **Doğum tarihi, saati ve şehri** (isteğe bağlı)
 - **Günün kartları ve tarot çekimleri**

@@ -1032,19 +1032,28 @@ alt klasörü doğrudan açmak iOS'ta güvenilir değil). Stil adları/özleri
 `ATTACH_TXT` (7 dil), SoulID `lib/attachment/index.ts` STYLES ile BİREBİR:
 orada değişirse burayı da değiştir. Test ekranının kendisi yalnızca tr/en.
 
-## 🌸 BEN > KENDİNİ SEVME YANSIMASI (1.4.3, Eki 2026; kullanıcı: "kendini yargılama kodlarını güncelleyip
-kendini sevmesini ve etrafındaki güzellikleri görmesini sağlayacak kısa, benzersiz test; hatırlatmalar")
+## 🌸 BEN > KOD GÜNCELLEME (1.4.3, Eki 2026; kullanıcı: "Kendini sevme yansıması kod güncelleme olarak
+değişsin; sırayla testler çözdürülsün, bir testi çözen diğerine geçer; sonuçlara sürekli ulaşılan bir sayfa;
+veriler haftalık rapora ve bir yerde karneleştirilsin; ilkinin adı kendini sevme yansıması")
 
-- `src/selflove.jsx` `SelfLoveCard` (Bağlanma Profili kutusu ile Niyet Mektubu arasında). Adı TEST
-  DEĞİL "yansıma", PUAN YOK, tanı iddiası yok (Apple 1.4.1, kullanıcı onayı). 8 ÖZGÜN cümle (Neff
-  ölçeği KOPYALANMADI), 4 alan: kendine nezaket / yalnız olmadığını bilmek / duygulara alan açmak /
-  güzelliği görmek; ters maddeler çevrilir. Sonuç: en güçlü alan + şefkat isteyen alan + o alan için
-  "eski kod -> yeni kod" + taşınacak cümle. 7 dil (`SL_ITEMS`, `SL_AREAS`, `SL_TXT`).
-- Veri YALNIZCA cihazda (`sakin_selflove`). Analitik `selflove` {start/done, w = şefkat isteyen alan
-  kategorisi} yalnızca sayaç (track + rapor).
-- Hatırlatma: yansımadan sonraki 2. ve 9. akşam YENİ KOD, 5. akşam taşınacak cümle; AKŞAM slotunun
-  YERİNE geçer (günlük sayı artmaz, tema "ic"), dokununca Ben + tam metin kartı. 21 gün sonra kart
-  "21 gün geçti, kendine bakışın nasıl değişti?" der ve yeniden bakmaya çağırır.
+- `src/codes.jsx` `CodeUpdateCard` (Bağlanma Profili ile Niyet Mektubu arasında) + `CodeKarne` (tam ekran
+  "Kod karnem", portal zIndex 100010, Android geri tuşu önce akışı kapatır). YEDİ KOD, KALPTEN TACA:
+  1 Kendini sevme (kalp) · 2 Güven (kök) · 3 Bedeni dinleme (sakral) · 4 Sınır (solar) · 5 İfade (boğaz) ·
+  6 Şimdide kalma (üçüncü göz) · 7 Anlam (taç). Her biri 8 ÖZGÜN cümle (2 x 4 alan, birer ters madde),
+  bilinen ölçeklerin KAVRAMLARINDAN esinlenildi (öz-şefkat, kısa dayanıklılık, interosepsiyon, bilinçli
+  farkındalık, yaşamda anlam), madde KOPYALANMADI. Bir kod bitince sıradaki hemen açılır.
+- Adı TEST DEĞİL "yansıma": PUAN YOK, tanı iddiası yok (Apple 1.4.1). Sonuç: en güçlü alan + şefkat isteyen
+  alan + "eski kod -> yeni kod" + taşınacak cümle + "Bu kodu Sakin'de yaşa" (pratik ekranı: Ayna/nefes/çakra/
+  sabah/ses). Karnede omurga (taç üstte, kök altta), taşınan yeni kodlar listesi, her kodun son sonucu,
+  önceki bakışla fark, 21 gün sonra "Yeniden bak".
+- Veri: `src/codes-data.js` (ÜRETİLEN; 1. kod `src/selflove-data.js`'ten, yeni 6 kod tr+en + 5 dil çeviri).
+  Yerel `sakin_codes` {kodId: [sonuç, ...son 8]}; eski `sakin_selflove` ilk okumada 1. koda taşınır.
+- KÖPRÜLER: haftalık rapor (`codesReportText`: yalnızca kod adı, alanlar, yeni kod; cevap GİTMEZ; rapor
+  istenince AI'a gider), akşam hatırlatması (`codesEveningLine`: EN SON güncellenen kodun 2./9. akşamı yeni
+  kod, 5. akşamı taşınacak cümle; akşam slotunun YERİNE, günlük sayı artmaz, tema "ic").
+- Analitik `codes` {a: start/done/practice (c = kod, w = şefkat isteyen alan) / karne} (track beyaz liste
+  `AREAS`, rapor "Kod ..." satırları). Eski `selflove` olayı 1. kod için sürüyor. Kod/alan eklersen track.mjs
+  `AREAS` + report.mjs `ids` listesini de güncelle. Gizlilik s2l (3 yer x 7 dil) "Kod Güncelleme" satırı.
 
 ## ✉ BEN > NİYET MEKTUBU (kullanıcı isteği, Eyl 2026: "21 gün sonra açılsın, geri sayım olsun" + "fikri geliştir")
 
@@ -1454,6 +1463,10 @@ koruma sunucuda.
   `DELETE pong-result` ile sayacı da siler. Gizlilik metinleri (3 yer, 7 dil) "tek istisna"
   cümlesiyle güncellendi. Test: sahte Blobs ile 9 senaryo (eşleşme, tekrar, aynı ağ, tutarsız
   skor, günlük sınır, silme).
+- **KADEMELİ HIZ (Eki 2026, kullanıcı: "kademe kademe hızlansın, yeni oyunda en yavaştan"):** servis hızı
+  artık her sayıdan sonra S0'a DÖNMEZ: `serveSpeed(atılan sayı)` sayı başına %7 (tavan 1,12), ralli içinde
+  vuruş başına %5 (tavan `rallyCap`, sayıyla 1,45'ten 1,7'ye açılır). Yeni maç / rövanş 0-0 olduğu için en
+  yavaştan. Orta çizginin sağında 7 hız noktası (topun anlık hızından, konukta da doğru).
 - Analitik `pong` {a: open/single/host/join/end}. Gizlilik metinleri (3 yer, 7 dil):
   takma ad + oyun hareketleri anlık iletilir, saklanmaz.
 

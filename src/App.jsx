@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo, memo, lazy, Suspense } from "react";
 import BackButton, { BackArrow } from "./back-button.jsx";
 import { TourOffer, TourOverlay, TOUR_TXT } from "./tour.jsx";
-import { SelfLoveCard, selfLoveEveningLine } from "./selflove.jsx";
+import { CodeUpdateCard, codesEveningLine, codesReportText } from "./codes.jsx";
 import { createPortal } from "react-dom";
 import { makeTrans, LANGUAGES } from "./i18n";
 import { CHAKRA_TRANS, FREQ_TRANS, ASTRO_TRANS, NOTIF_TRANS } from "./i18n-data";
@@ -323,7 +323,7 @@ const WHATS_NEW = {
   version: "1.4.3",
   // `since`: bu notların anlattığı özellikler hangi sürümde geldi. O sürümü
   // (ya da sonrasını) zaten görmüş kullanıcıya kart TEKRAR çıkmaz. 1.4.3 notları:
-  // kendini sevme yansıması, Pong galibiyet rozetleri, Orkestra'da niyet sandıkları
+  // Kod güncelleme (7 yansıma + Kod karnem), Pong galibiyet rozetleri, Orkestra'da niyet sandıkları
   // (1.4.2'nin Ayna sohbeti/tam akort notları git geçmişinde). Yeni görünür özellik
   // gelince notları yaz, `since`i güncelle. Bildirim merkezinde de bu not görünür.
   since: "1.4.3",
@@ -339,25 +339,25 @@ const WHATS_NEW = {
     ja:"自分を見つめる新しいまなざし",
   },
   items: {
-    tr:["Ben'de kendini sevme yansıması: eski kodu bırak, yenisini taşı",
+    tr:["Ben'de Kod güncelleme: yedi yansıma, kalpten taca, hepsi Kod karnende",
         "Çember'de Pong galibiyet rozetleri",
         "Orkestra'da mühürlü niyet sandıkları"],
-    en:["A self-love reflection in Me: let go of an old code, carry a new one",
+    en:["Code update in Me: seven reflections from heart to crown, all in your code card",
         "Pong win badges in the Circle",
         "Sealed intention chests in the Orchestra"],
-    de:["Eine Selbstliebe-Spiegelung unter Ich: einen alten Code loslassen, einen neuen tragen",
+    de:["Code-Update unter Ich: sieben Spiegelungen vom Herzen zur Krone, alle in deiner Code-Karte",
         "Pong-Siegesabzeichen im Kreis",
         "Versiegelte Absichtstruhen im Orchester"],
-    es:["Un reflejo de amor propio en Yo: suelta un código antiguo, lleva uno nuevo",
+    es:["Actualización de código en Yo: siete reflejos del corazón a la corona, todos en tu cartilla",
         "Insignias de victorias de Pong en el Círculo",
         "Cofres de intención sellados en la Orquesta"],
-    pt:["Um reflexo de amor-próprio em Eu: larga um código antigo, leva um novo",
+    pt:["Atualização de código em Eu: sete reflexos do coração à coroa, todos no teu cartão de códigos",
         "Insígnias de vitórias de Pong no Círculo",
         "Baús de intenção selados na Orquestra"],
-    fr:["Un reflet d'amour de soi dans Moi : laisse un ancien code, porte un nouveau",
+    fr:["Mise à jour des codes dans Moi : sept reflets du cœur à la couronne, tous dans ton carnet",
         "Des badges de victoires au Pong dans le Cercle",
         "Des coffres d'intention scellés dans l'Orchestre"],
-    ja:["「わたし」に自分を愛するふりかえり：古いコードを手放し、新しいコードを持ち歩く",
+    ja:["「わたし」にコードの更新：ハートからクラウンへ7つのふりかえり、すべてコード帳に",
         "サークルにポンの勝利バッジ",
         "オーケストラに封印された意図の箱"],
   },
@@ -6275,9 +6275,9 @@ async function scheduleAllNotifications(lang, birthDate, opts = {}) {
       })();
       for (const slot of plan) {
         if (slot === "aksam") {
-          // Kendini sevme yansımasından sonraki 2./5./9. akşam: kişinin YENİ KODU gider
-          // (src/selflove.jsx, günlük sayı artmaz; dokununca Ben'deki kart + tam metin).
-          const slLine = selfLoveEveningLine(lang, day);
+          // Kod güncellemesinden (src/codes.jsx, en son güncellenen kod) sonraki 2./5./9. akşam:
+          // kişinin YENİ KODU gider (günlük sayı artmaz; dokununca Ben'deki kart + tam metin).
+          const slLine = codesEveningLine(lang, day);
           if (slLine && !recent.has(slLine) && !clash("ic")) addT(9070 + d, at(18), { body: slLine, extra: { screen: "harita", note: 1 } }, "ic");
           else if (coachInEvening && addCoach(9070 + d, at(18), getCoach())) { /* koç */ }
           else addT(9070 + d, at(18), pickT(eveningPool, "ev"));
@@ -12057,9 +12057,9 @@ NOT: Kp index Dünya'nın jeomanyetik aktivitesini ölçer. Yüksek değerler (5
       : "";
 
     // Seri (streak) verisi: kullanıcının ne kadar düzenli geldiğini yansıtır.
-    const streakText = streakData?.current > 0
+    const streakText = (streakData?.current > 0
       ? `\nGüncel gün serisi: ${streakData.current} gün (en iyi seri: ${streakData.best} gün).`
-      : "";
+      : "") + (() => { try { return codesReportText(); } catch (_) { return ""; } })();
 
     const astroText = astro ? `
 Kullanıcının Doğum Profili:
@@ -17229,8 +17229,10 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
             );
           })()}
           {/* NİYET MEKTUBU: 21 gün mühürlü kalan mektup (bkz. NiyetMektubu). */}
-          {/* KENDİNİ SEVME YANSIMASI (1.4.3, src/selflove.jsx): bağlanma kutusunun altı. */}
-          <SelfLoveCard lang={lang} haptic={haptic} onTrack={(d) => { try { track("selflove", d); } catch (_) {} }} />
+          {/* KOD GÜNCELLEME (1.4.3, src/codes.jsx): 7 yansıma sırayla (1. kendini sevme),
+              Kod karnem sayfası; bağlanma kutusunun altı. */}
+          <CodeUpdateCard lang={lang} haptic={haptic} onTrack={(e, d) => { try { track(e, d); } catch (_) {} }}
+            onPractice={(scr) => { if (scr) setScreen(scr); }} />
           <NiyetMektubu lang={lang} />
           {/* İÇSEL HARİTA: artık açılır-kapanır ve KAPALI başlıyor (kullanıcı
               isteği). Ekrandaki diğer bölümlerle (haftalık rapor, 12. ev,
