@@ -1408,6 +1408,14 @@ koruma sunucuda.
   "Seninki de aralarında"), yalnızca n >= 3. Veri: track.mjs `letter` seal -> `rec.lo` = mühür+21 gün,
   open -> 0; pulse.mjs `chests` = lo > şimdi olan kayıt sayısı. Mektup METNİ gitmez (yalnızca zaman,
   mevcut anonim ölçüm; ölçümü kapatan sayılmaz). "Senin payın" satırına kendi sandık sayısı (yerel).
+- **WEB DENEMESİ: ORKESTRA KEŞFET'TE (Eki 2026, kullanıcı: "deneme sadece webde: Keşfet'te en üstte
+  sadece Keşfet yazsın; altta Sakin Ailesi kutucuğu, çok kısa açıklama, açılınca uygulamalar şu an
+  göründüğü gibi; altına orkestra modunu komple taşı"):** kart artık TEK tanım `renderOrkestraHub()`
+  (component düzeyi fonksiyon, Bugün yardımcılarının kopyasıyla). `!isNative`: Bugün'de YOK, Keşfet'te
+  "Sakin Ailesi" açılır kutusunun (`ailesiOpen`, varsayılan kapalı, alt satır `KESFET_WEB_TXT.ailesiSub`)
+  altında; üstteki "SAKİN AİLESİ" etiketi gizli. Telefonda HİÇBİR ŞEY değişmedi. Veri kancaları (pulse,
+  Çember sayacı, Pong lobisi) web'de Keşfet açıkken de çalışır; Çember'den Bağlan/Nefes'e geçiş Keşfet'i
+  kapatır. Deneme tutarsa telefona taşımak = `isNative` koşullarını kaldırmak.
 - **Sakin Odalar** (kaynak: kullanıcının diğer projesi Kozmik Gemi "Gemi Odaları",
   kozmikgemi.netlify.app): `src/rooms-data.js` (8 oda, 7 dil, `SEED_EVENTS`), `src/rooms.jsx`
   (tembel parça, tam ekran: oda ızgarası 2 sütun + yaklaşan buluşmalar → oda sayfası: hero,

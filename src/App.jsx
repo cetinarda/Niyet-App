@@ -1739,6 +1739,11 @@ import { ROOMS_TXT, ROOMS_MOTTO, SEED_EVENTS } from "./rooms-data.js";
 // ORKESTRA MERKEZİ (1.4.3, kullanıcı: "orkestra modu fikrini geliştir: çember, pong,
 // sakin odalar, ortak nefesler, veriler hepsi bir bütün olsun"). Kart: motto → ortak
 // nabız → senin akordun + payın → "Orkestrada yerini al": Çember · Sakin Odalar · Pong.
+// Keşfet web denemesi: "Sakin Ailesi" açılır kutusunun kısa alt satırı (Eki 2026).
+const KESFET_WEB_TXT = {
+  ailesiSub: { tr:"Altı uygulama, tek yolculuk", en:"Six apps, one journey", de:"Sechs Apps, eine Reise", es:"Seis apps, un solo viaje",
+    pt:"Seis apps, uma só viagem", fr:"Six applis, un seul voyage", ja:"6つのアプリ、ひとつの旅" },
+};
 const ORCH_HUB_TXT = {
   join:     { tr:"Orkestrada yerini al", en:"Take your place in the orchestra", de:"Nimm deinen Platz im Orchester ein", es:"Ocupa tu lugar en la orquesta", pt:"Toma o teu lugar na orquestra", fr:"Prends ta place dans l'orchestre", ja:"オーケストラに加わる" },
   next:     { tr:"Sıradaki", en:"Next", de:"Als Nächstes", es:"Próximo", pt:"A seguir", fr:"Prochain", ja:"次は" },
@@ -8626,6 +8631,8 @@ export default function SakinApp() {
   const [aiConsent, setAiConsent] = useState(() => localStorage.getItem("sakin_ai_consent") === "1");
   const [showAiConsent, setShowAiConsent] = useState(false);
   const [showAilesi, setShowAilesi] = useState(false);
+  // WEB DENEMESİ (Eki 2026): Keşfet'te "Sakin Ailesi" açılır kutusu (varsayılan kapalı).
+  const [ailesiOpen, setAilesiOpen] = useState(false);
   // ÇEMBER (canlı oda) tam ekran katmanı + Bugün kartındaki "şu an N kişi" sayacı.
   const [showCember, setShowCember] = useState(false);
   const [showPong, setShowPong] = useState(false);
@@ -10030,15 +10037,16 @@ export default function SakinApp() {
   // ÇEMBER sayacı: yalnızca Bugün ekranındayken, bağlantı tamamsa ve oda açık
   // değilken iki odanın presence'ını İZLER (katılmadan). Ekrandan çıkınca kapanır.
   useEffect(() => {
-    if (screen !== "bugun" || (!allStepsComplete && !cemberFirstFree) || showCember) return;
+    const here = screen === "bugun" || (!isNative && showAilesi);   // web denemesi: hub Keşfet'te
+    if (!here || (!allStepsComplete && !cemberFirstFree) || showCember) return;
     let bd = ""; try { bd = localStorage.getItem("sakin_birth_date") || ""; } catch (_) {}
     if (isCemberMinor(bd)) return; // 13 yaş altı: oda hiç izlenmez
     return watchCemberCount(setCemberCount);
-  }, [screen, allStepsComplete, cemberFirstFree, showCember]);
+  }, [screen, allStepsComplete, cemberFirstFree, showCember, showAilesi]);
   useEffect(() => {
-    if (screen !== "bugun" || showPong) return;
+    if ((screen !== "bugun" && !(!isNative && showAilesi)) || showPong) return;
     return watchPongLobby(setPongOpenRooms);
-  }, [screen, showPong]);
+  }, [screen, showPong, showAilesi]);
 
   // ── GÜNÜN SAATİNE GÖRE GİRİŞ EKRANI ─────────────────────────────────────────
   // Kullanıcı: "appe akşam girdim bağlanmak istedim ama 'bugünü nasıl geçirmek
@@ -12439,7 +12447,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   // karşılamaya al"). Ekrana her girişte taze veri.
   const [orkestra, setOrkestra] = useState(null);
   useEffect(() => {
-    if (screen !== "bugun") return;
+    if (screen !== "bugun" && !(!isNative && showAilesi)) return;   // web denemesi: hub Keşfet'te
     let alive = true;
     (async () => {
       try {
@@ -12450,7 +12458,194 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       } catch (_) { /* sessiz: kart bos duruma duser */ }
     })();
     return () => { alive = false; };
-  }, [screen]);
+  }, [screen, showAilesi]);
+
+  // ORKESTRA MERKEZİ (Bugün'deki kart, tek tanım). Telefonda Bugün'de, WEB DENEMESİNDE
+  // (Eki 2026, kullanıcı: "Keşfet'te Sakin Ailesi kutusunun altına orkestra modunu komple
+  // taşı, deneme sadece webde") Keşfet'te çizilir. Bugün'ün görsel yardımcılarının
+  // KOPYASI burada (onlar Bugün IIFE'sinin içinde yerel). Fonksiyon, bileşen DEĞİL.
+  const renderOrkestraHub = () => {
+    const GOLD = "#e8c07a", LAV = "#b8a4d8", INK = "#f1ecf9", BODY = "#d6cfe6", MUTE = "#8f88a3";
+    const SERIF = "'Cormorant Garamond',Georgia,serif", JOST = "'Jost',sans-serif", INTER = "'Inter',sans-serif";
+    const SURF = { background:"linear-gradient(165deg, rgba(184,164,216,0.075), rgba(255,255,255,0.012) 72%)",
+      border:"1px solid rgba(184,164,216,0.15)", borderRadius:18 };
+    const BTN = { WebkitAppearance:"none", appearance:"none", cursor:"pointer", textAlign:"left", width:"100%", color:"inherit", font:"inherit",
+      background:"transparent", border:"none", margin:0 };
+    const SEC = { marginBottom:30 };
+    const eyebrow = (text, color) => (
+      <div style={{ fontFamily:JOST,fontSize:10.5,letterSpacing:3,color:color||"#8a82a6",textTransform:"uppercase",margin:"0 4px 12px" }}>{text}</div>
+    );
+    const icon = (glyph, color, size = 40, fs) => (
+      <span style={{ width:size,height:size,flexShrink:0,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",
+        fontSize:fs||Math.round(size*0.46),lineHeight:1,color,background:`${color}14`,border:`1px solid ${color}38` }}>{glyph}</span>
+    );
+    const chevron = (deg = 0) => (
+      <span style={{ flexShrink:0,fontSize:20,lineHeight:1,color:"rgba(233,225,248,0.32)",transition:"transform 0.25s",
+        display:"inline-block",transform:`rotate(${deg}deg)` }}>›</span>
+    );
+    return (<>
+            {/* ── 3) ORKESTRA MODU (Ben ekranından taşındı, kullanıcı isteği) ──
+                GERÇEK haftalık kolektif nabız (pulse.mjs): kişi sayısı + nefes,
+                ses, çakra. Sahte sayı YOK; veri yoksa dürüst "uyanıyor" metni.
+                Yedi nokta = bugünkü akordun (ALL_MANDALA_STEPS, her adım bir
+                enstrüman). "Senin payın": son 7 günün YEREL toplamı, 0 ise yok. */}
+            <section style={SEC}>
+              {eyebrow(pickLang(ORKESTRA_TXT.label, lang))}
+              <div style={{ ...SURF,padding:"18px 18px 16px" }}>
+                <div style={{ fontFamily:SERIF,fontStyle:"italic",fontSize:16.5,lineHeight:1.45,color:"#d9cdf0",marginBottom:14 }}>“{pickLang(ROOMS_MOTTO, lang)}”</div>
+                {orkestra && orkestra.activeUsers >= 1 ? (<>
+                  <div style={{ display:"flex",alignItems:"center",gap:14,marginBottom:14 }}>
+                    <span style={{ fontFamily:SERIF,fontSize:44,lineHeight:1,color:INK,flexShrink:0 }}>{orkestra.activeUsers}</span>
+                    <span style={{ fontSize:14,color:BODY,fontFamily:INTER,lineHeight:1.45 }}>{pickLang(ORKESTRA_TXT.people, lang)}</span>
+                  </div>
+                  <div style={{ display:"grid",gridTemplateColumns:"repeat(3, 1fr)",gap:8,marginBottom:16 }}>
+                    {[[orkestra.nefes, ORKESTRA_TXT.breaths],[orkestra.freqMinutes, ORKESTRA_TXT.minutes],[orkestra.chakraMinutes, ORKESTRA_TXT.chakraMin]]
+                      .map(([v, lb], i) => (
+                      <div key={i} style={{ textAlign:"center",padding:"10px 4px",borderRadius:12,background:"rgba(255,255,255,0.025)",border:"1px solid rgba(184,164,216,0.1)" }}>
+                        <div style={{ fontFamily:JOST,fontSize:18,fontWeight:300,color:INK }}>{(v || 0).toLocaleString(localeFromLang(lang))}</div>
+                        <div style={{ fontSize:10.5,color:MUTE,fontFamily:INTER,marginTop:2,lineHeight:1.3 }}>{pickLang(lb, lang)}</div>
+                      </div>
+                    ))}
+                  </div>
+                </>) : (
+                  <div style={{ fontSize:14,color:BODY,fontFamily:INTER,lineHeight:1.55,marginBottom:14 }}>{pickLang(ORKESTRA_TXT.waking, lang)}</div>
+                )}
+                {/* KOLEKTİF NİYET SANDIKLARI: şu an mühürlü bekleyen sandık sayısı (pulse.mjs
+                    `chests`, metin değil yalnızca açılış zamanı sayılır). Küçükken gizli
+                    ("0 nefes demek soğutur" kuralı): en az 3. */}
+                {orkestra && orkestra.chests >= 3 && (() => {
+                  let mine = false;
+                  try { const l = JSON.parse(localStorage.getItem(LETTER_KEY) || "null"); mine = !!(l && l.opensAt > Date.now() && !l.openedAt); } catch (_) {}
+                  return (
+                    <div style={{ display:"flex",alignItems:"center",gap:10,marginBottom:14,padding:"10px 12px",borderRadius:12,
+                      background:"rgba(232,192,122,0.05)",border:"1px solid rgba(232,192,122,0.16)" }}>
+                      <span aria-hidden="true" style={{ color:GOLD,fontSize:15,lineHeight:1,flexShrink:0 }}>✉</span>
+                      <span style={{ fontSize:12.5,color:BODY,fontFamily:INTER,lineHeight:1.45 }}>
+                        {pickLang(ORCH_HUB_TXT.chests, lang).replace("{n}", orkestra.chests.toLocaleString(localeFromLang(lang)))}
+                        {mine && <span style={{ color:GOLD }}> · {pickLang(ORCH_HUB_TXT.mineToo, lang)}</span>}
+                      </span>
+                    </div>
+                  );
+                })()}
+                {(() => {
+                  const doneCount = ALL_MANDALA_STEPS.filter(s => stepsCompleted[s]).length;
+                  return (
+                    <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",columnGap:12,rowGap:8,
+                      paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.12)" }}>
+                      {/* Etiket tek satır; dar ekranda sığmazsa noktalar alt satıra iner. */}
+                      <span style={{ fontFamily:JOST,fontSize:10.5,letterSpacing:1.6,color:MUTE,textTransform:"uppercase",whiteSpace:"nowrap" }}>
+                        {pickLang(EVO2_TXT.chord, lang)} · {doneCount}/{ALL_MANDALA_STEPS.length}
+                      </span>
+                      <span style={{ display:"flex",alignItems:"center",gap:6 }}>
+                        {ALL_MANDALA_STEPS.map((sid, i) => {
+                          const on = !!stepsCompleted[sid];
+                          const c = CHAKRAS_7[i].pastel;
+                          // Bekleyen nokta da KENDİ rengini soluk taşır ("bozuk" görünmesin).
+                          return <span key={sid} style={{ display:"inline-block",width:8,height:8,borderRadius:"50%",boxSizing:"border-box",
+                            background: on ? c : `${c}26`, border: on ? "none" : `1px solid ${c}55`,
+                            boxShadow: on ? `0 0 8px ${c}88` : "none" }} />;
+                        })}
+                      </span>
+                    </div>
+                  );
+                })()}
+                {(() => {
+                  let nefes = 0, freqSec = 0, chakraSec = 0;
+                  try {
+                    for (let i = 0; i < 7; i++) {
+                      const k = sakinDayKey(_daysAgo(i));
+                      nefes     += parseInt(localStorage.getItem("sakin_breath_" + k))    || 0;
+                      freqSec   += parseInt(localStorage.getItem("sakin_freq_sec_" + k))  || 0;
+                      chakraSec += parseInt(localStorage.getItem("sakin_terapi_sec_" + k))|| 0;
+                    }
+                  } catch (_) {}
+                  const freqMin = Math.round(freqSec / 60), chakraMin = Math.round(chakraSec / 60);
+                  const parts = [];
+                  if (nefes > 0)     parts.push(`${nefes} ${pickLang(ORKESTRA_TXT.breaths, lang)}`);
+                  if (freqMin > 0)   parts.push(`${freqMin} ${pickLang(ORKESTRA_TXT.minutes, lang)}`);
+                  if (chakraMin > 0) parts.push(`${chakraMin} ${pickLang(ORKESTRA_TXT.chakraMin, lang)}`);
+                  // Mühürlediği niyet sandıkları (etkin + arşiv; yalnızca yerel sayı).
+                  let myChests = 0;
+                  try {
+                    const act = JSON.parse(localStorage.getItem(LETTER_KEY) || "null");
+                    const arc = JSON.parse(localStorage.getItem(LETTER_ARCHIVE_KEY) || "[]");
+                    myChests = (act && act.created ? 1 : 0) + (Array.isArray(arc) ? arc.length : 0);
+                  } catch (_) {}
+                  if (myChests > 0) parts.push(myChests === 1 ? pickLang(ORCH_HUB_TXT.myChest1, lang) : pickLang(ORCH_HUB_TXT.myChests, lang).replace("{n}", String(myChests)));
+                  if (!parts.length) return null;
+                  return (
+                    <div style={{ marginTop:10,fontSize:12,color:"#a99cc4",fontFamily:INTER,lineHeight:1.5 }}>
+                      {pickLang(EVO2_TXT.myShare, lang)}: {parts.join(" · ")}
+                    </div>
+                  );
+                })()}
+                {/* ÇEMBER GİRİŞİ: bağlantıyı tamamlayana canlı oda + anlık kişi sayısı;
+                    tamamlamayana kilitli davet (dokununca açıklamalı kilit ekranı). */}
+                {/* 13 yaş altına Çember satırı HİÇ gösterilmez (kilitli oda merak uyandırmasın). */}
+                <div style={{ marginTop:16,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.12)",fontFamily:JOST,fontSize:10.5,letterSpacing:2.2,textTransform:"uppercase",color:GOLD }}>{pickLang(ORCH_HUB_TXT.join, lang)}</div>
+                {!isCemberMinor(birthDate) && (
+                <button onClick={() => { try { haptic(); } catch (_) {} openCember(); }}
+                  style={{ ...BTN,marginTop:8,display:"flex",alignItems:"center",gap:12 }}>
+                  {icon("◌", (allStepsComplete || cemberFirstFree) ? "#82d9a3" : LAV, 36, 15)}
+                  <span style={{ flex:1,minWidth:0 }}>
+                    <span style={{ display:"block",fontSize:15,color:INK,fontFamily:JOST,fontWeight:300 }}>
+                      {pickLang(CEMBER_TXT.title, lang)} · <span style={{ color:MUTE }}>{pickLang(CEMBER_TXT.live, lang)}</span>
+                    </span>
+                    <span style={{ display:"block",fontSize:12,color: (allStepsComplete || cemberFirstFree) ? "#82d9a3" : MUTE,fontFamily:INTER,marginTop:2,lineHeight:1.45 }}>
+                      {!allStepsComplete ? pickLang(cemberFirstFree ? CEMBER_TXT.firstFree : CEMBER_TXT.locked, lang)
+                        : cemberCount > 0 ? pickLang(CEMBER_TXT.here, lang).replace("{n}", String(cemberCount))
+                        : pickLang(CEMBER_TXT.entryQuiet, lang)}
+                    </span>
+                  </span>
+                  {chevron()}
+                </button>
+                )}
+                {/* SAKİN ODALAR: 8 oda + buluşmalar (src/rooms.jsx). Alt satırda sıradaki buluşma. */}
+                {(() => {
+                  let nextEv = null;
+                  try {
+                    const cache = JSON.parse(localStorage.getItem("sakin_rooms_cache") || "null");
+                    const all = [...SEED_EVENTS, ...((cache && cache.events) || [])].filter(e => e && new Date(e.date).getTime() >= Date.now() - 2 * 3600e3)
+                      .sort((a, b) => new Date(a.date) - new Date(b.date));
+                    nextEv = all[0] || null;
+                  } catch (_) {}
+                  const evTitle = nextEv ? (typeof nextEv.title === "object" ? pickLang(nextEv.title, lang) : nextEv.title) : "";
+                  let evDate = "";
+                  try { if (nextEv) evDate = new Date(nextEv.date).toLocaleString(localeFromLang(lang), { day:"numeric", month:"short", hour:"2-digit", minute:"2-digit" }); } catch (_) {}
+                  return (
+                    <button onClick={() => { try { haptic(); } catch (_) {} setShowRooms(true); }}
+                      style={{ ...BTN,marginTop:12,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.12)",display:"flex",alignItems:"center",gap:12 }}>
+                      {icon("✧", GOLD, 36, 15)}
+                      <span style={{ flex:1,minWidth:0 }}>
+                        <span style={{ display:"block",fontSize:15,color:INK,fontFamily:JOST,fontWeight:300 }}>{pickLang(ROOMS_TXT.title, lang)}</span>
+                        <span style={{ display:"block",fontSize:12,color:MUTE,fontFamily:INTER,marginTop:2,lineHeight:1.45 }}>
+                          {nextEv ? `${pickLang(ORCH_HUB_TXT.next, lang)}: ${evDate} · ${evTitle}` : pickLang(ROOMS_TXT.sub, lang).replace("{n}", "8")}
+                        </span>
+                      </span>
+                      {chevron()}
+                    </button>
+                  );
+                })()}
+                {/* PONG (Bugün'deki ayrı karttan buraya taşındı, kullanıcı: "Çember'in altına"). */}
+                <button onClick={() => { try { haptic(); } catch (_) {} setShowPong(true); }}
+                  style={{ ...BTN,marginTop:12,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.12)",display:"flex",alignItems:"center",gap:12 }}>
+                  <span aria-hidden="true" style={{ position:"relative",width:36,height:36,flexShrink:0,borderRadius:"50%",border:`1px solid ${LAV}55`,background:"rgba(12,9,26,0.85)",overflow:"hidden" }}>
+                    <span style={{ position:"absolute",left:11,top:8,width:14,height:2.5,borderRadius:2,background:LAV }} />
+                    <span style={{ position:"absolute",left:15.5,top:15.5,width:5,height:5,borderRadius:"50%",background:"#fff4d6",boxShadow:`0 0 7px ${GOLD}` }} />
+                    <span style={{ position:"absolute",left:10,bottom:8,width:14,height:2.5,borderRadius:2,background:GOLD }} />
+                  </span>
+                  <span style={{ flex:1,minWidth:0 }}>
+                    <span style={{ display:"block",fontSize:15,color:INK,fontFamily:JOST,fontWeight:300 }}>{pickLang(PONG_CARD_TXT.title, lang)}</span>
+                    <span style={{ display:"block",fontSize:12,color: pongOpenRooms > 0 ? "#82d9a3" : MUTE,fontFamily:INTER,marginTop:2,lineHeight:1.45 }}>
+                      {pongOpenRooms > 0 ? pickLang(ORCH_HUB_TXT.pongOpen, lang).replace("{n}", String(pongOpenRooms)) : pickLang(PONG_CARD_TXT.sub, lang)}
+                    </span>
+                  </span>
+                  {chevron()}
+                </button>
+              </div>
+            </section>
+    </>);
+  };
 
   // SENİN BİLGİLERİN / GALAKTİK KİMLİK KARTI.
   // Keşfet panelinden "Ben" ekranının EN ÜSTÜNE taşındı (kullanıcı isteği).
@@ -13255,7 +13450,9 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
             <div style={{ display:"flex",alignItems:"center",marginBottom:8 }}>
               <div style={{ width:40,flex:"0 0 40px" }} />
               <div style={{ flex:1,textAlign:"center" }}>
-                <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",marginBottom:6 }}>{t("ailesi_title")}</div>
+                {/* WEB DENEMESİ (kullanıcı: "en üstte sadece Keşfet yazsın"): üstteki "Sakin Ailesi"
+                    satırı web'de yok, o ad aşağıdaki açılır kutunun başlığı oldu. Telefon aynı. */}
+                {isNative && <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",marginBottom:6 }}>{t("ailesi_title")}</div>}
                 <div style={{ fontSize:22,fontWeight:300,letterSpacing:2,color:"#d0c0f0",fontFamily:"'Jost',sans-serif" }}>{t("ailesi_explore")}</div>
                 {/* Kalan hak rozeti ("Bugün 2/3 ücretsiz açılış") KALDIRILDI (kullanıcı:
                     "kullanıcıyı tedirgin etmeye gerek yok"). Hak bitince yalnızca yumuşak kapı çıkar. */}
@@ -13267,7 +13464,27 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                 "Ben" ekranının EN ÜSTÜNE taşındı (kimlik bilgisi kişisel bir
                 alan; Keşfet uygulama vitrini olarak kaldı). Blok tek yerde
                 duruyor: `kimlikKarti` (bkz. return öncesi tanım). */}
-            {[
+            {/* WEB DENEMESİ (Eki 2026, kullanıcı: "altta bir kutucuk: Sakin Ailesi, çok kısa açıklama;
+                açılınca uygulamalar şu an göründüğü gibi; altına orkestra modunu komple taşı").
+                Yalnızca web (`!isNative`); telefonda Keşfet eskisi gibi düz liste, Orkestra Bugün'de. */}
+            {!isNative && (
+              <button onClick={() => { try { haptic(); } catch (_) {} setAilesiOpen(v => !v); }} aria-expanded={ailesiOpen}
+                style={{ WebkitAppearance:"none",appearance:"none",font:"inherit",cursor:"pointer",margin:0,width:"100%",textAlign:"left",color:"inherit",
+                  display:"flex",alignItems:"center",gap:14,padding:"16px 18px",borderRadius:16,
+                  background:"linear-gradient(165deg, rgba(184,164,216,0.075), rgba(255,255,255,0.012) 72%)",border:"1px solid rgba(184,164,216,0.18)" }}>
+                <span style={{ width:48,height:48,borderRadius:"50%",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",
+                  background:"radial-gradient(circle,#b8a4d844,#b8a4d811)",color:"#e8c07a",fontSize:20,lineHeight:1 }}>✦</span>
+                <span style={{ flex:1,minWidth:0 }}>
+                  <span style={{ display:"block",fontSize:15,fontWeight:500,color:"#ffffff",letterSpacing:1,fontFamily:"'Jost',sans-serif",marginBottom:3 }}>{t("ailesi_title")}</span>
+                  <span style={{ display:"block",fontSize:13,color:"#999",lineHeight:1.5 }}>{pickLang(KESFET_WEB_TXT.ailesiSub, lang)}</span>
+                </span>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"
+                  style={{ display:"block",flexShrink:0,color:"rgba(255,255,255,0.4)",transform: ailesiOpen ? "rotate(180deg)" : "none",transition:"transform .25s" }}>
+                  <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+            )}
+            {(isNative || ailesiOpen) && [
               // SoulID giriş kapısı GEÇİCİ OLARAK AÇIK (kullanıcı isteği): tanıtım
               // döneminde herkes girebilsin, kartta "Premium" yerine "Yeni" rozeti
               // görünsün. Tekrar premium yapmak için: premium:SOULID_PREMIUM_GATE
@@ -13334,6 +13551,8 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                   • HESAP grubu → hesap/veri silme,
                   • GENEL grubu → Yolculuk / Sakin nedir (hakkında içeriği).
                 Böylece web ile native TAM aynı: Keşfet sade bir uygulama vitrini. */}
+            {/* WEB DENEMESİ: Orkestra merkezi (Bugün'den taşındı, yalnızca web). */}
+            {!isNative && <div style={{ marginTop:14 }}>{renderOrkestraHub()}</div>}
             {/* Alttaki "Kapat" kaldırıldı: yerini üst soldaki geri oku aldı. */}
           </div>
         </div>
@@ -14422,8 +14641,8 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
           streakDays={streakData.current || 0} chord={fullChord}
           onPongInvite={(inv) => { setShowCember(false); setPongInvite(inv); setShowPong(true); }}
           onClose={() => { setShowCember(false); setCemberFreeSession(false); }}
-          onGoBaglan={() => { setShowCember(false); setScreen("mandala"); }}
-          onGoNefes={() => { setShowCember(false); setScreen("nefes"); }} />
+          onGoBaglan={() => { setShowCember(false); setShowAilesi(false); setScreen("mandala"); }}
+          onGoNefes={() => { setShowCember(false); setShowAilesi(false); setScreen("nefes"); }} />
       )}
 
       {/* AYNA & HARİTA BARI, sabit. iOS feature ekranlarında en üstte (safe area dahil); web/policy/giriş'te topNav'ın altında. */}
@@ -19874,166 +20093,9 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
               </section>
             )}
 
-            {/* ── 3) ORKESTRA MODU (Ben ekranından taşındı, kullanıcı isteği) ──
-                GERÇEK haftalık kolektif nabız (pulse.mjs): kişi sayısı + nefes,
-                ses, çakra. Sahte sayı YOK; veri yoksa dürüst "uyanıyor" metni.
-                Yedi nokta = bugünkü akordun (ALL_MANDALA_STEPS, her adım bir
-                enstrüman). "Senin payın": son 7 günün YEREL toplamı, 0 ise yok. */}
-            <section style={SEC}>
-              {eyebrow(pickLang(ORKESTRA_TXT.label, lang))}
-              <div style={{ ...SURF,padding:"18px 18px 16px" }}>
-                <div style={{ fontFamily:SERIF,fontStyle:"italic",fontSize:16.5,lineHeight:1.45,color:"#d9cdf0",marginBottom:14 }}>“{pickLang(ROOMS_MOTTO, lang)}”</div>
-                {orkestra && orkestra.activeUsers >= 1 ? (<>
-                  <div style={{ display:"flex",alignItems:"center",gap:14,marginBottom:14 }}>
-                    <span style={{ fontFamily:SERIF,fontSize:44,lineHeight:1,color:INK,flexShrink:0 }}>{orkestra.activeUsers}</span>
-                    <span style={{ fontSize:14,color:BODY,fontFamily:INTER,lineHeight:1.45 }}>{pickLang(ORKESTRA_TXT.people, lang)}</span>
-                  </div>
-                  <div style={{ display:"grid",gridTemplateColumns:"repeat(3, 1fr)",gap:8,marginBottom:16 }}>
-                    {[[orkestra.nefes, ORKESTRA_TXT.breaths],[orkestra.freqMinutes, ORKESTRA_TXT.minutes],[orkestra.chakraMinutes, ORKESTRA_TXT.chakraMin]]
-                      .map(([v, lb], i) => (
-                      <div key={i} style={{ textAlign:"center",padding:"10px 4px",borderRadius:12,background:"rgba(255,255,255,0.025)",border:"1px solid rgba(184,164,216,0.1)" }}>
-                        <div style={{ fontFamily:JOST,fontSize:18,fontWeight:300,color:INK }}>{(v || 0).toLocaleString(localeFromLang(lang))}</div>
-                        <div style={{ fontSize:10.5,color:MUTE,fontFamily:INTER,marginTop:2,lineHeight:1.3 }}>{pickLang(lb, lang)}</div>
-                      </div>
-                    ))}
-                  </div>
-                </>) : (
-                  <div style={{ fontSize:14,color:BODY,fontFamily:INTER,lineHeight:1.55,marginBottom:14 }}>{pickLang(ORKESTRA_TXT.waking, lang)}</div>
-                )}
-                {/* KOLEKTİF NİYET SANDIKLARI: şu an mühürlü bekleyen sandık sayısı (pulse.mjs
-                    `chests`, metin değil yalnızca açılış zamanı sayılır). Küçükken gizli
-                    ("0 nefes demek soğutur" kuralı): en az 3. */}
-                {orkestra && orkestra.chests >= 3 && (() => {
-                  let mine = false;
-                  try { const l = JSON.parse(localStorage.getItem(LETTER_KEY) || "null"); mine = !!(l && l.opensAt > Date.now() && !l.openedAt); } catch (_) {}
-                  return (
-                    <div style={{ display:"flex",alignItems:"center",gap:10,marginBottom:14,padding:"10px 12px",borderRadius:12,
-                      background:"rgba(232,192,122,0.05)",border:"1px solid rgba(232,192,122,0.16)" }}>
-                      <span aria-hidden="true" style={{ color:GOLD,fontSize:15,lineHeight:1,flexShrink:0 }}>✉</span>
-                      <span style={{ fontSize:12.5,color:BODY,fontFamily:INTER,lineHeight:1.45 }}>
-                        {pickLang(ORCH_HUB_TXT.chests, lang).replace("{n}", orkestra.chests.toLocaleString(localeFromLang(lang)))}
-                        {mine && <span style={{ color:GOLD }}> · {pickLang(ORCH_HUB_TXT.mineToo, lang)}</span>}
-                      </span>
-                    </div>
-                  );
-                })()}
-                {(() => {
-                  const doneCount = ALL_MANDALA_STEPS.filter(s => stepsCompleted[s]).length;
-                  return (
-                    <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",columnGap:12,rowGap:8,
-                      paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.12)" }}>
-                      {/* Etiket tek satır; dar ekranda sığmazsa noktalar alt satıra iner. */}
-                      <span style={{ fontFamily:JOST,fontSize:10.5,letterSpacing:1.6,color:MUTE,textTransform:"uppercase",whiteSpace:"nowrap" }}>
-                        {pickLang(EVO2_TXT.chord, lang)} · {doneCount}/{ALL_MANDALA_STEPS.length}
-                      </span>
-                      <span style={{ display:"flex",alignItems:"center",gap:6 }}>
-                        {ALL_MANDALA_STEPS.map((sid, i) => {
-                          const on = !!stepsCompleted[sid];
-                          const c = CHAKRAS_7[i].pastel;
-                          // Bekleyen nokta da KENDİ rengini soluk taşır ("bozuk" görünmesin).
-                          return <span key={sid} style={{ display:"inline-block",width:8,height:8,borderRadius:"50%",boxSizing:"border-box",
-                            background: on ? c : `${c}26`, border: on ? "none" : `1px solid ${c}55`,
-                            boxShadow: on ? `0 0 8px ${c}88` : "none" }} />;
-                        })}
-                      </span>
-                    </div>
-                  );
-                })()}
-                {(() => {
-                  let nefes = 0, freqSec = 0, chakraSec = 0;
-                  try {
-                    for (let i = 0; i < 7; i++) {
-                      const k = sakinDayKey(_daysAgo(i));
-                      nefes     += parseInt(localStorage.getItem("sakin_breath_" + k))    || 0;
-                      freqSec   += parseInt(localStorage.getItem("sakin_freq_sec_" + k))  || 0;
-                      chakraSec += parseInt(localStorage.getItem("sakin_terapi_sec_" + k))|| 0;
-                    }
-                  } catch (_) {}
-                  const freqMin = Math.round(freqSec / 60), chakraMin = Math.round(chakraSec / 60);
-                  const parts = [];
-                  if (nefes > 0)     parts.push(`${nefes} ${pickLang(ORKESTRA_TXT.breaths, lang)}`);
-                  if (freqMin > 0)   parts.push(`${freqMin} ${pickLang(ORKESTRA_TXT.minutes, lang)}`);
-                  if (chakraMin > 0) parts.push(`${chakraMin} ${pickLang(ORKESTRA_TXT.chakraMin, lang)}`);
-                  // Mühürlediği niyet sandıkları (etkin + arşiv; yalnızca yerel sayı).
-                  let myChests = 0;
-                  try {
-                    const act = JSON.parse(localStorage.getItem(LETTER_KEY) || "null");
-                    const arc = JSON.parse(localStorage.getItem(LETTER_ARCHIVE_KEY) || "[]");
-                    myChests = (act && act.created ? 1 : 0) + (Array.isArray(arc) ? arc.length : 0);
-                  } catch (_) {}
-                  if (myChests > 0) parts.push(myChests === 1 ? pickLang(ORCH_HUB_TXT.myChest1, lang) : pickLang(ORCH_HUB_TXT.myChests, lang).replace("{n}", String(myChests)));
-                  if (!parts.length) return null;
-                  return (
-                    <div style={{ marginTop:10,fontSize:12,color:"#a99cc4",fontFamily:INTER,lineHeight:1.5 }}>
-                      {pickLang(EVO2_TXT.myShare, lang)}: {parts.join(" · ")}
-                    </div>
-                  );
-                })()}
-                {/* ÇEMBER GİRİŞİ: bağlantıyı tamamlayana canlı oda + anlık kişi sayısı;
-                    tamamlamayana kilitli davet (dokununca açıklamalı kilit ekranı). */}
-                {/* 13 yaş altına Çember satırı HİÇ gösterilmez (kilitli oda merak uyandırmasın). */}
-                <div style={{ marginTop:16,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.12)",fontFamily:JOST,fontSize:10.5,letterSpacing:2.2,textTransform:"uppercase",color:GOLD }}>{pickLang(ORCH_HUB_TXT.join, lang)}</div>
-                {!isCemberMinor(birthDate) && (
-                <button onClick={() => { try { haptic(); } catch (_) {} openCember(); }}
-                  style={{ ...BTN,marginTop:8,display:"flex",alignItems:"center",gap:12 }}>
-                  {icon("◌", (allStepsComplete || cemberFirstFree) ? "#82d9a3" : LAV, 36, 15)}
-                  <span style={{ flex:1,minWidth:0 }}>
-                    <span style={{ display:"block",fontSize:15,color:INK,fontFamily:JOST,fontWeight:300 }}>
-                      {pickLang(CEMBER_TXT.title, lang)} · <span style={{ color:MUTE }}>{pickLang(CEMBER_TXT.live, lang)}</span>
-                    </span>
-                    <span style={{ display:"block",fontSize:12,color: (allStepsComplete || cemberFirstFree) ? "#82d9a3" : MUTE,fontFamily:INTER,marginTop:2,lineHeight:1.45 }}>
-                      {!allStepsComplete ? pickLang(cemberFirstFree ? CEMBER_TXT.firstFree : CEMBER_TXT.locked, lang)
-                        : cemberCount > 0 ? pickLang(CEMBER_TXT.here, lang).replace("{n}", String(cemberCount))
-                        : pickLang(CEMBER_TXT.entryQuiet, lang)}
-                    </span>
-                  </span>
-                  {chevron()}
-                </button>
-                )}
-                {/* SAKİN ODALAR: 8 oda + buluşmalar (src/rooms.jsx). Alt satırda sıradaki buluşma. */}
-                {(() => {
-                  let nextEv = null;
-                  try {
-                    const cache = JSON.parse(localStorage.getItem("sakin_rooms_cache") || "null");
-                    const all = [...SEED_EVENTS, ...((cache && cache.events) || [])].filter(e => e && new Date(e.date).getTime() >= Date.now() - 2 * 3600e3)
-                      .sort((a, b) => new Date(a.date) - new Date(b.date));
-                    nextEv = all[0] || null;
-                  } catch (_) {}
-                  const evTitle = nextEv ? (typeof nextEv.title === "object" ? pickLang(nextEv.title, lang) : nextEv.title) : "";
-                  let evDate = "";
-                  try { if (nextEv) evDate = new Date(nextEv.date).toLocaleString(localeFromLang(lang), { day:"numeric", month:"short", hour:"2-digit", minute:"2-digit" }); } catch (_) {}
-                  return (
-                    <button onClick={() => { try { haptic(); } catch (_) {} setShowRooms(true); }}
-                      style={{ ...BTN,marginTop:12,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.12)",display:"flex",alignItems:"center",gap:12 }}>
-                      {icon("✧", GOLD, 36, 15)}
-                      <span style={{ flex:1,minWidth:0 }}>
-                        <span style={{ display:"block",fontSize:15,color:INK,fontFamily:JOST,fontWeight:300 }}>{pickLang(ROOMS_TXT.title, lang)}</span>
-                        <span style={{ display:"block",fontSize:12,color:MUTE,fontFamily:INTER,marginTop:2,lineHeight:1.45 }}>
-                          {nextEv ? `${pickLang(ORCH_HUB_TXT.next, lang)}: ${evDate} · ${evTitle}` : pickLang(ROOMS_TXT.sub, lang).replace("{n}", "8")}
-                        </span>
-                      </span>
-                      {chevron()}
-                    </button>
-                  );
-                })()}
-                {/* PONG (Bugün'deki ayrı karttan buraya taşındı, kullanıcı: "Çember'in altına"). */}
-                <button onClick={() => { try { haptic(); } catch (_) {} setShowPong(true); }}
-                  style={{ ...BTN,marginTop:12,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.12)",display:"flex",alignItems:"center",gap:12 }}>
-                  <span aria-hidden="true" style={{ position:"relative",width:36,height:36,flexShrink:0,borderRadius:"50%",border:`1px solid ${LAV}55`,background:"rgba(12,9,26,0.85)",overflow:"hidden" }}>
-                    <span style={{ position:"absolute",left:11,top:8,width:14,height:2.5,borderRadius:2,background:LAV }} />
-                    <span style={{ position:"absolute",left:15.5,top:15.5,width:5,height:5,borderRadius:"50%",background:"#fff4d6",boxShadow:`0 0 7px ${GOLD}` }} />
-                    <span style={{ position:"absolute",left:10,bottom:8,width:14,height:2.5,borderRadius:2,background:GOLD }} />
-                  </span>
-                  <span style={{ flex:1,minWidth:0 }}>
-                    <span style={{ display:"block",fontSize:15,color:INK,fontFamily:JOST,fontWeight:300 }}>{pickLang(PONG_CARD_TXT.title, lang)}</span>
-                    <span style={{ display:"block",fontSize:12,color: pongOpenRooms > 0 ? "#82d9a3" : MUTE,fontFamily:INTER,marginTop:2,lineHeight:1.45 }}>
-                      {pongOpenRooms > 0 ? pickLang(ORCH_HUB_TXT.pongOpen, lang).replace("{n}", String(pongOpenRooms)) : pickLang(PONG_CARD_TXT.sub, lang)}
-                    </span>
-                  </span>
-                  {chevron()}
-                </button>
-              </div>
-            </section>
+            {/* ── 3) ORKESTRA MODU: `renderOrkestraHub` (component düzeyi). WEB DENEMESİ (Eki 2026,
+                kullanıcı: "deneme sadece webde"): web'de Keşfet'e TAŞINDI, telefonda burada kalır. */}
+            {isNative && renderOrkestraHub()}
 
             {/* ── 4b) GÜNÜN YORUMU ── Gökyüzü Raporu ile AYNI kuruluş: etiket
                 üstte, kutuda yalnızca tarih, açılır-kapanır. Uzun AI okuması
