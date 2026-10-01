@@ -1335,6 +1335,11 @@ koruma sunucuda.
   Odalar · Pong** satırları (`ORCH_HUB_TXT`). Ayrı Pong kartı KALDIRILDI. Odalar satırı
   sıradaki buluşmayı, Pong satırı canlı açık oda sayısını (`watchPongLobby`, yalnızca Bugün'de,
   Çember istemcisiyle `pong:lobby` presence DİNLER) gösterir.
+- **NİYET SANDIKLARI ORKESTRADA (Eki 2026, kullanıcı: "orkestra moduna niyet kutusu sayısı
+  ekle"):** kolektif satır "{n} niyet sandığı mühürlü, açılacağı günü bekliyor" (+ kendi mühürlüyse
+  "Seninki de aralarında"), yalnızca n >= 3. Veri: track.mjs `letter` seal -> `rec.lo` = mühür+21 gün,
+  open -> 0; pulse.mjs `chests` = lo > şimdi olan kayıt sayısı. Mektup METNİ gitmez (yalnızca zaman,
+  mevcut anonim ölçüm; ölçümü kapatan sayılmaz). "Senin payın" satırına kendi sandık sayısı (yerel).
 - **Sakin Odalar** (kaynak: kullanıcının diğer projesi Kozmik Gemi "Gemi Odaları",
   kozmikgemi.netlify.app): `src/rooms-data.js` (8 oda, 7 dil, `SEED_EVENTS`), `src/rooms.jsx`
   (tembel parça, tam ekran: oda ızgarası 2 sütun + yaklaşan buluşmalar → oda sayfası: hero,

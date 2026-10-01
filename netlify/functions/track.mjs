@@ -174,6 +174,10 @@ export function mergeBatch(rec, body, now) {
     else if (e === "letter") {
       const a = ["seal", "open", "reflect"].includes(it.a) ? it.a : null;
       if (a) bump("letter_" + a);
+      // Orkestra'daki "mühürlü niyet sandığı" sayısı (Eki 2026): kişi başına yalnızca
+      // açılış ZAMANI (mühür + 21 gün) tutulur, mektup metni ASLA gelmez.
+      if (a === "seal") rec.lo = ts + 21 * 86400000;
+      else if (a === "open") rec.lo = 0;
       if (a === "reflect" && ["oldu", "yolda", "donustu"].includes(it.r)) bump("letter_r_" + it.r);
     }
     // Anlık bildirim onayı (Ayarlar anahtarı ya da Bugün daveti): 1 açtı, 0 kapattı/istemedi.

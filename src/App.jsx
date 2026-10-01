@@ -1715,6 +1715,11 @@ import { ROOMS_TXT, ROOMS_MOTTO, SEED_EVENTS } from "./rooms-data.js";
 const ORCH_HUB_TXT = {
   join:     { tr:"Orkestrada yerini al", en:"Take your place in the orchestra", de:"Nimm deinen Platz im Orchester ein", es:"Ocupa tu lugar en la orquesta", pt:"Toma o teu lugar na orquestra", fr:"Prends ta place dans l'orchestre", ja:"オーケストラに加わる" },
   next:     { tr:"Sıradaki", en:"Next", de:"Als Nächstes", es:"Próximo", pt:"A seguir", fr:"Prochain", ja:"次は" },
+  // Niyet sandıkları (Eki 2026, kullanıcı: "orkestra moduna niyet kutusu sayısı ekle").
+  chests:   { tr:"{n} niyet sandığı mühürlü, açılacağı günü bekliyor", en:"{n} intention chests are sealed, waiting for their day", de:"{n} Absichtstruhen sind versiegelt und warten auf ihren Tag", es:"{n} cofres de intención sellados esperan su día", pt:"{n} baús de intenção selados esperam pelo seu dia", fr:"{n} coffres d'intention scellés attendent leur jour", ja:"{n}個の意図の箱が封印され、開く日を待っています" },
+  mineToo:  { tr:"Seninki de aralarında", en:"Yours is among them", de:"Deine ist dabei", es:"El tuyo está entre ellos", pt:"O teu está entre eles", fr:"Le tien en fait partie", ja:"あなたの箱もその中に" },
+  myChests: { tr:"{n} niyet sandığı", en:"{n} intention chests", de:"{n} Absichtstruhen", es:"{n} cofres de intención", pt:"{n} baús de intenção", fr:"{n} coffres d'intention", ja:"意図の箱 {n}個" },
+  myChest1: { tr:"1 niyet sandığı", en:"1 intention chest", de:"1 Absichtstruhe", es:"1 cofre de intención", pt:"1 baú de intenção", fr:"1 coffre d'intention", ja:"意図の箱 1個" },
   pongOpen: { tr:"{n} açık oda, biri seni bekliyor", en:"{n} open rooms, someone is waiting", de:"{n} offene Räume, jemand wartet", es:"{n} salas abiertas, alguien te espera", pt:"{n} salas abertas, alguém está à espera", fr:"{n} salons ouverts, quelqu'un t'attend", ja:"{n}つの部屋が開いています。だれかが待っています" },
 };
 const PONG_CARD_TXT = {
@@ -19769,6 +19774,23 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                 </>) : (
                   <div style={{ fontSize:14,color:BODY,fontFamily:INTER,lineHeight:1.55,marginBottom:14 }}>{pickLang(ORKESTRA_TXT.waking, lang)}</div>
                 )}
+                {/* KOLEKTİF NİYET SANDIKLARI: şu an mühürlü bekleyen sandık sayısı (pulse.mjs
+                    `chests`, metin değil yalnızca açılış zamanı sayılır). Küçükken gizli
+                    ("0 nefes demek soğutur" kuralı): en az 3. */}
+                {orkestra && orkestra.chests >= 3 && (() => {
+                  let mine = false;
+                  try { const l = JSON.parse(localStorage.getItem(LETTER_KEY) || "null"); mine = !!(l && l.opensAt > Date.now() && !l.openedAt); } catch (_) {}
+                  return (
+                    <div style={{ display:"flex",alignItems:"center",gap:10,marginBottom:14,padding:"10px 12px",borderRadius:12,
+                      background:"rgba(232,192,122,0.05)",border:"1px solid rgba(232,192,122,0.16)" }}>
+                      <span aria-hidden="true" style={{ color:GOLD,fontSize:15,lineHeight:1,flexShrink:0 }}>✉</span>
+                      <span style={{ fontSize:12.5,color:BODY,fontFamily:INTER,lineHeight:1.45 }}>
+                        {pickLang(ORCH_HUB_TXT.chests, lang).replace("{n}", orkestra.chests.toLocaleString(localeFromLang(lang)))}
+                        {mine && <span style={{ color:GOLD }}> · {pickLang(ORCH_HUB_TXT.mineToo, lang)}</span>}
+                      </span>
+                    </div>
+                  );
+                })()}
                 {(() => {
                   const doneCount = ALL_MANDALA_STEPS.filter(s => stepsCompleted[s]).length;
                   return (
@@ -19806,6 +19828,14 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                   if (nefes > 0)     parts.push(`${nefes} ${pickLang(ORKESTRA_TXT.breaths, lang)}`);
                   if (freqMin > 0)   parts.push(`${freqMin} ${pickLang(ORKESTRA_TXT.minutes, lang)}`);
                   if (chakraMin > 0) parts.push(`${chakraMin} ${pickLang(ORKESTRA_TXT.chakraMin, lang)}`);
+                  // Mühürlediği niyet sandıkları (etkin + arşiv; yalnızca yerel sayı).
+                  let myChests = 0;
+                  try {
+                    const act = JSON.parse(localStorage.getItem(LETTER_KEY) || "null");
+                    const arc = JSON.parse(localStorage.getItem(LETTER_ARCHIVE_KEY) || "[]");
+                    myChests = (act && act.created ? 1 : 0) + (Array.isArray(arc) ? arc.length : 0);
+                  } catch (_) {}
+                  if (myChests > 0) parts.push(myChests === 1 ? pickLang(ORCH_HUB_TXT.myChest1, lang) : pickLang(ORCH_HUB_TXT.myChests, lang).replace("{n}", String(myChests)));
                   if (!parts.length) return null;
                   return (
                     <div style={{ marginTop:10,fontSize:12,color:"#a99cc4",fontFamily:INTER,lineHeight:1.5 }}>

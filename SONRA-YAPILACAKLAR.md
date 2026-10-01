@@ -73,7 +73,7 @@ Sıra: A -> B -> C -> build + R8 + cihaz testi. Bittikçe [x] işaretle.
 
 **C. Yeni özellikler**
 - [x] C1 İkili uyum -> Ben, Drakonik'in altı (A2'den sonra).
-- [ ] C2 Orkestra: kendi + kolektif mühürlü sandık sayısı (küçükken gizli).
+- [x] C2 Orkestra: kendi + kolektif mühürlü sandık sayısı (küçükken gizli).
 - [ ] C3 Yeni sürüm: push YOK; zilde "Güncelle" kaydı (`latest-ios-version.json`),
   güncelleyince kaybolur. store-version-watch'taki gdkpd adımı kaldırılır.
 - [ ] C4 Tanıtım turu: 3-4 ANA ADIM (kullanıcı kararı), kullanıcı başlatır, atlanabilir,

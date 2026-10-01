@@ -56,8 +56,11 @@ const AGG_TTL_MS = 2 * 60 * 1000;
 // Kullanici kayitlarindan icinde bulunulan haftanin toplamini cikar. Saf
 // fonksiyon (test edilebilir), report.mjs/aggregate ile ayni ruh.
 export function aggregatePulse(users, week) {
-  let activeUsers = 0, nefes = 0, freqSec = 0, chakraSec = 0;
+  let activeUsers = 0, nefes = 0, freqSec = 0, chakraSec = 0, chests = 0;
+  const nowMs = Date.now();
   for (const u of users) {
+    // Şu an mühürlü bekleyen niyet sandıkları (hafta bağımsız; track.mjs rec.lo).
+    if (u && typeof u.lo === "number" && u.lo > nowMs) chests++;
     const wc = u && u.wc;
     if (!wc || wc.wk !== week) continue;
     // "AKTIF" = bu hafta GERCEKTEN nefes/ses/cakra pratigi yapan kisi, sadece
@@ -78,6 +81,7 @@ export function aggregatePulse(users, week) {
     nefes,
     freqMinutes: Math.round(freqSec / 60),
     chakraMinutes: Math.round(chakraSec / 60),
+    chests,
   };
 }
 
