@@ -382,7 +382,7 @@ export function preferredHour() {
 // d: bugünden kaç gün sonrası (0 = bugün). Kullanım boşlukları o güne kadar
 // hareketsiz kalınacağı varsayılarak ilerletilir (her açılışta yeniden kurulur).
 // prevCat: bir önceki günün kategorisi (dinlenir).
-export function coachMessage({ lang, birthDate, day, d, dn, usage, seed, prevCat, pdFn, recent }) {
+export function coachMessage({ lang, birthDate, day, d, dn, usage, seed, prevCat, pdFn, recent, skipCats }) {
   const T = COACH[lang] || COACH.en;
   const E = COACH.en;
   const cands = [];
@@ -427,7 +427,11 @@ export function coachMessage({ lang, birthDate, day, d, dn, usage, seed, prevCat
     if (!c.text) { c.text = bagPick(c.arr, `${seed}|${c.cat}`, dn); c.w *= 0.08; }
   }
   // Önceki günün kategorisi dinlenir (yalnızca başka aday varsa).
-  const pool = cands.length > 1 ? cands.filter(c => c.cat !== prevCat) : cands;
+  // skipCats: o gün başka bir slotta aynı TEMA zaten gittiyse (host, aynı temadan
+  // günde 1 kuralı) o kategoriler elenir; hiç aday kalmazsa eleme yok sayılır.
+  const skip = Array.isArray(skipCats) ? skipCats : [];
+  const cands2 = skip.length && cands.some(c => !skip.includes(c.cat)) ? cands.filter(c => !skip.includes(c.cat)) : cands;
+  const pool = cands2.length > 1 ? cands2.filter(c => c.cat !== prevCat) : cands2;
   const r = rng(hash32(`${seed}|koc|${dn}`));
   const total = pool.reduce((a, c) => a + c.w, 0);
   let x = r() * total, ch = pool[0];

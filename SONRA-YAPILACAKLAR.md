@@ -64,9 +64,9 @@ Sıra: A -> B -> C -> build + R8 + cihaz testi. Bittikçe [x] işaretle.
 - [x] A6 Bildirim smallIcon `ic_stat_sakin`.
 
 **B. Bildirimler**
-- [ ] B1 AI 10:00 süzgeci 7 dil (birkaç dakika, meditasyon, pencere, havalandır,
+- [x] B1 AI 10:00 süzgeci 7 dil (birkaç dakika, meditasyon, pencere, havalandır,
   su iç, temiz hava, yürü) + prompt kuralı + `r3_` damgası.
-- [ ] B3 Tema etiketi + AYNI TEMADAN GÜNDE EN FAZLA 1. ⚠️ Kullanıcı: "Gözlerini
+- [x] B3 Tema etiketi + AYNI TEMADAN GÜNDE EN FAZLA 1. ⚠️ Kullanıcı: "Gözlerini
   kapat", "1 dakikada sakinleş", "Ayaklarını yere bas" İYİ, her yerde yapılabilir,
   kullanıcı seviyor: SİLME/YENİDEN YAZMA, yalnızca günde 1'den fazla gelmesin.
   Kişisel + koç varsayılan sırada öne.

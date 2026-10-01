@@ -657,6 +657,28 @@ bir yaşam koçu asistanı gibi"):**
   çalıştırıldı (3/4/5, doğumlu/doğumsuz, tr/en/de/ja): 7 günde 33/34 benzersiz metin.
   Cihazda test EDİLMEDİ.
 
+⚠️ **AYNI TEMADAN GÜNDE 1 + AI GENEL ÖĞÜT SÜZGECİ (1.4.3, Eki 2026; kullanıcı: "pencereyi aç,
+su iç gibi benzer bildirimler gün içinde iki kere gelmesin, kişiye özel olanlar ağırlıkta, yaşam
+koçluğu gibi" + "10:00'da 'birkaç dakikalık meditasyon zihnini sakinleştirir' geldi, hiçbir şey
+söylemiyor" + sahildeki kullanıcıya "pencereleri aç, havalandır"):**
+- Her havuz öğesi bir TEMA taşır (`NOTIF_THEMES` dizin tablosu: daily/morning/promo; nefes,
+  söz, niyet, keşfet sabit). Nefes/beden/su/duyu tek "fiziksel" aile (`_notifFamily`):
+  günde EN FAZLA 1. Kullanıcı: "'Gözlerini kapat', '1 dakikada sakinleş', 'Ayaklarını yere
+  bas' İYİ, her yerde yapılabilir, kullanıcı seviyor": bu metinleri SİLME, yalnızca aynı
+  güne ikisi düşmez. Havuza öğe eklersen `NOTIF_THEMES`'e temasını ekle (dizin = TR sırası).
+- Koç mesajının teması kategori + METİN (`_coachTheme`; element mesajı da omuzdan söz
+  edebiliyor), çakışırsa 4 tohum denenir, olmazsa havuza düşülür. AI satırı `_aiNotifTheme`.
+  `coachMessage` yeni `skipCats` parametresi. Akşam slotunda koç artık 3 günün 2'si (1/2 idi).
+- AI süzgeci `_PNOTIF_DEMAND_RE` 7 dilde genel öğüt + ortam varsayımını da eler (birkaç
+  dakika, meditasyon, pencere, havalandır, su iç, temiz hava, yürüyüş). Statik havuzlara
+  UYGULANMAZ. Prompt'a GENEL ÖĞÜT + ORTAM + SOYUT KLİŞE ("içindeki ışık") yasağı ve
+  her günün KİŞİSEL GÜN SAYISI + ANLAMI (`DAY_NUMBER_TXT`) + yaşam yolu açıklaması
+  (`LIFE_PATH_DESC`) eklendi; sayının "bitir/başla" eylemleri görev olarak aktarılmaz.
+  Canlı denemede çıktı her güne kendi temasıyla bağlandı. İçerik damgası `r3_`.
+- KONUMA GÖRE BİLDİRİM İPTAL (kullanıcı kararı); ortam sorunu süzgeçle çözüldü.
+- Test düzeneği: scratchpad `nh/` (esbuild ile App.jsx Node'a paketlenir, Capacitor sahte,
+  `scheduleAllNotifications` dışa açılır; `run.cjs` 7 günlük planı yazdırır).
+
 ⚠️ **Aşağıdaki eski "kişiye özel havuz" anlatımındaki "günde +2" ARTIK GEÇERSİZ.**
 Genel, kişisel ve tarot havuzları birbirinden habersiz kuruluyordu: kıdem kuralı
 yalnızca genel havuza uygulanıyor, doğum bilgisi olan 30+ günlük kullanıcıya

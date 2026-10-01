@@ -5830,6 +5830,18 @@ const _PNOTIF_DEMAND_RE = new RegExp([
   "rahat bir (ortam|yer|köşe)", "sessiz bir (ortam|yer|köşe|an)", "köşeye çekil", "\\d+\\s*dakika", "meditasyon yap", "yürüyüş", "günlük tut", "listele", "planla",
   "quiet (place|spot|space|corner)", "comfortable (place|spot|space)", "\\d+\\s*min", "meditate", "go for a walk", "journal", "make a list", "plan ",
   "ruhigen ort", "minuten", "meditiere", "lugar tranquilo", "minutos", "medita", "endroit calme", "médite", "静かな場所", "分間", "瞑想し",
+  // GENEL ÖĞÜT + ORTAM VARSAYIMI (Eki 2026, kullanıcı: "10:00'da 'birkaç dakikalık
+  // meditasyon zihnini sakinleştirir' geldi, hiçbir şey söylemiyor, herkesin yaptığı
+  // yüzeysel bildirim" + sahildeki kullanıcıya "pencereleri aç, havalandır" gitti).
+  // Rakamsız süre, meditasyon önerisi, pencere/su/temiz hava/yürüyüş: model bunları
+  // kişiye bakmadan üretiyor. Statik havuzlara DOKUNMAZ (yalnızca AI satırı süzülür).
+  "birkaç dakika", "kaç dakika", "dakikalık", "meditasyon", "pencere", "havalandır", "su iç", "bir bardak su", "temiz hava", "hava al", "yürü",
+  "few minutes", "meditation", "window", "ventilat", "fresh air", "drink (some )?water", "glass of water", "go for a walk", "take a walk", "short walk",
+  "paar minuten", "fenster", "lüft", "frische luft", "wasser trink", "spazier",
+  "unos minutos", "ventana", "ventila", "aire fresco", "bebe agua", "vaso de agua", "paseo",
+  "uns minutos", "janela", "areja", "ar fresco", "bebe água", "copo de água", "passeio",
+  "quelques minutes", "fenêtre", "aère", "air frais", "bois de l'eau", "verre d'eau", "promène", "promenade",
+  "数分", "瞑想", "窓", "換気", "新鮮な空気", "水を飲", "散歩",
 ].join("|"), "i");
 function _pnotifTooDemanding(t) { return _PNOTIF_DEMAND_RE.test(String(t || "")); }
 async function _genPersonalNotifAI(lang, birthDate) {
@@ -5842,7 +5854,13 @@ async function _genPersonalNotifAI(lang, birthDate) {
     for (let d = 0; d < 7; d++) {
       const dt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d);
       const mp = moonPhase(dt);
-      dayLines.push(`Gün ${d + 1}: ay evresi ${pickLang(mp, lang)}`);
+      // Kişisel gün sayısı (Bugün ekranındaki sayıyla aynı): her güne kişiye ait
+      // ayrı bir tema verir, model genel öğüde kaçmasın diye.
+      let pdn = null; try { pdn = personalDayNumber(birthDate, dt); } catch (_) {}
+      // Sayının ANLAMI da verilir (canlı test, Eki 2026: yalnızca etiket verilince model
+      // "içindeki ışığı hatırla" gibi kimseye ait olmayan cümleler kuruyordu).
+      const dnt = pdn && DAY_NUMBER_TXT[pdn > 9 ? ((pdn - 1) % 9) + 1 : pdn];
+      dayLines.push(`Gün ${d + 1}: ay evresi ${pickLang(mp, "tr")}${pdn ? `; kişisel gün ${pdn}${dnt ? ` = "${dnt.tr[0]}" (${dnt.tr[1]})` : ""}` : ""}`);
     }
     const system =
       "Sen Sakin uygulamasının nazik bir bildirim yazarısın. Kullanıcının doğum " +
@@ -5861,12 +5879,28 @@ async function _genPersonalNotifAI(lang, birthDate) {
       "Emir kipiyle iş yükleme; ya içini ferahlatan bir cümle kur ya da olduğu yerde, " +
       "kimse fark etmeden, tek bir nefeslik bir izin ver (ör. omuzların inebilir, " +
       "bir nefes senin). Suçluluk, eksiklik ya da 'yapmalısın' duygusu uyandırma. " +
+      // Eki 2026: genel wellness öğüdü + ortam varsayımı yasağı (süzgeç: _PNOTIF_DEMAND_RE).
+      "GENEL ÖĞÜT YASAK: 'birkaç dakikalık meditasyon', 'su iç', 'pencereyi aç', " +
+      "'temiz hava al', 'yürü' gibi herkese söylenebilecek sağlık önerileri YAZMA; " +
+      "kişi o an nerede olduğunu bilmiyorsun (iş, yol, sahil, kalabalık): ev, oda, " +
+      "pencere, masa, dışarısı gibi bir ortam VARSAYMA. Her cümle bu kişiye ait " +
+      "olsun: burcunun, yaşam yolunun, o günün kişisel sayısının ve ay evresinin " +
+      "anlamından doğsun; yaşam koçu gibi içgörü ver, tavsiye listesi değil. " +
+      "Yedi günün her biri FARKLI bir temaya değsin. " +
+      "SOYUT KLİŞE YASAK: 'içindeki ışık/huzur/sakinlik', 'kalbini hafiflet', 'sıcak bir his', " +
+      "'güzel bir gün' gibi herkese uyan, hiçbir şey söylemeyen cümleler kurma. Her F satırı " +
+      "o günün kişisel sayısının temasını (verilen anlamıyla) bu kişinin burç niteliğine bağlayan " +
+      "SOMUT bir içgörü olsun: bugün hangi eğilimi fark edebilir, neye izin verebilir. " +
+      "R satırı aynı günün temasına dönen kısa, yumuşak bir hatırlatma olsun. " +
+      "Sayının anlamındaki eylemleri (başla, bitir, tamamla, adım at) GÖREV olarak aktarma; " +
+      "o enerjiye izin ve fark ediş olarak çevir (ör. bitirmek yerine 'bir şeyin tamamlanmasına yer var'). " +
       "Her gün için İKİ satır üret: F = o günü HAFİFLETEN, yük almayan sıcak bir cümle, " +
       "R = gün ortasında içini yumuşatan kısa bir hatırlatma (yine görev değil). " +
       "Çıktı TAM olarak şu biçimde, başka hiçbir " +
       "şey yazma: [1F] ... [1R] ... [2F] ... [2R] ... [7F] ... [7R]";
+    const lpDesc = (LIFE_PATH_DESC.tr || {})[lp] || "";
     const user =
-      `Doğum burcu: ${sign}. Yaşam yolu teması: ${lp}. Kişisel yıl: ${py}.\n` +
+      `Doğum burcu: ${sign} (bu burcun bilinen niteliklerini kullan). Yaşam yolu ${lp}: ${lpDesc} Kişisel yıl: ${py}.\n` +
       `Önümüzdeki 7 gün:\n${dayLines.join("\n")}\n\n` +
       "Bu kişi için 7 günlük kolaylaştırıcı (F) ve hatırlatıcı (R) çiftlerini yaz.";
     const res = await aiFetch({
@@ -5955,6 +5989,29 @@ function _emMessageForDay(kozmik, dayIndex, lang) {
 // Varsayılanla doğum bilgisi olan kişi: 10:00 + 18:00 + 08:30 (hareketli
 // günlerde 12:00 + 10:00 + 18:00). Doğum bilgisi YOKSA yalnızca akşam + gün
 // ortası (diğerleri doğum ister; tarot Bugün kapısına düşerdi).
+// ── BİLDİRİM TEMALARI (Eki 2026): aynı temadan günde en fazla 1 bildirim. Dizin
+// sırası TR havuzlarıyla (ve NOTIF_TRANS'taki 7 dille) BİREBİR; havuza öğe eklersen
+// buraya da temasını ekle. "Fiziksel" aile (nefes/beden/su/duyu) TEK tema sayılır.
+const NOTIF_THEMES = {
+  daily: ["ic","su","nefes","ic","beden","doga","nefes","beden","niyet","an","beden","an","nefes","beden",
+          "nefes","sukur","beden","sukur","nefes","doga","ic","beden","ic","duyu","an","an","niyet","beden"],
+  morning: ["niyet","nefes","niyet","niyet","nefes","an","ic"],
+  promo: ["ses","nefes","ses","cakra","ayna","galaktik","hayvan","mitler","rapor","ses","niyet","ses"],
+};
+const NOTIF_PHYSICAL = new Set(["nefes", "beden", "su", "duyu"]);
+function _notifFamily(th) { return NOTIF_PHYSICAL.has(th) ? "fiziksel" : th; }
+// Koç kategorisi -> tema (ör. nefes boşluğu daveti fiziksel aileye girer).
+const COACH_CAT_THEME = {
+  breathGap: "nefes", soundGap: "ses", chakraGap: "cakra", aynaNever: "ayna", aynaGap: "ayna",
+  letterReady: "mektup", letterSoon: "mektup", noLetter: "mektup", streak: "seri",
+  elDom: "element", elLack: "element", day: "gun", moon: "ay", ask: "soru",
+};
+// AI satırı serbest metin: bedene/nefese dokunuyorsa fiziksel, yoksa kişisel.
+// ("göz at" = bak, beden değil: yalnızca "gözlerin/gözlerini" sayılır.)
+const _AI_PHYS_RE = /nefes|soluk|omuz|ayakların|gözlerin|çene|sırt|karnın|avuç|breath|shoulder|your feet|your eyes|jaw|belly|palm|atem|schulter|füße|augen|respir|hombro|tus pies|tus ojos|ombro|teus pés|teus olhos|souffle|épaule|tes pieds|tes yeux|呼吸|肩|足元|目を/i;
+function _aiNotifTheme(t) { return !t ? null : (_AI_PHYS_RE.test(String(t)) ? "beden" : "kisisel"); }
+// Koç mesajının teması: kategori + METİN (element/gün mesajı da omuzdan söz edebiliyor).
+function _coachTheme(c) { return !c ? null : (_AI_PHYS_RE.test(String(c.body)) ? "beden" : (COACH_CAT_THEME[c.cat] || "koc_" + c.cat)); }
 const NOTIF_TYPES = ["kisisel", "koc", "aksam", "tarot", "hatirlatici", "ogle", "kozmik", "geridon"];
 const NOTIF_BIRTH_TYPES = ["kisisel", "tarot", "hatirlatici", "kozmik"];
 function readNotifPrefs() {
@@ -6003,7 +6060,8 @@ async function scheduleAllNotifications(lang, birthDate, opts = {}) {
     const prefs = readNotifPrefs();
     const week = _isoWeekStamp();
     // "r2_": rahatlatıcı prompt (Eyl 2026); eski önbellekteki görev metinleri yenilensin.
-    const contentStamp = hasBirth ? `r2_${week}_${lang}_${birthDate}` : "-";
+    // "r3_" (Eki 2026): genel öğüt/ortam süzgeci + kişisel gün bağlamı; eski önbellek yenilensin.
+    const contentStamp = hasBirth ? `r3_${week}_${lang}_${birthDate}` : "-";
     // Kullanım parmak izi: bugün nefes/ses/çakra yapıldı mı, Ayna sayısı, mektup durumu.
     // Değişince plan yeniden kurulur ("3 gündür nefes yapmadın" bayat kalmasın).
     const _u = usageSnapshot();
@@ -6041,19 +6099,21 @@ async function scheduleAllNotifications(lang, birthDate, opts = {}) {
     const kesfetArr = NOTIF_KESFET[lang] || NOTIF_KESFET.en;
     // Tek birleşik akşam havuzu; her öğe kendi hedefini taşır. Doğum bilgisi
     // yoksa gömülü uygulamaya (doğum kapısı) giden öğeler çıkarılır.
+    // th = tema (aynı temadan günde 1 kuralı): dizinler 7 dilde AYNI sırada.
     const basePool = [
-      ...promos.map((b, i) => ({ body: b, extra: PROMO_TARGETS[i] || { screen: "mandala" } })),
-      ...reminders.map(b  => ({ body: b, extra: { screen: "gun" } })),
-      ...nefesArr.map(b   => ({ body: b, extra: { screen: "nefes" } })),
-      ...kesfetArr.map(b  => ({ body: b, extra: { embed: "tasarim" } })),
+      ...promos.map((b, i) => ({ body: b, extra: PROMO_TARGETS[i] || { screen: "mandala" }, th: NOTIF_THEMES.promo[i] || "davet" })),
+      ...reminders.map((b, i) => ({ body: b, extra: { screen: "gun" }, th: NOTIF_THEMES.daily[i] || "an" })),
+      ...nefesArr.map(b   => ({ body: b, extra: { screen: "nefes" }, th: "nefes" })),
+      ...kesfetArr.map(b  => ({ body: b, extra: { embed: "tasarim" }, th: "kesfet" })),
     ].filter(x => hasBirth || !x.extra.embed);
+    const morningPool = mornings.map((b, i) => ({ body: b, th: NOTIF_THEMES.morning[i] || "an" }));
     // Sözler ARALIKLI dizilir (bir söz, bir davet...): pick() günü sırayla
     // ilerlettiği için sona eklenselerdi 32 gün üst üste yalnızca söz gelirdi.
     // note:1 = İÇERİK bildirimi (bir özelliğe götürmüyor): dokununca uygulama açılır ve
     // metnin tamamı kartta görünür (NotifNoteCard). Özelliğe götürenlerde note YOK.
-    const sozArr = (NOTIF_SOZ[lang] || NOTIF_SOZ.en).map(b => ({ body: b, extra: { screen: "mandala", note: 1 } }));
+    const sozArr = (NOTIF_SOZ[lang] || NOTIF_SOZ.en).map(b => ({ body: b, extra: { screen: "mandala", note: 1 }, th: "soz" }));
     // Anlık niyet/söz cümleleri de ARALIKLI (davet, söz, niyet...); dokununca Sabah niyeti.
-    const niyetArr = (NOTIF_NIYET[lang] || NOTIF_NIYET.en).map(b => ({ body: b, extra: { screen: "sabah", note: 1 } }));
+    const niyetArr = (NOTIF_NIYET[lang] || NOTIF_NIYET.en).map(b => ({ body: b, extra: { screen: "sabah", note: 1 }, th: "niyet" }));
     const eveningPool = [];
     for (let i = 0; i < Math.max(basePool.length, sozArr.length, niyetArr.length); i++) {
       if (i < basePool.length) eveningPool.push(basePool[i]);
@@ -6119,17 +6179,54 @@ async function scheduleAllNotifications(lang, birthDate, opts = {}) {
       const plan = _notifDayPlan(dn, day, hasBirth, !!em, prefs);
       const _off = content && content.start ? _dayDiff(content.start, _ymd(day)) : d;
       const pd = (content && content.days && _off >= 0 && content.days[_off]) || {};
-      // Günün koç mesajı (bir önceki günün kategorisi dinlenir).
-      const coach = coachMessage({ lang, birthDate: hasBirth ? birthDate : null, day, d, dn, usage, seed, prevCat: lastCoachCat, pdFn: personalDayNumber, recent });
-      if (coach) {
-        lastCoachCat = coach.cat;
-        if (d === 0) { try { localStorage.setItem("sakin_notif_lastcoach", JSON.stringify({ day: _ymd(day), cat: coach.cat })); } catch (_) {} }
-      }
-      // Varsayılan (3) kullanıcıda koç, AKŞAM slotuna gün aşırı karışır (sayı artmaz).
-      // "Yaşam koçu" KAPALIYSA koç hiçbir slotta gitmez (denetim: kapalıyken de akşama karışıyordu).
+      // AYNI TEMADAN GÜNDE EN FAZLA 1 (Eki 2026, kullanıcı: "pencereyi aç, su iç gibi
+      // benzer bildirimler gün içinde iki kere gelmesin; 'Gözlerini kapat', 'Ayaklarını
+      // yere bas' iyi, sadece günde 1'den fazla olmasın"). Nefes/beden/su/duyu tek
+      // "fiziksel" aile sayılır. Metinler SİLİNMEDİ, yalnızca aynı güne ikisi düşmez.
+      const usedFam = new Set();
+      const clash = (th) => !!th && usedFam.has(_notifFamily(th));
+      const mark = (th) => { if (th) usedFam.add(_notifFamily(th)); };
+      const skipCats = () => Object.keys(COACH_CAT_THEME).filter(c => clash(COACH_CAT_THEME[c]));
+      // Günün koç mesajı TEMBEL üretilir: o ana kadar giden temalar elenebilsin.
+      // Çakışmayan koç mesajı: birkaç farklı tohumla dener, hepsi o günün bir temasıyla
+      // çakışırsa null (çağıran havuza düşer).
+      const coachTry = (salt, prevCat) => {
+        for (const k of ["", "|t1", "|t2", "|t3"]) {
+          const c = coachMessage({ lang, birthDate: hasBirth ? birthDate : null, day, d, dn, usage, seed: seed + salt + k, prevCat, pdFn: personalDayNumber, recent, skipCats: skipCats() });
+          if (!c) return null;
+          if (!clash(_coachTheme(c))) return c;
+        }
+        return null;
+      };
+      let coachMain;
+      const getCoach = () => {
+        if (coachMain !== undefined) return coachMain;
+        coachMain = coachTry("", lastCoachCat);
+        if (coachMain) {
+          lastCoachCat = coachMain.cat;
+          if (d === 0) { try { localStorage.setItem("sakin_notif_lastcoach", JSON.stringify({ day: _ymd(day), cat: coachMain.cat })); } catch (_) {} }
+        }
+        return coachMain;
+      };
+      const coachAlt = (salt, prevCat) => coachTry(salt, prevCat);
+      const addT = (id, when, item, th) => { if (!item || !item.body) return; add(id, when, item.body, item.extra); mark(th != null ? th : item.th); };
+      const addCoach = (id, when, c) => { if (!c) return false; add(id, when, c.body, c.extra); mark(_coachTheme(c)); return true; };
+      // Havuzdan seç: tazelik + tema çakışmasına bakar; çakışmasız yoksa tazelik yeter.
+      const pickT = (arr, salt) => {
+        const key = `${seed}|${salt}`, txt = (x) => (x && typeof x === "object" ? x.body : x);
+        let r = null;
+        for (let i = 0; i < arr.length && !r; i++) { const c = bagPick(arr, key, dn + i); if (!recent.has(txt(c)) && !clash(c.th)) r = c; }
+        for (let i = 0; i < arr.length && !r; i++) { const c = bagPick(arr, key, dn + i); if (!clash(c.th)) r = c; }
+        if (!r) r = pick(arr, dn, salt);
+        if (txt(r)) recent.add(txt(r));
+        return r;
+      };
+      // Varsayılan (3) kullanıcıda koç AKŞAM slotuna karışır (sayı artmaz). Eki 2026:
+      // gün aşırı (1/2) yerine 3 günün 2'si (kullanıcı: "kişiye özel olanlar ağırlıkta,
+      // yaşam koçluğu gibi"). Koç KAPALIYSA hiçbir slota girmez.
       const coachOn = prefs.on.koc;
-      const coachInEvening = coachOn && !!coach && !plan.includes("koc") && ((ichingHash(`${seed}|ev|${dn}`) % 2) === 0);
-      let fbCat = coach && coach.cat;
+      const coachInEvening = coachOn && !plan.includes("koc") && ((ichingHash(`${seed}|ev|${dn}`) % 3) !== 0);
+      let fbCat = null;
       // Koç saati: kişinin uygulamayı en sık açtığı saat (yoksa 15:00), diğer
       // slotlarla çakışırsa bir saat kaydırılır; 09:00-21:00 aralığında.
       const coachHour = (() => {
@@ -6140,38 +6237,34 @@ async function scheduleAllNotifications(lang, birthDate, opts = {}) {
       })();
       for (const slot of plan) {
         if (slot === "aksam") {
-          if (coachInEvening) add(9070 + d, at(18), coach.body, coach.extra);
-          else { const e = pick(eveningPool, dn, "ev"); add(9070 + d, at(18), e.body, e.extra); }
+          if (coachInEvening && addCoach(9070 + d, at(18), getCoach())) { /* koç */ }
+          else addT(9070 + d, at(18), pickT(eveningPool, "ev"));
         }
         else if (slot === "koc") {
-          if (coach) add(9230 + d, at(coachHour, 15), coach.body, coach.extra);
+          if (!addCoach(9230 + d, at(coachHour, 15), getCoach())) addT(9230 + d, at(coachHour, 15), pickT(eveningPool, "kc"));
         }
         else if (slot === "ogle") {
-          if (_ogleIsMorning(day)) add(9050 + d, at(8), pick(mornings, dn, "mo"), { screen: "sabah" });
-          else { const alt = pick(eveningPool, dn, "og"); add(9050 + d, at(13), alt.body, alt.extra); }
+          if (_ogleIsMorning(day)) { const m = pickT(morningPool, "mo"); addT(9050 + d, at(8), { body: m.body, extra: { screen: "sabah" } }, m.th); }
+          else addT(9050 + d, at(13), pickT(eveningPool, "og"));
         }
         else if (slot === "kisisel") {
           // AI yoksa yedek şablon iki hafta içinde tekrar edebiliyordu: son
-          // gönderilenlerdeyse yerine ikinci bir koç mesajı (farklı tohum) gider.
-          if (pd.f && !recent.has(pd.f)) add(9200 + d, at(10), pd.f, { screen: "bugun", note: 1 });
-          else if (!coachOn) { const e = pick(eveningPool, dn, "k2"); add(9200 + d, at(10), e.body, e.extra); }
-          else {
-            const c2 = coachMessage({ lang, birthDate: hasBirth ? birthDate : null, day, d, dn, usage, seed: seed + "|k2", prevCat: fbCat, pdFn: personalDayNumber, recent });
-            if (c2) { fbCat = c2.cat; add(9200 + d, at(10), c2.body, c2.extra); }
-          }
+          // gönderilenlerdeyse (ya da temasıyla çakışırsa) yerine koç mesajı gider.
+          const fth = _aiNotifTheme(pd.f);
+          if (pd.f && !recent.has(pd.f) && !clash(fth)) addT(9200 + d, at(10), { body: pd.f, extra: { screen: "bugun", note: 1 } }, fth);
+          else if (!coachOn) addT(9200 + d, at(10), pickT(eveningPool, "k2"));
+          else { const c2 = coachAlt("|k2", fbCat); if (c2) { fbCat = c2.cat; addCoach(9200 + d, at(10), c2); } else addT(9200 + d, at(10), pickT(eveningPool, "k2")); }
         }
         else if (slot === "hatirlatici") {
-          if (pd.r && !recent.has(pd.r)) add(9210 + d, at(16), pd.r, { screen: "mandala", note: 1 });
-          else if (!coachOn) { const e = pick(eveningPool, dn, "k3"); add(9210 + d, at(16), e.body, e.extra); }
-          else {
-            const c3 = coachMessage({ lang, birthDate: hasBirth ? birthDate : null, day, d, dn, usage, seed: seed + "|k3", prevCat: fbCat, pdFn: personalDayNumber, recent });
-            if (c3) add(9210 + d, at(16), c3.body, c3.extra);
-          }
+          const rth = _aiNotifTheme(pd.r);
+          if (pd.r && !recent.has(pd.r) && !clash(rth)) addT(9210 + d, at(16), { body: pd.r, extra: { screen: "mandala", note: 1 } }, rth);
+          else if (!coachOn) addT(9210 + d, at(16), pickT(eveningPool, "k3"));
+          else if (!addCoach(9210 + d, at(16), coachAlt("|k3", fbCat))) addT(9210 + d, at(16), pickT(eveningPool, "k3"));
         }
         // ⚠️ Eskiden { screen: "ben" } idi: uygulamada "ben" adlı EKRAN YOK
         // (Ben sekmesinin ekranı "harita"), dokunan boş ekran görüyordu.
-        else if (slot === "kozmik") add(9220 + d, at(12), em, { screen: "harita", note: 1 });
-        else if (slot === "tarot" && !(d === 0 && drawnToday)) add(_tarotNotifId(day), at(8, 30), pick(tarotArr, dn, "ta"), { screen: "bugun" });
+        else if (slot === "kozmik") addT(9220 + d, at(12), { body: em, extra: { screen: "harita", note: 1 } }, "kozmik");
+        else if (slot === "tarot" && !(d === 0 && drawnToday)) addT(_tarotNotifId(day), at(8, 30), { body: pick(tarotArr, dn, "ta"), extra: { screen: "bugun" } }, "tarot");
       }
     }
     if (gen !== _notifGen) return;
