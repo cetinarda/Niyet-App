@@ -230,6 +230,11 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
      bir ekran) Puppeteer screenshot ile GÖRSEL kontrol et, sadece build yeşil
      yeterli değil.
 
+8. **SONRA YAPILACAKLAR LİSTESİ = `SONRA-YAPILACAKLAR.md` (kullanıcı isteği, Eki 2026).**
+   Kullanıcının ertelediği işler ve ONAYLI iş akışı (1.4.3 planı, [ ] / [x]) orada.
+   Yeni erteleme gelirse oraya ekle; kullanıcı "listeyi ver" derse oradan özetle.
+   Bir iş bitince işaretle/sil ve kalıcı bilgiyi CLAUDE.md'ye taşı.
+
 ## Mimari
 
 - **Tek React kod tabanı.** `src/App.jsx` ~6300 satır. `const isNative = Capacitor.isNativePlatform()` (App.jsx:10) iOS vs web'i ayırır.
