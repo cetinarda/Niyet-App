@@ -55,21 +55,8 @@ jobs:
           tespit etti. Uygulama içi güncelleme banner'ı bu dosyadan besleniyor."
           git push origin HEAD:main
 
-      # Banner sakin.life'tan okunuyor → web deploy dalına da gitmezse CANLIYA ÇIKMAZ.
-      # gdkpd apartılmış bir dal; SADECE bu dosyayı taşıyoruz, başka hiçbir şeye dokunmuyoruz.
-      - name: Web deploy dalına (gdkpd) taşı
-        if: steps.check.outputs.changed == 'true'
-        run: |
-          git fetch origin claude/fix-text-overlap-spacing-gdkpd
-          git checkout -B web-deploy origin/claude/fix-text-overlap-spacing-gdkpd
-          git checkout main -- public/latest-ios-version.json
-          if git diff --cached --quiet && git diff --quiet; then
-            echo "gdkpd zaten güncel."
-            exit 0
-          fi
-          git add public/latest-ios-version.json
-          git commit -m "web: mağaza sürüm bilgisi güncellendi (otomatik)"
-          git push origin HEAD:claude/fix-text-overlap-spacing-gdkpd
+      # Eski gdkpd taşıma adımı KALDIRILDI (Eki 2026): Netlify production dalı artık main,
+      # main'e yazılan dosya doğrudan canlıya çıkıyor.
 
       - name: Özet
         run: |

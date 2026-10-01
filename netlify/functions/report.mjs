@@ -210,7 +210,7 @@ export function aggregate(users) {
       forkBaglan: ch.fork_baglan || 0, forkKesfet: ch.fork_kesfet || 0,
       forkUntriedBaglan: ch.fork_untried_baglan || 0, forkUntriedKesfet: ch.fork_untried_kesfet || 0,
       pushYes: ch.push_optin_1 || 0, pushNo: ch.push_optin_0 || 0,
-      inboxOpen: ch.inbox_open || 0,
+      inboxOpen: ch.inbox_open || 0, inboxUpdate: ch.inbox_update || 0,
       rooms: ["open", "room", "event", "practice"].reduce((o, k) => (o[k] = ch["rooms_" + k] || 0, o), {}),
       pong: ["open", "single", "host", "join", "end", "invite"].reduce((o, k) => (o[k] = ch["pong_" + k] || 0, o), {}),
       cember: ["open", "rules", "send", "report", "block", "crisis", "badges", "badgeof", "pong_invite", "pong_accept"].reduce((o, k) => (o[k] = ch["cember_" + k] || 0, o), {}),
@@ -449,6 +449,7 @@ export function renderHTML(r, truncated) {
        <tr><td>Sakin Odalar: açılış / oda / buluşma / pratiğe geçiş</td><td class="num">${["open","room","event","practice"].map((k) => (c.rooms || {})[k] || 0).join(" / ")}</td></tr>
        <tr><td>Pong: açılış / tek oyuncu / oda açma / katılma / biten maç / davetle</td><td class="num">${["open","single","host","join","end","invite"].map((k) => (c.pong || {})[k] || 0).join(" / ")}</td></tr>
        <tr><td>Bildirim merkezi (zil) açılışı</td><td class="num">${c.inboxOpen || 0}</td></tr>
+       <tr><td>Zilden "Güncelle"ye dokunma</td><td class="num">${c.inboxUpdate || 0}</td></tr>
        <tr><td>Çember: rozet rehberi / takma ada dokunup rozet özeti</td><td class="num">${(c.cember || {}).badges || 0} / ${(c.cember || {}).badgeof || 0}</td></tr>
        <tr><td>Uygulama hatası (hata ekranına düşen)</td><td class="num">${c.jsErr || 0}</td></tr>
        <tr><td>Anlık mesajlar (varsayılan açık): elle açtı / kapattı</td><td class="num">${c.pushYes || 0} / ${c.pushNo || 0}</td></tr>

@@ -6448,6 +6448,11 @@ const INBOX_TXT = {
   now:     { tr:"şimdi", en:"now", de:"jetzt", es:"ahora", pt:"agora", fr:"à l'instant", ja:"いま" },
   hours:   { tr:"{n} sa", en:"{n}h", de:"{n} Std.", es:"{n} h", pt:"{n} h", fr:"{n} h", ja:"{n}時間前" },
   close:   { tr:"Kapat", en:"Close", de:"Schließen", es:"Cerrar", pt:"Fechar", fr:"Fermer", ja:"閉じる" },
+  // Yeni sürüm kaydı (Eki 2026, kullanıcı: "yeni sürüm yayınlanınca bildirim merkezinde güncelle butonu
+  // çıksın, mağazaya yönlendirsin"). Push YOK (Apple 4.5.4): zil noktası + bu kayıt.
+  updTitle:{ tr:"Yeni sürüm hazır · {v}", en:"A new version is ready · {v}", de:"Neue Version verfügbar · {v}", es:"Nueva versión lista · {v}", pt:"Nova versão pronta · {v}", fr:"Nouvelle version prête · {v}", ja:"新しいバージョン · {v}" },
+  updBody: { tr:"Sakin'in yeni hâli mağazada seni bekliyor.", en:"The newest Sakin is waiting for you in the store.", de:"Das neue Sakin wartet im Store auf dich.", es:"El nuevo Sakin te espera en la tienda.", pt:"O novo Sakin está à tua espera na loja.", fr:"Le nouveau Sakin t'attend dans la boutique.", ja:"新しいSakinがストアで待っています。" },
+  updBtn:  { tr:"Güncelle", en:"Update", de:"Aktualisieren", es:"Actualizar", pt:"Atualizar", fr:"Mettre à jour", ja:"アップデート" },
 };
 function readInbox() { try { const a = JSON.parse(localStorage.getItem(INBOX_KEY) || "[]"); return Array.isArray(a) ? a : []; } catch (_) { return []; } }
 // Anlık mesajı cihazdaki kutuya yaz. Panel duyurusundan geldiyse id = newsId (sunucu
@@ -6487,7 +6492,7 @@ function InboxSheet({ lang, items, seenAt, onClose, onGo }) {
       <span style={{ width:34,height:34,flexShrink:0,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",
         background: x.kind === "wn" ? "rgba(143,207,166,0.08)" : "rgba(232,192,122,0.08)",
         border:`1px solid ${x.kind === "wn" ? "rgba(143,207,166,0.3)" : "rgba(232,192,122,0.3)"}`,
-        color: x.kind === "wn" ? "#8fcfa6" : "#e8c07a",fontSize:14,lineHeight:1 }}>{x.kind === "wn" ? "❋" : "✦"}</span>
+        color: x.kind === "wn" ? "#8fcfa6" : "#e8c07a",fontSize:14,lineHeight:1 }}>{x.kind === "wn" ? "❋" : x.kind === "update" ? "↑" : "✦"}</span>
       <span style={{ flex:1,minWidth:0 }}>
         <span style={{ display:"flex",alignItems:"baseline",gap:8 }}>
           <span style={{ flex:1,minWidth:0,fontFamily:JOST,fontSize:13.5,letterSpacing:0.4,color:"#f1ecf9" }}>{x.title}</span>
@@ -6495,7 +6500,11 @@ function InboxSheet({ lang, items, seenAt, onClose, onGo }) {
         </span>
         <span style={{ display:"block",marginTop:3,fontFamily:INTER,fontSize:13.5,lineHeight:1.55,color:"#b8aed0",whiteSpace:"pre-line",overflowWrap:"anywhere" }}>{x.body}</span>
       </span>
-      {x.screen ? <span aria-hidden="true" style={{ alignSelf:"center",color:"#6f6a80",fontSize:16 }}>›</span> : null}
+      {x.kind === "update" ? (
+        <span style={{ alignSelf:"center",flexShrink:0,padding:"7px 14px",borderRadius:100,fontFamily:JOST,fontSize:11.5,letterSpacing:1.4,
+          textTransform:"uppercase",color:"#f6dfb0",background:"rgba(232,192,122,0.12)",border:"1px solid rgba(232,192,122,0.45)",
+          display:"inline-flex",alignItems:"center",justifyContent:"center",lineHeight:1 }}>{L(INBOX_TXT.updBtn)}</span>
+      ) : x.screen ? <span aria-hidden="true" style={{ alignSelf:"center",color:"#6f6a80",fontSize:16 }}>›</span> : null}
     </button>
   );
   const head = (t) => <div style={{ fontFamily:JOST,fontSize:10.5,letterSpacing:2.5,textTransform:"uppercase",color:"#8f88a3",margin:"14px 0 2px" }}>{t}</div>;
@@ -8687,6 +8696,7 @@ export default function SakinApp() {
   useEffect(() => { if (screen === "harita") refreshNews(); /* eslint-disable-next-line */ }, [screen, lang]);
   // Birleşik liste: sunucu duyurusu + cihazdaki mesaj (aynı id bir kez) + bu sürümün
   // "Ne yeni" notu. "Ne yeni" okunmamış noktası YAKMAZ (yeni kuruluma boş yere nokta).
+  const [updateInfo, setUpdateInfo] = useState(null); // { version, notes_tr, notes_en }, daha yeni sürüm varsa (zil listesi de okur, bu yüzden burada)
   const inboxItems = (() => {
     const map = new Map();
     for (const n of inboxNews) map.set(n.id, { ...n, kind: "news" });
@@ -8701,6 +8711,18 @@ export default function SakinApp() {
         title: pickLang(INBOX_TXT.whatsNew, lang) + " · " + pickLang(WHATS_NEW.headline, lang),
         body: Array.isArray(its) ? its.map((x) => "· " + x).join("\n") : "" });
     } catch (_) {}
+    // YENİ SÜRÜM: mağazada canlı sürüm bu sürümden büyükse (updateInfo, aşağıdaki
+    // latest-ios-version.json kontrolü) zile "Güncelle" kaydı. İlk görüldüğü an saklanır,
+    // nokta bir kez yanar; güncelleyince updateInfo düşer, kayıt kendiliğinden kaybolur.
+    if (updateInfo && updateInfo.version) {
+      try {
+        const uk = "sakin_upd_at_" + updateInfo.version;
+        let at = parseInt(localStorage.getItem(uk) || "0", 10);
+        if (!at) { at = Date.now(); localStorage.setItem(uk, String(at)); }
+        out.push({ id: "upd_" + updateInfo.version, kind: "update", t: at, read: false, screen: "__update",
+          title: pickLang(INBOX_TXT.updTitle, lang).replace("{v}", updateInfo.version), body: pickLang(INBOX_TXT.updBody, lang) });
+      } catch (_) {}
+    }
     return out.sort((a, b) => b.t - a.t);
   })();
   const inboxUnread = inboxItems.some((x) => x.kind !== "wn" && !x.read && x.t > inboxSeen);
@@ -9229,7 +9251,7 @@ export default function SakinApp() {
   const [purchaseError, setPurchaseError] = useState("");
   const [iapReady, setIapReady] = useState(false);
   const [productsReady, setProductsReady] = useState(false);
-  const [updateInfo, setUpdateInfo] = useState(null); // { version, notes_tr, notes_en }, daha yeni sürüm varsa
+  // updateInfo durumu yukarıda (bildirim merkezi listesinden ÖNCE tanımlı olmalı).
   const [updateDismissed, setUpdateDismissed] = useState(() => localStorage.getItem("sakin_update_dismissed_v") || "");
 
   // ── "NE YENİ" KARTI ────────────────────────────────────────────────────────
@@ -14280,7 +14302,9 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
 
       <NotifNoteCard note={notifNote} lang={lang} onClose={() => setNotifNote(null)} />
       {inboxOpen && <InboxSheet lang={lang} items={inboxItems} seenAt={inboxSeenAtOpen} onClose={() => setInboxOpen(false)}
-        onGo={(scr) => { setInboxOpen(false); if (PUSH_SCREENS.includes(scr)) { try { setShowAilesi(false); } catch (_) {} setScreen(scr); } }} />}
+        onGo={(scr) => {
+          if (scr === "__update") { try { track("inbox", { a: "update" }); } catch (_) {} try { window.open(STORE_URL, "_system"); } catch (_) {} return; }
+          setInboxOpen(false); if (PUSH_SCREENS.includes(scr)) { try { setShowAilesi(false); } catch (_) {} setScreen(scr); } }} />}
       {/* ÇEMBER: canlı oda (tam ekran, alt barın üstünde). Kapı: bugünkü bağlantı. */}
       {showRooms && (
         <Suspense fallback={null}>

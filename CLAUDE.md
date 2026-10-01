@@ -1191,6 +1191,13 @@ cihazına" = Ayarlar > Bildirimler altındaki 6 haneli CİHAZ KODU, son gönderi
   BİLEREK girmez. Sunucu: Blobs `sakin-news` "feed" (son 30), `news.mjs` GET ?lang&p
   (CORS *, 60 sn önbellek, kişisel veri yok), panelde listeleme + "Kaldır".
   Analitik `inbox` a="open" (track + rapor "inbox_" öneki).
+- **ZİLDE "GÜNCELLE" (1.4.3, Eki 2026, kullanıcı: "yeni sürüm yayınlanınca bildirim merkezinde
+  güncelle butonu çıksın, mağazaya yönlendirsin"):** PUSH YOK (Apple 4.5.4, push varsayılan açık).
+  `latest-ios-version.json` kontrolü (`updateInfo`, yalnızca native) mağaza sürümü > APP_VERSION
+  derse zile `kind:"update"` kaydı (ilk görülme `sakin_upd_at_<v>`, nokta bir kez yanar) + altın
+  "Güncelle" hapı -> `STORE_URL`. Güncelleyince kendiliğinden kaybolur. Üst şerit banner'ı da durur.
+  `updateInfo` state'i `inboxItems`'TAN ÖNCE tanımlı olmalı (TDZ). Analitik `inbox` a="update".
+  store-version-watch.yml'deki gdkpd adımı kaldırıldı (Netlify = main).
 - ✅ ANDROID AÇIK (Eyl 2026): `android/app/google-services.json` (Firebase projesi
   `sakin-fd9b7`, paket com.sakin.app) repoda, `PUSH_ANDROID_READY = true`.
   ⚠️ Dosya silinirse bayrağı false yap (Firebase'siz register() native hata verir).
