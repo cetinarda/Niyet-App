@@ -39,7 +39,7 @@ Günlük hatırlatıcılar cihazınızda yerel olarak kurulur, içerikleri sunuc
 
 ### 2.5 Anonim Kullanım Ölçümü
 
-Uygulamayı iyileştirmek için kendi anonim ölçümümüzü kullanırız: rastgele bir kurulum kimliği ile hangi ekranların ne kadar kullanıldığı ve hangi adımların tamamlandığı sayılır. Ad, doğum bilgisi, yazdığınız metin veya reklam kimliği **gönderilmez**. Ayarlar'daki "Anonim kullanım verisi paylaş" seçeneğiyle kapatabilirsiniz.
+Uygulamayı iyileştirmek için kendi anonim ölçümümüzü kullanırız: rastgele bir kurulum kimliği ile hangi ekranların ne kadar kullanıldığı ve hangi adımların tamamlandığı sayılır. Ad, doğum bilgisi, yazdığınız metin veya reklam kimliği **gönderilmez**. Bağlanma stili testini çözdüğünüzde, testin bilimsel tutarlılığını ölçebilmemiz için 16 cevabınız yalnızca rakam dizisi olarak bu kimliğe eklenir; sonucunuz ya da adınız gönderilmez. Ayarlar'daki "Anonim kullanım verisi paylaş" seçeneğiyle kapatabilirsiniz.
 
 Ayrıca Meta (Facebook) App Events SDK'sı kurulum, açılış ve oturum gibi temel etkinlikleri ölçer; reklam kimliği (IDFA/GAID) **toplamaz** ve uygulamalar arası izleme yapmaz.
 

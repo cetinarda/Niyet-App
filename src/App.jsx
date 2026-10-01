@@ -9696,6 +9696,23 @@ export default function SakinApp() {
       return r && typeof r.anxiety === "number" && typeof r.avoidance === "number" && ATTACH_TXT.styles[r.style] ? r : null;
     } catch (_) { return null; }
   }, [soulReloadKey]);
+  // BAĞLANMA TESTİ ÖLÇÜM SAĞLIĞI (1.4.3): yeni bir sonuç görülünce 16 cevap YALNIZCA
+  // rakam dizisi olarak (a1..a8, v1..v8; 1-5, cevapsız 0) anonim ölçüme bir kez gider.
+  // Metin, stil adı, doğum bilgisi GİTMEZ; ölçümü kapatan için track hiç göndermez.
+  // Sunucu: track.mjs attach_items, rapor: Cronbach alfa + test-tekrar test.
+  useEffect(() => {
+    if (!attachRes || !attachRes.takenAt) return;
+    try {
+      if (localStorage.getItem("sakin_attach_sent") === attachRes.takenAt) return;
+      const ans = JSON.parse(localStorage.getItem("soulprofile.attachment.answers") || "null");
+      if (!ans || typeof ans !== "object") return;
+      const ids = ["a1","a2","a3","a4","a5","a6","a7","a8","v1","v2","v3","v4","v5","v6","v7","v8"];
+      const r = ids.map((k) => { const v = ans[k]; return Number.isInteger(v) && v >= 1 && v <= 5 ? String(v) : "0"; }).join("");
+      if (r === "0".repeat(16)) return;
+      track("attach_items", { r });
+      localStorage.setItem("sakin_attach_sent", attachRes.takenAt);
+    } catch (_) {}
+  }, [attachRes]);
   // GELİŞ SEBEBİ: SoulID bunu eskiden DÜZ STRING yazıyordu ve içinde teknik bir
   // önek vardı ("Kuzey Düğüm Görevi: Pisces"). Artık {tr,en} objesi ve önek yok.
   // Güncelleme anında kullanıcının elinde ESKİ özet olabilir (SoulID'yi yeniden

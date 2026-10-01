@@ -34,15 +34,16 @@ gerekçesiyle buraya ekle (tarih + kullanıcının sözü).
   - Gerekenler: gizlilik metni 3 yer x 7 dil, App Store gizlilik etiketi "Health",
     Play Health apps beyanı + Data safety, ~40 metin x 7 dil.
 
-### 3. Bağlanma testi: bilimsel doğrulama
-- Acil düzeltmeler 1.4.3'te yapıldı (A5). Kalan: lisansı uygunsa ECR-S (12 madde)
-  ya da ECR-R'nin Türkçe uyarlamasına (Selçuk ve ark. 2005) geçiş, norm tabanlı
-  kesim noktası, pilot veri (Cronbach alfa + test-tekrar test).
+### 3. Bağlanma testi: bilimsel doğrulama (YARIM, 1 Eki 2026)
+- YAPILDI: anonim cevap hattı + rapor (alfa, madde-toplam, test-tekrar, norm, dağılım),
+  izin e-posta taslakları (`app-store-docs/baglanma-olcegi-izin-epostalari.md`).
+- KALAN: e-postaları göndermek (kullanıcı); izin gelirse ECR-R / ECR-S / Türkçe uyarlamaya
+  geçiş; gelmezse rapordaki zayıf maddeleri (M-T r < .30) yeniden yazmak; n >= 200 olunca
+  norm tabanlı kesim noktası.
 
-### 4. SoulID: İngilizce modda kalan Türkçe parçalar (A4'ün dışında kaldı)
-- `components/CharacterStats.tsx` iki başlık + `lib/stats` stat adları/açıklamaları.
-- `HeroCard`, `ProfileCard`, `app/history/page.tsx` kayıtlı Türkçe yıldız ırkı adını gösteriyor;
-  history'de sabit "Yaşam Yolu". Çözüm: `concepts-en.ts` ırk tablosundan okumak.
+### 4. SoulID İngilizce: YAPILDI (1 Eki 2026)
+- Kalan küçük parça: sözlük/ayarlar/şartlar/destek sayfa başlıkları Türkçe; eski raporların
+  AI metinleri kayıtlı dilde kalır (yeniden üretmeden değişmez).
 
 ### 5. Konuma göre bildirim: İPTAL (kullanıcı, 1 Eki 2026)
 - Yerine: AI bildirim süzgeci ortam varsayan metinleri (pencere, havalandır...)

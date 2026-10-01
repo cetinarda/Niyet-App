@@ -138,6 +138,22 @@ export function mergeBatch(rec, body, now) {
       if (it.a === "done" && ["kind", "bond", "calm", "see"].includes(it.w)) bump("selflove_w_" + it.w);
     }
     else if (e === "tour") { if (["offer", "start", "later", "skip", "done"].includes(it.a)) bump("tour_" + it.a); }
+    // BAĞLANMA TESTİ ÖLÇÜM SAĞLIĞI (1.4.3, Eki 2026). Kullanıcı: "bağlanma stili doğru
+    // sonuç vermiyor, bilimsel doğrula". 16 cevap YALNIZCA rakam dizisi (a1..a8, v1..v8;
+    // 1-5, cevapsız 0), metin/sonuç adı gelmez. Son çözüm rec.att'te; 7-120 gün sonra
+    // FARKLI bir dizi gelirse ilki rec.att0'a geçer (test-tekrar test için, bir kez).
+    // Rapor: Cronbach alfa, madde-toplam, test-tekrar test r, stil dağılımı, norm.
+    else if (e === "attach_items") {
+      if (typeof it.r === "string" && /^[0-5]{16}$/.test(it.r)) {
+        const prev = rec.att;
+        if (prev && prev.r !== it.r && !rec.att0) {
+          const gap = (ts - prev.t) / 86400000;
+          if (gap >= 7 && gap <= 120) rec.att0 = prev;
+        }
+        rec.att = { r: it.r, t: ts };
+        bump("attach_done");
+      }
+    }
     else if (e === "inbox") { if (it.a === "open" || it.a === "update") bump("inbox_" + it.a); }
     else if (e === "deeplink_open") {
       const s = ["mandala", "bugun", "nefes", "ses", "chakra", "soulid"].includes(it.s) ? it.s : null;

@@ -38,6 +38,91 @@ const BUCKETS = ["10 sn altı", "10-30 sn", "30 sn-1 dk", "1-3 dk", "3-10 dk", "
 
 function pct(n, d) { return d > 0 ? Math.round((n / d) * 1000) / 10 : 0; }
 
+// ── BAĞLANMA TESTİ ÖLÇÜM SAĞLIĞI (1.4.3, Eki 2026) ─────────────────────────
+// track.mjs rec.att = { r: "16 rakam", t } (a1..a8 kaygı, v1..v8 kaçınma; 1-5,
+// cevapsız 0) ve test-tekrar test için rec.att0. Ters maddeler SoulID
+// lib/attachment/index.ts ile AYNI (a7 a8 v7 v8). Orada madde sırası ya da ters
+// madde değişirse BURAYI da değiştir. Saf fonksiyon, test edilebilir.
+const ATT_REV = new Set([6, 7, 14, 15]);
+const r3 = (x) => (x == null || !isFinite(x) ? null : Math.round(x * 1000) / 1000);
+function attItems(s) {
+  const raw = String(s).split("").map(Number);
+  if (raw.length !== 16 || raw.some((x) => !(x >= 0 && x <= 5))) return null;
+  return raw.map((x, i) => (x === 0 ? null : ATT_REV.has(i) ? 6 - x : x));
+}
+// Eksen puanı: SoulID axisScore ile aynı (1-5 ortalama -> 0-100).
+function attAxis(items, off) {
+  const v = items.slice(off, off + 8).filter((x) => x != null);
+  return v.length ? ((v.reduce((a, x) => a + x, 0) / v.length - 1) / 4) * 100 : null;
+}
+function mean(a) { return a.reduce((s, x) => s + x, 0) / a.length; }
+function sd(a) { if (a.length < 2) return null; const m = mean(a); return Math.sqrt(a.reduce((s, x) => s + (x - m) ** 2, 0) / (a.length - 1)); }
+function pearson(x, y) {
+  if (x.length < 3) return null;
+  const mx = mean(x), my = mean(y);
+  let sxy = 0, sxx = 0, syy = 0;
+  for (let i = 0; i < x.length; i++) { const dx = x[i] - mx, dy = y[i] - my; sxy += dx * dy; sxx += dx * dx; syy += dy * dy; }
+  return sxx > 0 && syy > 0 ? sxy / Math.sqrt(sxx * syy) : null;
+}
+// Cronbach alfa + düzeltilmiş madde-toplam korelasyonu + "madde silinirse alfa".
+function alphaOf(rows) {
+  const k = rows[0] ? rows[0].length : 0;
+  if (rows.length < 3 || k < 2) return { alpha: null, items: [] };
+  const variance = (a) => { const s = sd(a); return s == null ? 0 : s * s; };
+  const calc = (cols) => {
+    const tot = rows.map((r) => cols.reduce((s, j) => s + r[j], 0));
+    const vt = variance(tot);
+    const vi = cols.reduce((s, j) => s + variance(rows.map((r) => r[j])), 0);
+    return vt > 0 ? (cols.length / (cols.length - 1)) * (1 - vi / vt) : null;
+  };
+  const all = [...Array(k).keys()];
+  const items = all.map((j) => {
+    const rest = all.filter((x) => x !== j);
+    const col = rows.map((r) => r[j]);
+    return {
+      mean: r3(mean(col)), itemTotal: r3(pearson(col, rows.map((r) => rest.reduce((s, x) => s + r[x], 0)))),
+      alphaIfDeleted: r3(calc(rest)),
+    };
+  });
+  return { alpha: r3(calc(all)), items };
+}
+export function attachStats(users) {
+  const full = [], axes = [], retest = [];
+  const quad = { secure: 0, anxious: 0, avoidant: 0, disorganized: 0 };
+  let partial = 0;
+  for (const u of users) {
+    const it = u.att && attItems(u.att.r);
+    if (!it) continue;
+    const anx = attAxis(it, 0), avo = attAxis(it, 8);
+    if (anx == null || avo == null) continue;
+    if (it.every((x) => x != null)) full.push(it); else partial++;
+    axes.push([anx, avo]);
+    quad[anx > 50 ? (avo > 50 ? "disorganized" : "anxious") : (avo > 50 ? "avoidant" : "secure")]++;
+    const it0 = u.att0 && attItems(u.att0.r);
+    if (it0) {
+      const a0 = attAxis(it0, 0), v0 = attAxis(it0, 8);
+      if (a0 != null && v0 != null) retest.push({ a0, v0, a1: anx, v1: avo, days: (u.att.t - u.att0.t) / 864e5 });
+    }
+  }
+  const n = axes.length;
+  const anxS = axes.map((x) => x[0]), avoS = axes.map((x) => x[1]);
+  return {
+    n, complete: full.length, partial,
+    anxiety: alphaOf(full.map((r) => r.slice(0, 8))),
+    avoidance: alphaOf(full.map((r) => r.slice(8))),
+    norm: n ? { anxMean: r3(mean(anxS)), anxSd: r3(sd(anxS)), avoMean: r3(mean(avoS)), avoSd: r3(sd(avoS)) } : null,
+    axisCorr: r3(pearson(anxS, avoS)),
+    quad,
+    retest: {
+      n: retest.length,
+      days: retest.length ? Math.round(mean(retest.map((x) => x.days))) : null,
+      anx: r3(pearson(retest.map((x) => x.a0), retest.map((x) => x.a1))),
+      avo: r3(pearson(retest.map((x) => x.v0), retest.map((x) => x.v1))),
+      sameStyle: retest.length ? pct(retest.filter((x) => (x.a0 > 50) === (x.a1 > 50) && (x.v0 > 50) === (x.v1 > 50)).length, retest.length) : null,
+    },
+  };
+}
+
 export function aggregate(users) {
   const N = users.length;
   const reach = {}; FUNNEL.forEach((f) => (reach[f.key] = 0));
@@ -226,6 +311,7 @@ export function aggregate(users) {
       aynaByTip: Object.keys(aynaTip).map((t) => ({ tip: t, up: aynaTip[t].up, down: aynaTip[t].down,
         upPct: pct(aynaTip[t].up, aynaTip[t].up + aynaTip[t].down) })).sort((a, b) => (b.up + b.down) - (a.up + a.down)),
     },
+    attach: attachStats(users),
     platform: sortMap(platform),
     lang: sortMap(lang),
     version: sortMap(version),
@@ -332,6 +418,38 @@ export function renderEmpty(reason) {
       <p><b>Henüz veri yok.</b></p>
       <p>${reason}</p>
     </div>`);
+}
+
+// Bağlanma testi ölçüm sağlığı bölümü. Eşikler psikometride yaygın kabul gören
+// kaba sınırlar (alfa >= .70 kabul, >= .80 iyi; düzeltilmiş madde-toplam < .30
+// zayıf madde; test-tekrar r >= .70 kararlı). Örneklem küçükken sayılar oynak:
+// n < 50 iken yalnızca "veri birikiyor" denir, sonuç YORUMLANMAZ.
+function attachSection(a) {
+  if (!a || !a.n) {
+    return `<h2>Bağlanma testi ölçüm sağlığı</h2><div class="card"><p style="margin:0;color:var(--muted)">Henüz cevap gelmedi. Test çözüldükçe 16 cevap rakam dizisi olarak anonim gelir (metin yok).</p></div>`;
+  }
+  const f = (x) => (x == null ? "-" : x.toFixed(2));
+  const tone = (x, ok, good) => (x == null ? "" : x >= good ? ' style="color:var(--good)"' : x >= ok ? "" : ' style="color:var(--bad)"');
+  const itemRows = (label, s, pre) => s.items.map((it, i) =>
+    `<tr><td>${pre}${i + 1}${[6, 7].includes(i) ? " (ters)" : ""}</td><td class="num">${f(it.mean)}</td><td class="num"${tone(it.itemTotal, 0.3, 0.5)}>${f(it.itemTotal)}</td><td class="num"${it.alphaIfDeleted != null && s.alpha != null && it.alphaIfDeleted > s.alpha + 0.01 ? ' style="color:var(--bad)"' : ""}>${f(it.alphaIfDeleted)}</td></tr>`).join("");
+  const q = a.quad, qt = q.secure + q.anxious + q.avoidant + q.disorganized;
+  const small = a.complete < 50;
+  return `<h2>Bağlanma testi ölçüm sağlığı</h2>
+  <div class="card"><table>
+    <tr><td>Testi çözen (tam / eksik cevaplı)</td><td class="num">${a.n} (${a.complete} / ${a.partial})</td></tr>
+    <tr><td>Kaygı ekseni iç tutarlılık (Cronbach alfa)</td><td class="num"${tone(a.anxiety.alpha, 0.7, 0.8)}>${f(a.anxiety.alpha)}</td></tr>
+    <tr><td>Kaçınma ekseni iç tutarlılık (Cronbach alfa)</td><td class="num"${tone(a.avoidance.alpha, 0.7, 0.8)}>${f(a.avoidance.alpha)}</td></tr>
+    <tr><td>İki eksen arası korelasyon (düşük olmalı, ~.20-.40)</td><td class="num">${f(a.axisCorr)}</td></tr>
+    <tr><td>Norm: kaygı ort. ± ss / kaçınma ort. ± ss (0-100)</td><td class="num">${a.norm ? `${a.norm.anxMean.toFixed(1)} ± ${(a.norm.anxSd || 0).toFixed(1)} / ${a.norm.avoMean.toFixed(1)} ± ${(a.norm.avoSd || 0).toFixed(1)}` : "-"}</td></tr>
+    <tr><td>Stil dağılımı: güvenli / kaygılı / kaçıngan / korkulu-kaçıngan</td><td class="num">${["secure", "anxious", "avoidant", "disorganized"].map((k) => `%${pct(q[k], qt)}`).join(" / ")}</td></tr>
+    <tr><td>Test-tekrar test (7-120 gün arayla yeniden çözen)</td><td class="num">${a.retest.n ? `${a.retest.n} kişi, ort. ${a.retest.days} gün` : "henüz yok"}</td></tr>
+    ${a.retest.n ? `<tr><td>Test-tekrar r: kaygı / kaçınma · aynı stil</td><td class="num"><span${tone(a.retest.anx, 0.6, 0.7)}>${f(a.retest.anx)}</span> / <span${tone(a.retest.avo, 0.6, 0.7)}>${f(a.retest.avo)}</span> · %${a.retest.sameStyle}</td></tr>` : ""}
+  </table></div>
+  ${a.complete >= 3 ? `<div class="row2" style="margin-top:10px">
+    <div class="mini"><h3>Kaygı maddeleri</h3><table><tr><th>Madde</th><th class="num">Ort.</th><th class="num">M-T r</th><th class="num">Silinirse alfa</th></tr>${itemRows("Kaygı", a.anxiety, "a")}</table></div>
+    <div class="mini"><h3>Kaçınma maddeleri</h3><table><tr><th>Madde</th><th class="num">Ort.</th><th class="num">M-T r</th><th class="num">Silinirse alfa</th></tr>${itemRows("Kaçınma", a.avoidance, "v")}</table></div>
+  </div>` : ""}
+  <div class="foot" style="margin-top:10px">${small ? "<b>Örneklem küçük (tam cevaplı &lt; 50):</b> sayılar oynak, henüz yorumlama. " : ""}Nasıl okunur: alfa .70 altı (kırmızı) = eksen maddeleri aynı şeyi ölçmüyor; .80 üstü (yeşil) iyi. M-T r = düzeltilmiş madde-toplam korelasyonu, .30 altı (kırmızı) madde ekseninden kopuk, yeniden yazılmalı. "Silinirse α" eksenin alfasından belirgin yüksekse (kırmızı) o madde ölçeği bozuyor. Stil dağılımı aşırı tek yöne yığılıyorsa (ör. %60 korkulu-kaçıngan) 50 kesim noktası bu kitleye uymuyor: n ≥ 200 olunca norm ortalamasına göre kesim düşünülür. Test-tekrar r .70 üstü = sonuç haftadan haftaya kararlı.</div>`;
 }
 
 export function renderHTML(r, truncated) {
@@ -465,6 +583,8 @@ export function renderHTML(r, truncated) {
        ${tipRows}
      </table></div>`;
     })() +
+
+    attachSection(r.attach) +
 
     `<h2>En çok açılan bölümler</h2>
      <div class="card">${feats}</div>` +

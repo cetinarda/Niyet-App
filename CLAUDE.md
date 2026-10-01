@@ -310,13 +310,24 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
       Türkçeye düşer. Türkçe çıktı byte-identical (400 örnekle doğrulandı). Yeni içerik eklersen
       İngilizcesini de bu dosyaya ekle. Detay pencereleri (kavram kartı, 3B gezegen) ortak
       `components/Sheet.tsx`: body'ye PORTAL, kaydırma kilidi + konum geri yükleme, 88dvh. Eskiden
-      iframe'de sayfanın DİBİNDE açılıp ekranı "donmuş" gösteriyordu. Hâlâ Türkçe kalanlar
-      (CharacterStats, HeroCard/ProfileCard ırk adı, history "Yaşam Yolu"): SONRA-YAPILACAKLAR.
+      iframe'de sayfanın DİBİNDE açılıp ekranı "donmuş" gösteriyordu. **1.4.3 ikinci tur:**
+      karakter statları (`statName/statDesc`), ırk adı (`raceLabel`), karne özet satırı
+      (`summaryLineEn`), geçmiş sayfası, HD satırları, paylaşım metni/dosya adı da İngilizce;
+      hepsi `concepts-en.ts`'ten. Bilinen kalan: eski raporların AI metinleri (kayıtlı Türkçe)
+      ve sözlük/ayarlar/şartlar sayfa başlıkları. Paylaşım metninde marka "SoulID" (iki dilde).
     - **BAĞLANMA TESTİ (Eki 2026):** eşitlik (tam 50) artık güvenli tarafa (`> MID`; eskiden
       her soruya "Bazen" diyen "düzensiz" çıkıyordu). "Düzensiz" adı "Korkulu-kaçıngan"
       oldu (anahtar `disorganized` AYNI, kayıtlı sonuçlar bozulmasın; host `ATTACH_TXT` 7 dil).
-      Sonuç başlığı "ŞU ANKİ EĞİLİMİN". Ölçek özgün, doğrulanmamış: bilimsel doğrulama
-      `SONRA-YAPILACAKLAR.md`'de.
+      Sonuç başlığı "ŞU ANKİ EĞİLİMİN". Ölçek özgün, doğrulanmamış.
+      **ÖLÇÜM SAĞLIĞI HATTI (1.4.3):** host (`App.jsx`, `attachRes` sonrası) yeni sonuç
+      (`takenAt`, `sakin_attach_sent`) görünce 16 cevabı YALNIZCA rakam dizisi olarak
+      `track("attach_items", {r})` ile yollar (a1..a8, v1..v8; cevapsız 0). `track.mjs`
+      `rec.att`, 7-120 gün sonra farklı dizi gelirse ilki `rec.att0` (test-tekrar test).
+      `report.mjs attachStats`: Cronbach alfa, madde-toplam, "silinirse alfa", eksenler arası
+      r, norm ort/ss, stil dağılımı, test-tekrar r. Ters maddeler (a7 a8 v7 v8) ve madde sırası
+      `lib/attachment/index.ts` ile AYNI olmalı (`ATT_REV`). Gizlilik 3 yer x 7 dil (`privacy_s6p`).
+      ECR-R/ECR-S/Türkçe uyarlama TİCARİ kullanım için izin ister: e-posta taslakları
+      `app-store-docs/baglanma-olcegi-izin-epostalari.md`. n >= 200 olunca norm tabanlı kesim.
     - **İKİLİ UYUM: IP BAŞINA 1 ÜCRETSİZ ÇİFT (1.4.3, kullanıcı: "premium olmayanlara her IP
       için 1 kez; şu an birden fazla yapabiliyorlar"):** yerel kural (`soulprofile.used.compat`,
       1 çift) silip kurunca / "verilerimi sil" / başka tarayıcıda sıfırlanıyordu. Artık
