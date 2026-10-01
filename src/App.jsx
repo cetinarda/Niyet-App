@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useMemo, memo, lazy, Suspense } from "react";
 import BackButton, { BackArrow } from "./back-button.jsx";
+import { TourOffer, TourOverlay, TOUR_TXT } from "./tour.jsx";
 import { createPortal } from "react-dom";
 import { makeTrans, LANGUAGES } from "./i18n";
 import { CHAKRA_TRANS, FREQ_TRANS, ASTRO_TRANS, NOTIF_TRANS } from "./i18n-data";
@@ -12936,6 +12937,37 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
     // Adımlara üstteki şeritten tek dokunuşla geçilir.
     if (id === "baglan") { setScreen("mandala"); return; }
   };
+  // ── TANITIM TURU (1.4.3, src/tour.jsx) ── Yol seçimi kapatılınca ya da tanışma bitince
+  // `sakin_tour_pending` yazılır; ana sekmeye düşülüp ekranda başka katman yokken BİR KEZ
+  // "Sakin'i tanımak ister misin?" sorulur (`sakin_tour_offered`). Ayarlar'dan yeniden izlenir.
+  const [tourOffer, setTourOffer] = useState(false);
+  const [tourOn, setTourOn] = useState(false);
+  const tourStartRef = useRef("bugun");
+  const startTour = () => {
+    tourStartRef.current = screen;
+    setTourOffer(false); setShowAilesi(false);
+    try { localStorage.setItem("sakin_bugun_hint", "1"); } catch(_) {}
+    setBugunHint(false);
+    setTourOn(true);
+    try { track("tour", { a: "start" }); } catch(_) {}
+  };
+  const endTour = (how) => {
+    setTourOn(false); setShowAilesi(false);
+    setScreen(tourStartRef.current || "bugun");
+    try { track("tour", { a: how || "done" }); } catch(_) {}
+  };
+  useEffect(() => {
+    if (tourOn || tourOffer) return;
+    let pending = false; try { pending = localStorage.getItem("sakin_tour_pending") === "1" && !localStorage.getItem("sakin_tour_offered"); } catch(_) {}
+    if (!pending) return;
+    if (!["bugun", "mandala", "harita"].includes(screen) || onbPath || showNedir || embeddedApp || showAilesi || bugunPrep || showIntro) return;
+    const id = setTimeout(() => {
+      try { localStorage.setItem("sakin_tour_offered", "1"); localStorage.removeItem("sakin_tour_pending"); } catch(_) {}
+      setTourOffer(true);
+      try { track("tour", { a: "offer" }); } catch(_) {}
+    }, 1400);
+    return () => clearTimeout(id);
+  }, [screen, onbPath, showNedir, embeddedApp, showAilesi, bugunPrep, showIntro, tourOn, tourOffer]);
   const SIDEBAR_ITEMS = [
     // Giriş: sadece ev ikonu (yazı yok), üst barda kompakt buton
     {id:"giris",  icon:"⌂", label:"", color:"#c0a8e0", iconOnly:true},
@@ -14305,6 +14337,8 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
         onGo={(scr) => {
           if (scr === "__update") { try { track("inbox", { a: "update" }); } catch (_) {} try { window.open(STORE_URL, "_system"); } catch (_) {} return; }
           setInboxOpen(false); if (PUSH_SCREENS.includes(scr)) { try { setShowAilesi(false); } catch (_) {} setScreen(scr); } }} />}
+      {tourOffer && <TourOffer lang={lang} onStart={startTour} onLater={() => { setTourOffer(false); try { track("tour", { a: "later" }); } catch(_) {} }} />}
+      {tourOn && <TourOverlay lang={lang} onTab={goTab} onDone={endTour} />}
       {/* ÇEMBER: canlı oda (tam ekran, alt barın üstünde). Kapı: bugünkü bağlantı. */}
       {showRooms && (
         <Suspense fallback={null}>
@@ -14453,7 +14487,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                     açtığını gösteriyor. Eskiden native burada AYRI bir açılır
                     menü tutuyordu (showTopMenu + createPortal); Ayarlar artık
                     her platformda aynı yoldan açıldığı için o menü kaldırıldı. */}
-                <button
+                <button data-tour="settings"
                   onClick={()=>{ try{haptic();}catch(_){} setShowAilesi(false); setScreen("ayarlar"); }}
                   aria-label={pickLang(TAB_TXT.ayarlar, lang)}
                   style={{
@@ -14493,7 +14527,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
           overflowX:auto + scrollbar gizli: iOS/Android'de parmakla kaydırma
           doğal çalışır, masaüstünde çirkin kaydırma çubuğu görünmez. */}
       {stepStripVisible && (
-        <div style={{ position:"fixed",
+        <div data-tour="steps" style={{ position:"fixed",
           // ⌂/☰ barı gizliyse (Ben dışındaki web ekranları) şerit onun yerine geçer.
           top: topNavVisible
             ? (topControlsVisible ? "calc(88px + var(--sat))" : "calc(44px + var(--sat))")
@@ -14711,6 +14745,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
           askNotifPermissionOnce(lang, (() => { try { return localStorage.getItem("sakin_birth_date") || ""; } catch (_) { return ""; } })());
           setOnbPath(null); setOnbStep(0); setOnbBreathSec(0); setOnbCalcIdx(0);
           if (dest) setScreen(dest);
+          try { if (!localStorage.getItem("sakin_tour_offered")) localStorage.setItem("sakin_tour_pending", "1"); } catch(_) {}
         };
         const finish = () => {
           if (isB) {
@@ -15111,7 +15146,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
         <div style={{ position:"fixed",inset:0,zIndex:99998,overflowY:"auto",
           background:"radial-gradient(110% 55% at 50% 22%, rgba(240,205,130,0.10), rgba(120,70,140,0.04) 34%, transparent 56%), radial-gradient(140% 100% at 50% 120%, #150e26 0%, #0a0616 60%, #05030d 100%)" }}>
           {/* Kapat X: açılış (HAZIRIM) ekranına döner (safe-area altında) */}
-          <button onClick={()=>{ setShowNedir(false); setGirisPhase("intro"); }} aria-label={t("common_close")}
+          <button onClick={()=>{ setShowNedir(false); setGirisPhase("intro"); try { if (!localStorage.getItem("sakin_tour_offered")) localStorage.setItem("sakin_tour_pending", "1"); } catch(_) {} }} aria-label={t("common_close")}
             style={{ ...BTN,position:"fixed",top:"calc(var(--sat, 0px) + 14px)",right:16,width:32,height:32,borderRadius:"50%",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.12)",color:"#b6a9cf",fontSize:13,lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",zIndex:2 }}>✕</button>
           <div style={{ minHeight:"100%",maxWidth:420,margin:"0 auto",boxSizing:"border-box",
             padding:"calc(var(--sat, 0px) + 64px) 24px calc(var(--sab, 0px) + 28px)",
@@ -20217,6 +20252,8 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                     onClick={()=>{ try{haptic();}catch(_){} setHakkindaTab("yolculuk"); setFromSettings(true); setScreen("hakkinda"); }} />
                   <Row icon="✦" label={pickLang(NEDIR_I18N.title, lang)}
                     onClick={()=>{ try{haptic();}catch(_){} setHakkindaTab("nedir"); setFromSettings(true); setScreen("hakkinda"); }} />
+                  <Row icon="➝" label={pickLang(TOUR_TXT.replay, lang)}
+                    onClick={()=>{ try{haptic();}catch(_){} startTour(); }} />
                   <Row icon="◫" label={pickLang(TAB_TXT.terimler, lang)}
                     onClick={()=>{ try{haptic();}catch(_){} setShowKilavuz(true); }} />
                   {/* App Review Guideline 1.5: calisan bir destek iletisimi bulunmali. */}
@@ -20517,7 +20554,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
             // Artık BEŞ SEKME DE AYNI kalıptan geçiyor: aynı ikon boyu, aynı
             // dolgu, aynı minWidth. Bugün yalnızca RENGİYLE öne çıkıyor.
             return (
-              <button key={tb.id} onClick={()=>goTab(tb.id)}
+              <button key={tb.id} onClick={()=>goTab(tb.id)} data-tour={"tab-" + tb.id}
                 style={{ WebkitAppearance:"none",appearance:"none",
                   background: on ? `${tb.color}22` : "transparent",
                   border: on ? `1px solid ${tb.color}44` : "1px solid transparent",

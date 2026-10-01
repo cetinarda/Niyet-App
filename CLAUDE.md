@@ -517,6 +517,19 @@ Bir şeyi bozup bozmadığını anlamak için önce `isEarlyTunnel` false ile de
 altında "3 gün / 7 gün / 21 gün" yazıyor + Yolculuk sekmesinde anlatılıyor),
 kırmızı "?" balonu (kaldırılmış), 6'lı adım barı (kaldırılmış).
 
+## 🧭 TANITIM TURU (1.4.3, Eki 2026; kullanıcı: "Sakin'i tanımak ister misin? Bugün'den başlar, alt
+menüleri, Bağlan'ın üst menülerini, en son Ben'de ayarları gösterir, başladığı yere döner" + "3-4 ana tur")
+
+- `src/tour.jsx`: `TourOffer` (teklif kartı) + `TourOverlay` (4 adım: Bugün / Bağlan + üst şerit /
+  Keşfet + Ayna / Ben + Ayarlar), metinler `TOUR_TXT` 7 dil. Hedefler `data-tour` (alt sekmeler
+  `tab-<id>`, üst şerit `steps`, Ayarlar düğmesi `settings`); her hedef ayrı pencere (SVG maske),
+  kart ölçüme bağlı DEĞİL (alt ya da üst sabit). Tur sırasında alttaki uygulamaya dokunulmaz.
+- Teklif: yol seçimi kapatılınca ya da tanışma bitince `sakin_tour_pending`; ana sekmede başka
+  katman yokken 1,4 sn sonra BİR KEZ (`sakin_tour_offered`). Başlayınca Bugün ipucu kapanır.
+  Bitince/atlanınca başladığı ekrana döner. Ayarlar > GENEL > "Tanıtım turunu yeniden izle".
+- Analitik `tour` {offer/start/later/skip/done} (track + rapor). Hedef eleman eklerken/silerken
+  `data-tour` adlarını koru.
+
 ## 🌿 EVRİM + ORKESTRA - kullanıcı isteği: "zeki ve eğlenceli olsun"
 
 ⚠️ **Evrim bitkisi Ben ekranında, ORKESTRA kartı artık BUGÜN ekranında** (Eyl 2026 taşındı, bkz. Bugün bölümü). Aşağıdaki orkestra notları mantık olarak geçerli.

@@ -76,7 +76,7 @@ Sıra: A -> B -> C -> build + R8 + cihaz testi. Bittikçe [x] işaretle.
 - [x] C2 Orkestra: kendi + kolektif mühürlü sandık sayısı (küçükken gizli).
 - [x] C3 Yeni sürüm: push YOK; zilde "Güncelle" kaydı (`latest-ios-version.json`),
   güncelleyince kaybolur. store-version-watch'taki gdkpd adımı kaldırılır.
-- [ ] C4 Tanıtım turu: 3-4 ANA ADIM (kullanıcı kararı), kullanıcı başlatır, atlanabilir,
+- [x] C4 Tanıtım turu: 3-4 ANA ADIM (kullanıcı kararı), kullanıcı başlatır, atlanabilir,
   Ayarlar'da "Turu yeniden izle".
 - [ ] C5 Kendini sevme YANSIMASI (test değil), özgün 8-10 soru, puan yok, 21 gün sonra
   hatırlatma, yalnızca cihazda, Ben > Bağlanma kutusunun altı.
