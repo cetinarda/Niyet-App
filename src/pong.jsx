@@ -76,7 +76,9 @@ async function pongClient(getCember) {
 
 // `invite` (Çember'den davet, 1.4.3): { role: "host"|"guest", rid, nick }. Oda LOBİYE
 // DÜŞMEZ (özel oda); host davet edene, guest daveti kabul edene açılır.
-export default function PongOverlay({ lang, onClose, getCember, haptic, track, invite }) {
+// `onResult` (1.4.3): iki kişilik maç bitince HER İKİ taraf { rid, mn, me, op } bildirir;
+// sunucu (pong-result.mjs) iki rapor eşleşirse galibiyeti sayar (Çember profil rozeti).
+export default function PongOverlay({ lang, onClose, getCember, haptic, track, invite, onResult }) {
   const L = (o) => (o && (o[lang] || o.en)) || "";
   const JOST = "'Jost',sans-serif", INTER = "'Inter',sans-serif", SERIF = "'Cormorant Garamond',Georgia,serif";
   const INK = "#f1ecf9", MUTE = "#8f88a3", GOLD = "#e8c07a", LAV = "#b8a4d8";
@@ -94,6 +96,9 @@ export default function PongOverlay({ lang, onClose, getCember, haptic, track, i
   const G = useRef(null);                              // oyun durumu (render dışı)
   const chans = useRef({ lobby: null, game: null });
   const client = useRef(null);
+  const ridRef = useRef(null);                         // iki kişilik odanın kimliği
+  const mnRef = useRef(0);                             // odadaki maç numarası (rövanşta artar)
+  const report = (me, op, mn) => { if (!ridRef.current || !onResult) return; try { onResult({ rid: ridRef.current, mn, me, op }); } catch (_) {} };
   const reduce = typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const buzz = () => { try { haptic && haptic(); } catch (_) {} };
   const tr = (a, extra) => { try { track && track("pong", { a, ...(extra || {}) }); } catch (_) {} };
@@ -161,6 +166,7 @@ export default function PongOverlay({ lang, onClose, getCember, haptic, track, i
   async function hostRoom(inviteRid) {
     const cl = client.current; if (!cl) return;
     const rid = inviteRid || Math.random().toString(36).slice(2, 12);
+    ridRef.current = rid; mnRef.current = 0;
     setMode("host"); setView("hosting"); if (!inviteRid) tr("host");
     // Davet odası lobiye yazılmaz (yalnızca davet edilen katılabilir).
     if (!inviteRid) { try { await chans.current.lobby.track({ rid, nick: cl.nick, t: Date.now() }); } catch (_) {} }
@@ -201,6 +207,7 @@ export default function PongOverlay({ lang, onClose, getCember, haptic, track, i
       if (ch && !G.current) { try { if (!ch.presenceState().host) { removeChan("game"); setMsg(L(TXT.expired)); setView("msg"); } } catch (_) {} }
     }, 12000);
     const myKey = "g" + Math.random().toString(36).slice(2, 10);
+    ridRef.current = room.rid;
     const ch = cl.sb.channel("pong:r:" + room.rid, { config: { private: true, broadcast: { self: false }, presence: { key: myKey } } });
     let started = false;
     ch.on("broadcast", { event: "start" }, ({ payload }) => {
@@ -252,6 +259,7 @@ export default function PongOverlay({ lang, onClose, getCember, haptic, track, i
       if (role !== "guest" || !payload) return;
       const g = G.current; if (g) { g.over = true; }
       setEnded({ won: payload.g > payload.h, me: payload.g, op: payload.h }); setView("end");
+      report(payload.g, payload.h, Number.isInteger(payload.mn) ? payload.mn : 0);
     });
     ch.on("broadcast", { event: "again" }, () => {
       if (role === "host") restartMatch(); else { setEnded(null); setScore({ me: 0, op: 0 }); setView("game"); if (G.current) G.current.over = false; }
@@ -274,6 +282,7 @@ export default function PongOverlay({ lang, onClose, getCember, haptic, track, i
   function restartMatch() {
     const g = G.current; if (!g) return;
     g.sc = { h: 0, g: 0 }; g.over = false; g.speed = S0;
+    mnRef.current += 1;
     setScore({ me: 0, op: 0 }); setEnded(null); setView("game");
     if (g.role === "host") sendG("s", { h: 0, g: 0 });
     serve(1);
@@ -298,7 +307,7 @@ export default function PongOverlay({ lang, onClose, getCember, haptic, track, i
       g.over = true;
       const won = g.sc.h > g.sc.g;
       setEnded({ won, me: g.sc.h, op: g.sc.g }); setView("end");
-      if (g.role === "host") sendG("end", g.sc);
+      if (g.role === "host") { sendG("end", { ...g.sc, mn: mnRef.current }); report(g.sc.h, g.sc.g, mnRef.current); }
       tr("end", { m: g.role === "single" ? "s" : "d" });
       return;
     }

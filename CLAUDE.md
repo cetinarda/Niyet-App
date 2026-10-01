@@ -1429,6 +1429,20 @@ koruma sunucuda.
 - Test: iki sekme + `window.__pongFakeClient` (BroadcastChannel ile sahte Realtime, yalnızca
   testte tanımlı) ile lobi, katılma, skorun iki ekranda ayna olması, ayrılma doğrulandı.
   ⚠️ Headless'ta arka plan sekmesinin rAF'ı durur: oda sahibi sekmesini `bringToFront` et.
+- **GALİBİYET ROZETİ (1.4.3, Eki 2026; kullanıcı: "nick profilinde kaç kez pong kazandığı yazsın,
+  rozetleri tek takalım"; eşikler 5/15/30/50 kullanıcı onayı):** `netlify/functions/pong-result.mjs`.
+  Maç sonunda İKİ TARAF da `{id, rid, mn, me, op}` bildirir (`onResult` prop'u, host `end` + konuk
+  `end` olayında; `mn` = odadaki maç numarası, rövanşta artar, `end` yükünde taşınır). Sayılır
+  yalnızca: iki FARKLI cihaz, ayna skorlar (biri 7), FARKLI ağ (IP özeti), 10 dk içinde, aynı ikili
+  günde en çok 3 maç. Kayıtlar İDEMPOTENT (kazanan = maç kimliği kümesi; Blobs 8.2'de onlyIfNew
+  yok). Blobs `sakin-pong`: `m/<rid:mn>/<cihaz>`, `p/<gün>/<ikili>`, `w/<cihaz>` {n, ids}.
+  `chat-send` sayıyı SUNUCUDA okur (`pongWins`), mesaja `pong_wins` yazar, yayında `pw` (istemci
+  uyduramaz). Profil sayfası (`badgeOf`) tek rozet (en yüksek basamak, `pongTier`) + "N galibiyet";
+  rozet rehberinde açıklama satırı. ⚠️ Kullanıcı SQL Editor'da `cember.sql` sonundaki
+  `pong_wins` ALTER'ını çalıştırmalı (yoksa sütunsuz denenir, sayı görünmez). "Hesabımı sil"
+  `DELETE pong-result` ile sayacı da siler. Gizlilik metinleri (3 yer, 7 dil) "tek istisna"
+  cümlesiyle güncellendi. Test: sahte Blobs ile 9 senaryo (eşleşme, tekrar, aynı ağ, tutarsız
+  skor, günlük sınır, silme).
 - Analitik `pong` {a: open/single/host/join/end}. Gizlilik metinleri (3 yer, 7 dil):
   takma ad + oyun hareketleri anlık iletilir, saklanmaz.
 

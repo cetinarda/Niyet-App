@@ -14,10 +14,11 @@ export default async (req) => {
   const q = (cols) => rest(cfg, `chat_messages?select=${cols}&room=eq.${room}&hidden=is.false&created_at=gte.${encodeURIComponent(since)}&order=created_at.desc&limit=80`);
   // Rozet sütunları (`stage`, `chord`) ya da `letter` (mühürlü Niyet Mektubu ikonu)
   // yoksa onlarsız tekrar sor: şema güncellenmeden de oda açılır.
-  let r = await q("id,nick,body,created_at,device_hash,letter,stage,chord");
+  let r = await q("id,nick,body,created_at,device_hash,letter,stage,chord,pong_wins");
+  if (!r.ok && r.status === 400) r = await q("id,nick,body,created_at,device_hash,letter,stage,chord");
   if (!r.ok && r.status === 400) r = await q("id,nick,body,created_at,device_hash,letter");
   if (!r.ok && r.status === 400) r = await q("id,nick,body,created_at,device_hash");
   if (!r.ok || !Array.isArray(r.data)) return json(headers, 200, { ok: false, reason: "db" });
-  const msgs = r.data.reverse().map((m) => ({ id: m.id, nick: m.nick, body: m.body, t: m.created_at, el: elementIndex(m.device_hash), a: authorTag(m.device_hash), l: m.letter === true ? 1 : 0, s: Number.isInteger(m.stage) ? m.stage : -1, c: m.chord === true ? 1 : 0 }));
+  const msgs = r.data.reverse().map((m) => ({ id: m.id, nick: m.nick, body: m.body, t: m.created_at, el: elementIndex(m.device_hash), a: authorTag(m.device_hash), l: m.letter === true ? 1 : 0, s: Number.isInteger(m.stage) ? m.stage : -1, c: m.chord === true ? 1 : 0, pw: Number.isInteger(m.pong_wins) ? m.pong_wins : 0 }));
   return json(headers, 200, { ok: true, msgs });
 };

@@ -80,7 +80,7 @@ Sıra: A -> B -> C -> build + R8 + cihaz testi. Bittikçe [x] işaretle.
   Ayarlar'da "Turu yeniden izle".
 - [x] C5 Kendini sevme YANSIMASI (test değil), özgün 8-10 soru, puan yok, 21 gün sonra
   hatırlatma, yalnızca cihazda, Ben > Bağlanma kutusunun altı.
-- [ ] C6 Pong galibiyet rozeti: yalnızca iki kişilik, iki cihazın raporu eşleşirse,
+- [x] C6 Pong galibiyet rozeti: yalnızca iki kişilik, iki cihazın raporu eşleşirse,
   aynı rakipten günlük sınır, eşikler 5 / 15 / 30 / 50, profilde tek rozet, gizlilik 3 yer.
 - [ ] C7 Sürüm 1.4.3 (iOS build 1, Android vc 22). ASC'de 1.4.2 (2) kararı beklenir.
 

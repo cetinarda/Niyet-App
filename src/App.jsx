@@ -1630,6 +1630,18 @@ const CEMBER_TXT = {
 // yalnızca `stage` (0-3) ve `chord` bayrağını yollar; rozet mesajla birlikte saklanır
 // (o anki hâl). Başlıktaki kendi rozetlerine dokununca rehber açılır.
 const CEMBER_BADGE_TXT = {
+  // Pong galibiyet rozeti (1.4.3): yalnızca iki kişilik, iki tarafın raporu eşleşen maçlar
+  // (pong-result.mjs). Eşikler 5/15/30/50 (kullanıcı onayı); profilde TEK rozet (en yükseği).
+  pongNames: [
+    { tr:"Pong kıvılcımı", en:"Pong spark", de:"Pong-Funke", es:"Chispa de Pong", pt:"Faísca de Pong", fr:"Étincelle de Pong", ja:"ポンの火花" },
+    { tr:"Pong ritmi", en:"Pong rhythm", de:"Pong-Rhythmus", es:"Ritmo de Pong", pt:"Ritmo de Pong", fr:"Rythme de Pong", ja:"ポンのリズム" },
+    { tr:"Pong akışı", en:"Pong flow", de:"Pong-Fluss", es:"Flujo de Pong", pt:"Fluxo de Pong", fr:"Flow de Pong", ja:"ポンの流れ" },
+    { tr:"Pong ustası", en:"Pong master", de:"Pong-Meister", es:"Maestro de Pong", pt:"Mestre de Pong", fr:"Maître de Pong", ja:"ポンの達人" },
+  ],
+  pongWins:  { tr:"{n} galibiyet", en:"{n} wins", de:"{n} Siege", es:"{n} victorias", pt:"{n} vitórias", fr:"{n} victoires", ja:"{n}勝" },
+  pongWin1:  { tr:"1 galibiyet", en:"1 win", de:"1 Sieg", es:"1 victoria", pt:"1 vitória", fr:"1 victoire", ja:"1勝" },
+  pongPlain: { tr:"Pong", en:"Pong", de:"Pong", es:"Pong", pt:"Pong", fr:"Pong", ja:"ポン" },
+  pongGuide: { tr:"İki kişilik Pong'da 5, 15, 30 ve 50 galibiyette yeni bir rozet. İki oyuncunun da onayladığı maçlar sayılır.", en:"In two-player Pong, a new badge at 5, 15, 30 and 50 wins. Only matches confirmed by both players count.", de:"Im Zwei-Spieler-Pong ein neues Abzeichen bei 5, 15, 30 und 50 Siegen. Es zählen nur Spiele, die beide bestätigen.", es:"En Pong a dos, una nueva insignia a las 5, 15, 30 y 50 victorias. Solo cuentan las partidas confirmadas por ambos.", pt:"No Pong a dois, uma nova insígnia às 5, 15, 30 e 50 vitórias. Só contam os jogos confirmados pelos dois.", fr:"Au Pong à deux, un nouveau badge à 5, 15, 30 et 50 victoires. Seuls les matchs confirmés par les deux joueurs comptent.", ja:"ふたりで遊ぶポンで5、15、30、50勝ごとに新しいバッジ。両者が確認した試合だけが数えられます。" },
   title:  { tr:"Rozetler", en:"Badges", de:"Abzeichen", es:"Insignias", pt:"Insígnias", fr:"Badges", ja:"バッジ" },
   intro:  { tr:"Takma adının yanındaki işaretler kim olduğunu değil, yolculuğunu anlatır.", en:"The marks next to your nickname tell your journey, not who you are.", de:"Die Zeichen neben deinem Spitznamen erzählen deinen Weg, nicht wer du bist.", es:"Las marcas junto a tu apodo cuentan tu camino, no quién eres.", pt:"As marcas junto à tua alcunha contam o teu caminho, não quem és.", fr:"Les signes à côté de ton pseudo racontent ton chemin, pas qui tu es.", ja:"ニックネームの横の印は、あなたが誰かではなく、あなたの歩みを語ります。" },
   yours:  { tr:"Senin rozetlerin", en:"Your badges", de:"Deine Abzeichen", es:"Tus insignias", pt:"As tuas insígnias", fr:"Tes badges", ja:"あなたのバッジ" },
@@ -1696,6 +1708,21 @@ function cemberChordGlyph(size, title, dim) {
   );
 }
 
+// Pong galibiyet basamağı: 0 (rozet yok) .. 4 (5/15/30/50).
+const PONG_TIERS = [5, 15, 30, 50];
+function pongTier(n) { let t = 0; for (const x of PONG_TIERS) if ((n || 0) >= x) t++; return t; }
+// Raket + top; basamak arttıkça halka sayısı artar (tek rozet, en yükseği).
+function pongBadgeGlyph(tier, size, title) {
+  const col = ["#8f88a3", "#c9a86a", "#e8c07a", "#f3d58f", "#ffe7a8"][tier] || "#8f88a3";
+  return (
+    <svg viewBox="0 0 16 16" width={size} height={size} role="img" aria-label={title} style={{ flexShrink:0, overflow:"visible" }}>
+      <title>{title}</title>
+      {Array.from({ length: Math.max(0, tier - 1) }, (_, i) => <circle key={i} cx="8" cy="8" r={6.4 + i * 1.3} fill="none" stroke={col} strokeOpacity={0.35 - i * 0.07} strokeWidth="0.7" />)}
+      <rect x="3.2" y="10.6" width="7" height="1.9" rx="0.95" fill={col} />
+      <circle cx="10.8" cy="5.4" r="1.9" fill={col} />
+    </svg>
+  );
+}
 // Takma ad rengi = cihazın element dilimi (sunucu `el`, 0-7).
 const CEMBER_EL_COLORS = ["#f0a070", "#7ec8e8", "#b8c890", "#c8d8f0", "#d8cff5", "#f0d080", "#e8c07a", "#a8e0d0"];
 const CEMBER_BLOCK_KEY = "sakin_cember_blocked";      // ESKİ: takma ad listesi (yalnızca etiketsiz mesajlarda)
@@ -2054,6 +2081,8 @@ function CemberScreen({ lang, unlocked, minor, onClose, onGoBaglan, onGoNefes, s
         const bm = badgeOf;
         const bcol = CEMBER_EL_COLORS[(bm.el || 0) % CEMBER_EL_COLORS.length];
         const hasStage = bm.s >= 0 && bm.s <= 3;
+        const pw = Number.isInteger(bm.pw) ? bm.pw : 0, pt = pongTier(pw);
+        const pwTxt = pw === 1 ? L(CEMBER_BADGE_TXT.pongWin1) : L(CEMBER_BADGE_TXT.pongWins).replace("{n}", String(pw));
         const line = (glyph, name, desc, key) => (
           <div key={key} style={{ display:"flex",alignItems:"center",gap:12,padding:"9px 0",borderTop:"1px solid rgba(184,164,216,0.08)" }}>
             <div style={{ width:34,height:34,borderRadius:"50%",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",
@@ -2070,11 +2099,12 @@ function CemberScreen({ lang, unlocked, minor, onClose, onGoBaglan, onGoNefes, s
               borderRadius:"22px 22px 0 0",background:"#100c1c",borderTop:"1px solid rgba(232,192,122,0.3)",boxShadow:"0 -12px 40px rgba(0,0,0,0.5)" }}>
               <div style={{ width:38,height:4,borderRadius:4,background:"rgba(255,255,255,0.14)",margin:"0 auto 14px" }} />
               <div style={{ display:"flex",flexDirection:"column",alignItems:"center",gap:8,marginBottom:10 }}>
-                {hasStage || bm.l || bm.c ? (
+                {hasStage || bm.l || bm.c || pt ? (
                   <div style={{ display:"flex",alignItems:"center",justifyContent:"center",gap:12 }}>
                     {hasStage && cemberStageGlyph(bm.s, 30, L(CEMBER_BADGE_TXT.names[bm.s]))}
                     {bm.l ? cemberChestGlyph(24, L(CEMBER_BADGE_TXT.letter)) : null}
                     {bm.c ? cemberChordGlyph(26, L(CEMBER_BADGE_TXT.chord)) : null}
+                    {pt ? pongBadgeGlyph(pt, 28, L(CEMBER_BADGE_TXT.pongNames[pt - 1])) : null}
                   </div>
                 ) : null}
                 <div style={{ fontFamily:SERIF,fontSize:22,color:bcol,textAlign:"center" }}>{bm.nick}</div>
@@ -2082,7 +2112,9 @@ function CemberScreen({ lang, unlocked, minor, onClose, onGoBaglan, onGoNefes, s
               {hasStage && line(cemberStageGlyph(bm.s, 18, L(CEMBER_BADGE_TXT.names[bm.s])), L(CEMBER_BADGE_TXT.names[bm.s]), L(CEMBER_BADGE_TXT.descs[bm.s]), "s")}
               {bm.l ? line(cemberChestGlyph(15, L(CEMBER_BADGE_TXT.letter)), L(CEMBER_BADGE_TXT.letter), L(CEMBER_BADGE_TXT.letterDesc), "l") : null}
               {bm.c ? line(cemberChordGlyph(17, L(CEMBER_BADGE_TXT.chord)), L(CEMBER_BADGE_TXT.chord), L(CEMBER_BADGE_TXT.chordDesc), "c") : null}
-              {!hasStage && !bm.l && !bm.c && (
+              {pw > 0 && line(pongBadgeGlyph(pt, 18, L(pt ? CEMBER_BADGE_TXT.pongNames[pt - 1] : CEMBER_BADGE_TXT.pongPlain)),
+                pt ? L(CEMBER_BADGE_TXT.pongNames[pt - 1]) : L(CEMBER_BADGE_TXT.pongPlain), pwTxt, "p")}
+              {!hasStage && !bm.l && !bm.c && !pw && (
                 <div style={{ fontFamily:INTER,fontSize:13,lineHeight:1.55,color:"#a79fbd",textAlign:"center",padding:"6px 8px 4px" }}>{L(CEMBER_BADGE_TXT.none)}</div>
               )}
               <div style={{ fontFamily:INTER,fontSize:11.5,color:"#7d7692",textAlign:"center",margin:"12px 0 2px" }}>{L(CEMBER_BADGE_TXT.atSend)}</div>
@@ -2147,6 +2179,7 @@ function CemberScreen({ lang, unlocked, minor, onClose, onGoBaglan, onGoNefes, s
               {[0,1,2,3].map((i) => row(cemberStageGlyph(i, 18, L(CEMBER_BADGE_TXT.names[i])), L(CEMBER_BADGE_TXT.names[i]), L(CEMBER_BADGE_TXT.descs[i]), i === myStage ? true : (i < myStage ? null : false), "s" + i))}
               {row(cemberChestGlyph(15, L(CEMBER_BADGE_TXT.letter)), L(CEMBER_BADGE_TXT.letter), L(CEMBER_BADGE_TXT.letterDesc), hasLetter ? true : null, "l")}
               {row(cemberChordGlyph(17, L(CEMBER_BADGE_TXT.chord)), L(CEMBER_BADGE_TXT.chord), L(CEMBER_BADGE_TXT.chordDesc), chord ? true : null, "c")}
+              {row(pongBadgeGlyph(4, 18, L(CEMBER_BADGE_TXT.pongNames[3])), L(CEMBER_BADGE_TXT.pongPlain), L(CEMBER_BADGE_TXT.pongGuide), null, "p")}
               <div style={{ fontFamily:INTER,fontSize:11.5,color:"#7d7692",textAlign:"center",margin:"12px 0 4px" }}>{L(CEMBER_BADGE_TXT.shown)}</div>
               <button onClick={() => setBadgeSheet(false)} style={{ ...BTN,width:"100%",marginTop:8,padding:"11px",borderRadius:100,fontFamily:JOST,fontSize:12.5,letterSpacing:1.6,textTransform:"uppercase",
                 display:"flex",alignItems:"center",justifyContent:"center",color:"#cfc7e0",border:"1px solid rgba(255,255,255,0.12)" }}>{L(CEMBER_TXT.close)}</button>
@@ -10591,6 +10624,8 @@ export default function SakinApp() {
     // 0) Sunucudaki anlık bildirim kaydını da sil (gizlilik politikası "silinir"
     //    diyor). Token localStorage temizlenmeden ÖNCE okunmalı.
     try { const tok = localStorage.getItem("sakin_push_token"); if (tok) postPushRegister(tok, false); } catch(_) {}
+    // Pong galibiyet sayacı da sunucudan silinir (1.4.3, cihaz özetine bağlı kayıt).
+    try { const aid = getAnonId(); if (aid) fetch(API_BASE + "/.netlify/functions/pong-result", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: aid }) }).catch(() => {}); } catch(_) {}
     // 1) localStorage: sakin_ ile başlayan tüm anahtarları topla ve sil (iterasyon
     //    sırasında silmek index kaymasına yol açar, önce topla, sonra sil).
     //    Gömülü uygulamaların verisi de silinir (aynı origin): SoulID (bağlanma testi,
@@ -14356,6 +14391,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
       {showPong && (
         <Suspense fallback={null}>
           <PongOverlay key={pongInvite ? pongInvite.rid : "menu"} lang={lang} getCember={getCember} haptic={haptic} track={track} invite={pongInvite}
+            onResult={(r) => { try { fetch(API_BASE + "/.netlify/functions/pong-result", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: getAnonId(), ...r }) }).catch(() => {}); } catch (_) {} }}
             onClose={() => { setShowPong(false); setPongInvite(null); }} />
         </Suspense>
       )}

@@ -6,6 +6,8 @@
 // ⚠️ KRİZ: mesaj odaya DÜŞMEZ; istemci yazana ÖZEL destek mesajı gösterir.
 import { chatConfig, corsFor, json, rest, broadcast, ROOMS, MAX_LEN, SLOW_MS, deviceHash, validDeviceId,
   nickFor, elementIndex, authorTag, hasLink, looksCrisis, looksProfane, aiModerate, ipLimited, ipKey, IP_BAN_HOURS } from "./_chat.mjs";
+import { getStore } from "@netlify/blobs";
+import { pongWins } from "./pong-result.mjs";
 
 export default async (req, context) => {
   const { ok: originOk, headers } = corsFor(req);
@@ -60,8 +62,12 @@ export default async (req, context) => {
   // küçük rozetler için. Sütunlar yoksa (cember.sql sonundaki ALTER) onsuz denenir.
   const stage = Number.isInteger(b.stage) && b.stage >= 0 && b.stage <= 3 ? b.stage : null;
   const chord = b.chord === true;
+  // Pong galibiyet sayısı (1.4.3): İSTEMCİDEN ALINMAZ, sunucudaki doğrulanmış sayaçtan
+  // okunur (pong-result.mjs, iki raporla eşleşen maçlar). Sütun yoksa onsuz denenir.
+  let pw = 0;
+  try { pw = await pongWins(getStore("sakin-pong"), h); } catch { pw = 0; }
   const base = { room, nick: nickFor(h, room), body: text, device_hash: h };
-  const tries = [{ ...base, letter, ip_hash: ik, stage, chord }, { ...base, letter, ip_hash: ik }, { ...base, letter }, base];
+  const tries = [{ ...base, letter, ip_hash: ik, stage, chord, pong_wins: pw }, { ...base, letter, ip_hash: ik, stage, chord }, { ...base, letter, ip_hash: ik }, { ...base, letter }, base];
   let ins;
   for (const body of tries) {
     ins = await rest(cfg, "chat_messages", { method: "POST", prefer: "return=representation", body });
@@ -69,7 +75,7 @@ export default async (req, context) => {
   }
   const row = ins.ok && Array.isArray(ins.data) ? ins.data[0] : null;
   if (!row) return json(headers, 200, { ok: false, reason: "db" });
-  const msg = { id: row.id, nick: row.nick, body: row.body, t: row.created_at, el: elementIndex(h), a: authorTag(h), l: row.letter === true ? 1 : 0, s: Number.isInteger(row.stage) ? row.stage : -1, c: row.chord === true ? 1 : 0 };
+  const msg = { id: row.id, nick: row.nick, body: row.body, t: row.created_at, el: elementIndex(h), a: authorTag(h), l: row.letter === true ? 1 : 0, s: Number.isInteger(row.stage) ? row.stage : -1, c: row.chord === true ? 1 : 0, pw: Number.isInteger(row.pong_wins) ? row.pong_wins : 0 };
   await broadcast(cfg, `room:${room}`, "msg", msg);
 
   // Ara sıra eski mesajları temizle (48 saatten eski; oda zaten 24 saati gösterir).

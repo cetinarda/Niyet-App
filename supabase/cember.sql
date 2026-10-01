@@ -102,3 +102,8 @@ drop policy if exists "pong_write" on realtime.messages;
 create policy "pong_write" on realtime.messages for insert to anon, authenticated
   with check ( (select realtime.topic()) like 'pong:%'
                and realtime.messages.extension in ('broadcast', 'presence') );
+
+-- 1.4.3 (Eki 2026): Pong galibiyet sayısı. Mesaj yazıldığı andaki DOĞRULANMIŞ sayı
+-- (netlify/functions/pong-result.mjs, iki oyuncunun raporu eşleşen maçlar); takma adın
+-- profil özetinde gösterilir. Sütun yoksa chat-send/history sütunsuz tekrar dener.
+alter table public.chat_messages add column if not exists pong_wins integer not null default 0;
