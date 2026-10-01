@@ -10,6 +10,8 @@ import { listReports, listCompat, type StoredCompat } from '@/lib/supabase/repor
 import { useSoulStore } from '@/lib/store';
 import type { GalacticReport } from '@/lib/types';
 import { SIGN_NAMES_TR } from '@/lib/content/astrology-content';
+import { raceLabel, summaryLineEn } from '@/lib/content/concepts-en';
+import { useT } from '@/lib/i18n';
 
 type Saved = GalacticReport & { savedAt: string };
 
@@ -19,6 +21,9 @@ export default function HistoryPage() {
   const [loading, setLoading] = useState(true);
   const setReport = useSoulStore((s) => s.setReport);
   const nav = useNav();
+  const { locale } = useT();
+  const tr = locale !== 'en';
+  const dateLocale = tr ? 'tr-TR' : 'en-US';
 
   useEffect(() => {
     Promise.all([listReports(), listCompat()])
@@ -32,20 +37,24 @@ export default function HistoryPage() {
 
   return (
     <PageLayout
-      kicker="GEÇMİŞ KARNELERİN"
-      title="Kozmik arşivin"
-      intro="Bu cihazda kayıtlı olan karnelerin. Tarayıcı verisini sildiğinde kaybolur, kaybetmek istemiyorsan JSON olarak indir."
+      kicker={tr ? 'GEÇMİŞ KARNELERİN' : 'YOUR PAST PROFILES'}
+      title={tr ? 'Kozmik arşivin' : 'Your cosmic archive'}
+      intro={
+        tr
+          ? 'Bu cihazda kayıtlı olan karnelerin. Tarayıcı verisini sildiğinde kaybolur, kaybetmek istemiyorsan JSON olarak indir.'
+          : "The profiles saved on this device. They disappear if you clear your browser data, so download them as JSON if you want to keep them."
+      }
     >
       {loading ? (
-        <p className="text-sm text-muted">Yükleniyor…</p>
+        <p className="text-sm text-muted">{tr ? 'Yükleniyor…' : 'Loading…'}</p>
       ) : reports.length === 0 ? (
-        <Section heading="Henüz karne yok">
-          <p>İlk karneni oluştur, burada saklansın.</p>
+        <Section heading={tr ? 'Henüz karne yok' : 'No profiles yet'}>
+          <p>{tr ? 'İlk karneni oluştur, burada saklansın.' : 'Create your first profile and it will be kept here.'}</p>
           <Link
             href="/birth"
             className="mt-2 inline-block rounded-full bg-gold px-5 py-2 text-sm font-bold text-[#1a0a40]"
           >
-            Karne Oluştur
+            {tr ? 'Karne Oluştur' : 'Create a Profile'}
           </Link>
         </Section>
       ) : (
@@ -66,17 +75,23 @@ export default function HistoryPage() {
                 <div className="flex items-baseline justify-between gap-3">
                   <h3 className="font-display text-2xl text-ink">{r.birth.fullName}</h3>
                   <span className="text-[11px] uppercase tracking-[0.2em] text-faint">
-                    {new Date(r.savedAt).toLocaleDateString('tr-TR')}
+                    {new Date(r.savedAt).toLocaleDateString(dateLocale)}
                   </span>
                 </div>
                 <p className="mt-3 text-sm text-gold">
-                  {r.origin.emoji} {r.origin.race}
+                  {r.origin.emoji} {raceLabel(r.origin.race, locale)}
                 </p>
-                <p className="mt-2 text-[12px] leading-[1.85] text-muted">
-                  {sun ? SIGN_NAMES_TR[sun.sign] : ''} Güneş ·{' '}
-                  {SIGN_NAMES_TR[r.chart.ascendantSign]} Yükselen ·{' '}
-                  {r.humanDesign.type} · Yaşam Yolu {r.numerology.lifePath}
-                </p>
+                {tr ? (
+                  <p className="mt-2 text-[12px] leading-[1.85] text-muted">
+                    {sun ? SIGN_NAMES_TR[sun.sign] : ''} Güneş ·{' '}
+                    {SIGN_NAMES_TR[r.chart.ascendantSign]} Yükselen ·{' '}
+                    {r.humanDesign.type} · Yaşam Yolu {r.numerology.lifePath}
+                  </p>
+                ) : (
+                  <p className="mt-2 text-[12px] leading-[1.85] text-muted">
+                    {summaryLineEn(r, false)}
+                  </p>
+                )}
               </button>
             );
           })}
@@ -87,7 +102,7 @@ export default function HistoryPage() {
       {compats.length > 0 ? (
         <div className="mt-12">
           <p className="text-[11px] font-bold uppercase tracking-[0.35em] text-cosmic">
-            BAKTIĞIN UYUMLAR
+            {tr ? 'BAKTIĞIN UYUMLAR' : 'COMPATIBILITIES YOU EXPLORED'}
           </p>
           <div className="mt-4 grid gap-4">
             {compats.map((c, i) => (
@@ -104,7 +119,7 @@ export default function HistoryPage() {
                     {c.nameA} <span className="text-cosmic">⚯</span> {c.nameB}
                   </h3>
                   <span className="text-[11px] uppercase tracking-[0.2em] text-faint">
-                    {new Date(c.savedAt).toLocaleDateString('tr-TR')}
+                    {new Date(c.savedAt).toLocaleDateString(dateLocale)}
                   </span>
                 </div>
                 <div className="mt-3 flex items-center gap-3">
@@ -114,11 +129,13 @@ export default function HistoryPage() {
                       style={{ width: `${Math.round(c.scoreOverall)}%` }}
                     />
                   </div>
-                  <span className="shrink-0 text-sm font-bold text-cosmic">%{Math.round(c.scoreOverall)}</span>
+                  <span className="shrink-0 text-sm font-bold text-cosmic">
+                    {tr ? `%${Math.round(c.scoreOverall)}` : `${Math.round(c.scoreOverall)}%`}
+                  </span>
                 </div>
                 {i === 0 ? (
                   <p className="mt-2 text-[11px] font-bold uppercase tracking-[0.2em] text-gold">
-                    En yüksek rezonansın
+                    {tr ? 'En yüksek rezonansın' : 'Your highest resonance'}
                   </p>
                 ) : null}
               </button>

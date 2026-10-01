@@ -13,7 +13,8 @@
 // Tone: warm and plain, astrology and starseed content told as tradition and
 // belief, never as scientific fact.
 
-import type { HumanDesign, ZodiacSign } from '../types';
+import type { GalacticReport, HumanDesign, ZodiacSign } from '../types';
+import type { StatKey } from '../stats';
 
 export type Locale = 'tr' | 'en';
 
@@ -456,6 +457,53 @@ export const STAR_ORIGIN_EN: Record<string, { race: string; starSystem: string; 
     archetype: 'Bridge soul, translator between kinds',
   },
 };
+
+/** English race / star system / archetype for a stored (Turkish) origin.race.
+ *  Undefined when the race is unknown, so callers fall back to the stored text. */
+export function starOriginEn(race: string): { race: string; starSystem: string; archetype: string } | undefined {
+  return STAR_ORIGIN_EN[race];
+}
+
+/** Race name for display: Turkish as stored, English from the table (falls back to stored). */
+export function raceLabel(race: string, locale: Locale): string {
+  return locale === 'en' ? STAR_ORIGIN_EN[race]?.race ?? race : race;
+}
+
+// Character stats (lib/stats). Keyed by StatKey, the stable stat id that
+// calculateStats returns (a Turkish word, never shown in English mode).
+export const STAT_EN: Record<StatKey, { name: string; desc: string }> = {
+  'Güç': { name: 'Power', desc: 'Leadership, willpower, the courage to act' },
+  'Sezgi': { name: 'Intuition', desc: 'Inner guidance, reading symbols, sensing what lies beneath' },
+  'Dayanıklılık': { name: 'Endurance', desc: 'Perseverance, putting down roots, building for the long run' },
+  'Yaratıcılık': { name: 'Creativity', desc: 'Bringing new forms to life, art, self-expression' },
+  'Şefkat': { name: 'Compassion', desc: 'Empathy, embracing love, nurturing others' },
+  'Hız': { name: 'Speed', desc: 'Quick understanding, flexibility, many things at once' },
+  'Şifa': { name: 'Healing', desc: "Mending, restoring balance, a healer's touch" },
+  'Manifestasyon': { name: 'Manifestation', desc: 'Turning a thought into something real' },
+  'Bilgelik': { name: 'Wisdom', desc: 'Finding meaning, seeing the bigger picture' },
+  'Karizma': { name: 'Charisma', desc: 'Shining on the stage, drawing people in' },
+};
+
+export function statName(key: StatKey, locale: Locale): string {
+  return locale === 'en' ? STAT_EN[key]?.name ?? key : key;
+}
+
+/** English version of report.summary (which is always stored in Turkish):
+ *  "Pleiadian · Aries Sun · Leo Rising · Generator · Life Path 7". */
+export function summaryLineEn(
+  report: Pick<GalacticReport, 'origin' | 'chart' | 'humanDesign' | 'numerology'>,
+  withRace = true,
+): string {
+  const sun = report.chart.planets.find((p) => p.name === 'Sun');
+  const parts = [
+    withRace ? raceLabel(report.origin.race, 'en') : '',
+    sun ? `${SIGN_NAMES_EN[sun.sign]} Sun` : '',
+    `${SIGN_NAMES_EN[report.chart.ascendantSign]} Rising`,
+    hdTypeEn(report.humanDesign.type),
+    `Life Path ${report.numerology.lifePath}`,
+  ];
+  return parts.filter(Boolean).join(' · ');
+}
 
 const TR_SIGN_TO_EN: Record<string, string> = {
   'Koç': 'Aries',

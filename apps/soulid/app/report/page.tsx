@@ -22,6 +22,7 @@ import { readActiveReportId } from '@/lib/active-report';
 import { readSakinAvatar } from '@/lib/sakin-bridge';
 import { captureNode, downloadDataUrl, shareDataUrl } from '@/lib/share';
 import { buildConceptDecks } from '@/lib/concepts';
+import { summaryLineEn } from '@/lib/content/concepts-en';
 import { useT } from '@/lib/i18n';
 import { tap } from '@/lib/haptics';
 
@@ -112,7 +113,8 @@ export default function ReportPage() {
     setWorking('share');
     try {
       const dataUrl = await captureNode(cardRef.current);
-      await shareDataUrl(dataUrl);
+      if (locale === 'en') await shareDataUrl(dataUrl, 'soulid-profile.png', 'en');
+      else await shareDataUrl(dataUrl);
     } catch (err) {
       console.error(err);
     } finally {
@@ -125,7 +127,8 @@ export default function ReportPage() {
     setWorking('download');
     try {
       const dataUrl = await captureNode(cardRef.current);
-      downloadDataUrl(dataUrl);
+      if (locale === 'en') downloadDataUrl(dataUrl, 'soulid-profile.png');
+      else downloadDataUrl(dataUrl);
     } catch (err) {
       console.error(err);
     } finally {
@@ -142,7 +145,9 @@ export default function ReportPage() {
     <div className="relative py-20 md:py-28">
       <CosmicBackground variant="cosmic" />
       <div className="mx-auto max-w-4xl px-4 md:px-6">
-        <p className="text-center text-xs tracking-[0.3em] text-gold">{report.summary}</p>
+        <p className="text-center text-xs tracking-[0.3em] text-gold">
+          {locale === 'en' ? summaryLineEn(report) : report.summary}
+        </p>
 
         {/* AHA: paylaşılabilir kimlik kartı en üstte */}
         <div className="mt-6 flex justify-center">

@@ -1,5 +1,9 @@
+'use client';
+
 import { calculateStats, STAT_META, type CharacterStats as Stats } from '@/lib/stats';
 import type { Chart, HumanDesign, Numerology } from '@/lib/types';
+import { STAT_EN, statName } from '@/lib/content/concepts-en';
+import { useT } from '@/lib/i18n';
 
 type Props = {
   chart: Chart;
@@ -8,10 +12,13 @@ type Props = {
 };
 
 export function CharacterStats({ chart, numerology, humanDesign }: Props) {
+  const { locale } = useT();
+  const en = locale === 'en';
   const stats: Stats = calculateStats(chart, numerology, humanDesign);
   const entries = Object.entries(stats) as Array<[keyof Stats, number]>;
   const sorted = [...entries].sort((a, b) => b[1] - a[1]);
   const top3 = sorted.slice(0, 3).map(([k]) => k);
+  const descOf = (key: keyof Stats) => (en ? STAT_EN[key]?.desc ?? STAT_META[key].desc : STAT_META[key].desc);
 
   return (
     <div className="relative overflow-hidden rounded-3xl border border-gold/30 bg-gradient-to-br from-[#0a0524] via-[#1a0a40] to-[#2a0a5a] p-6 shadow-glow">
@@ -19,12 +26,12 @@ export function CharacterStats({ chart, numerology, humanDesign }: Props) {
       <div className="relative">
         <div className="flex items-baseline justify-between gap-3">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-gold">KARAKTER KARTI</p>
-            <p className="font-display text-2xl text-ink">Yıldız çocuğun güç haritası</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-gold">{en ? 'CHARACTER CARD' : 'KARAKTER KARTI'}</p>
+            <p className="font-display text-2xl text-ink">{en ? 'Your starchild\'s map of strengths' : 'Yıldız çocuğun güç haritası'}</p>
           </div>
           <div className="hidden text-right md:block">
-            <p className="text-[10px] text-faint">Üstün yetenekler</p>
-            <p className="text-[11px] text-gold">{top3.join(' · ')}</p>
+            <p className="text-[10px] text-faint">{en ? 'Top gifts' : 'Üstün yetenekler'}</p>
+            <p className="text-[11px] text-gold">{top3.map((k) => statName(k, locale)).join(' · ')}</p>
           </div>
         </div>
 
@@ -38,14 +45,14 @@ export function CharacterStats({ chart, numerology, humanDesign }: Props) {
                 className={`rounded-xl border p-3 ${
                   isTop ? 'border-gold/40 bg-gold/[0.06]' : 'border-white/10 bg-white/[0.04]'
                 }`}
-                title={meta.desc}
+                title={descOf(key)}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="text-lg" style={{ color: meta.color }}>
                       {meta.glyph}
                     </span>
-                    <span className="text-[13px] font-bold text-ink">{key}</span>
+                    <span className="text-[13px] font-bold text-ink">{statName(key, locale)}</span>
                   </div>
                   <span className="font-display text-lg text-gold">{value}</span>
                 </div>
@@ -55,7 +62,7 @@ export function CharacterStats({ chart, numerology, humanDesign }: Props) {
                     style={{ width: `${value}%`, backgroundColor: meta.color }}
                   />
                 </div>
-                <p className="mt-1.5 text-[10px] leading-snug text-faint">{meta.desc}</p>
+                <p className="mt-1.5 text-[10px] leading-snug text-faint">{descOf(key)}</p>
               </div>
             );
           })}

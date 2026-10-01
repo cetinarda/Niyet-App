@@ -8,6 +8,7 @@
 import { useT } from '@/lib/i18n';
 import type { GalacticReport } from '@/lib/types';
 import { SIGN_NAMES_TR } from '@/lib/content/astrology-content';
+import { hdAuthorityEn, hdProfileEn, hdTypeEn } from '@/lib/content/concepts-en';
 
 const SIGN_EN: Record<string, string> = {
   Aries: 'Aries', Taurus: 'Taurus', Gemini: 'Gemini', Cancer: 'Cancer',
@@ -57,9 +58,9 @@ export function EngineMechanics({ report }: { report: GalacticReport }) {
   ];
 
   const hdRows: Row[] = [
-    { label: tr ? 'Tip' : 'Type', value: hd.type },
-    { label: tr ? 'Otorite' : 'Authority', value: hd.authority },
-    { label: tr ? 'Profil' : 'Profile', value: hd.profile },
+    { label: tr ? 'Tip' : 'Type', value: tr ? hd.type : hdTypeEn(hd.type) },
+    { label: tr ? 'Otorite' : 'Authority', value: tr ? hd.authority : hdAuthorityEn(hd.authority) },
+    { label: tr ? 'Profil' : 'Profile', value: tr ? hd.profile : hdProfileEn(hd.profile) },
     { label: tr ? 'Tanımlı merkez' : 'Defined centers', value: `${hd.definedCenters.length}/9` },
     { label: tr ? 'Aktif kapı' : 'Active gates', value: `${hd.gates.length}/64` },
     { label: tr ? 'Kanallar' : 'Channels', value: hd.channels.length ? hd.channels.join(', ') : '-' },

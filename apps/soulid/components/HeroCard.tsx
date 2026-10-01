@@ -9,22 +9,10 @@ import { captureNode, downloadDataUrl, shareDataUrl } from '@/lib/share';
 import { stylizePortrait } from '@/lib/portrait/stylize';
 import { generateAiPortrait, getCachedPortrait } from '@/lib/portrait/ai';
 import { useT } from '@/lib/i18n';
+import { raceLabel, statName } from '@/lib/content/concepts-en';
 
 const GOLD = '#e8c877';
 const GOLD_DIM = 'rgba(232,200,119,0.34)';
-
-const STAT_EN: Record<StatKey, string> = {
-  'Güç': 'Power',
-  'Sezgi': 'Intuition',
-  'Dayanıklılık': 'Endurance',
-  'Yaratıcılık': 'Creativity',
-  'Şefkat': 'Compassion',
-  'Hız': 'Speed',
-  'Şifa': 'Healing',
-  'Manifestasyon': 'Manifest',
-  'Bilgelik': 'Wisdom',
-  'Karizma': 'Charisma',
-};
 
 /** Köşe elması: ornate çerçeve süsü (RPG kart hissi). */
 function Corner({ style }: { style: React.CSSProperties }) {
@@ -174,7 +162,7 @@ export const HeroCard = forwardRef<HTMLDivElement, { report: GalacticReport; por
               {report.birth.fullName}
             </h3>
             <p style={{ margin: '3px 0 0', textAlign: 'center', fontSize: 10, color: GOLD }}>
-              {report.origin.emoji} {report.origin.race}
+              {report.origin.emoji} {raceLabel(report.origin.race, locale)}
             </p>
 
             <Divider />
@@ -215,7 +203,7 @@ export const HeroCard = forwardRef<HTMLDivElement, { report: GalacticReport; por
                           textOverflow: 'ellipsis',
                         }}
                       >
-                        {tr ? key : STAT_EN[key]}
+                        {statName(key, locale)}
                       </span>
                       {isTop ? <span style={{ fontSize: 7, color: GOLD }}>★</span> : null}
                       <span
@@ -397,8 +385,9 @@ export function HeroCardShare({ report }: { report: GalacticReport }) {
     setWorking(kind);
     try {
       const dataUrl = await captureNode(cardRef.current);
-      if (kind === 'share') await shareDataUrl(dataUrl, 'soulprofile-kahraman-karti.png');
-      else downloadDataUrl(dataUrl, 'soulprofile-kahraman-karti.png');
+      const file = tr ? 'soulprofile-kahraman-karti.png' : 'soulid-hero-card.png';
+      if (kind === 'share') await shareDataUrl(dataUrl, file, locale);
+      else downloadDataUrl(dataUrl, file);
     } catch (err) {
       console.error('[hero-card]', err);
     } finally {

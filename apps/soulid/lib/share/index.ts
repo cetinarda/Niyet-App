@@ -18,7 +18,18 @@ export function downloadDataUrl(dataUrl: string, filename = 'soulprofile-karne.p
   document.body.removeChild(link);
 }
 
-export async function shareDataUrl(dataUrl: string, filename = 'soulprofile-karne.png') {
+// Share sheet title/text. Turkish is the default so callers that pass no
+// locale behave exactly as before. SoulID supports only tr + en.
+const SHARE_TEXT = {
+  tr: { title: 'Galaktik Karnem', text: 'SoulID ile galaktik karnemi keşfettim ✦' },
+  en: { title: 'My Galactic Profile', text: 'I discovered my galactic profile with SoulID ✦' },
+} as const;
+
+export async function shareDataUrl(
+  dataUrl: string,
+  filename = 'soulprofile-karne.png',
+  locale: 'tr' | 'en' = 'tr',
+) {
   try {
     const res = await fetch(dataUrl);
     const blob = await res.blob();
@@ -30,8 +41,8 @@ export async function shareDataUrl(dataUrl: string, filename = 'soulprofile-karn
     ) {
       await navigator.share({
         files: [file],
-        title: 'Galaktik Karnem',
-        text: 'SoulProfile ile galaktik karnemi keşfettim ✦',
+        title: SHARE_TEXT[locale].title,
+        text: SHARE_TEXT[locale].text,
       });
       return true;
     }

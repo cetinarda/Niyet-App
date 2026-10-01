@@ -4,6 +4,7 @@ import { Link } from '@/components/Link';
 import type { GalacticReport, ZodiacSign } from '@/lib/types';
 import { SIGN_GLYPHS, SIGN_NAMES_TR } from '@/lib/content/astrology-content';
 import { useT } from '@/lib/i18n';
+import { raceLabel } from '@/lib/content/concepts-en';
 
 // HD_TR kaldirildi: Human Design kutucugu Sakin Tasarim'a birakildi.
 
@@ -101,7 +102,7 @@ export function ProfileCard({ report }: { report: GalacticReport }) {
                 <span className="block text-[10px] uppercase tracking-[0.2em] text-faint">
                   {tr ? 'Yıldız Kökeni' : 'Star Origin'}
                 </span>
-                <span className="block text-sm font-bold text-ink">{report.origin.race}</span>
+                <span className="block text-sm font-bold text-ink">{raceLabel(report.origin.race, locale)}</span>
               </div>
             </div>
             <div className="flex items-center gap-2.5 rounded-2xl border border-panelBorder bg-bg/30 px-3.5 py-2.5 sm:col-span-2">

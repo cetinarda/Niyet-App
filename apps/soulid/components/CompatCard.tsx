@@ -156,8 +156,9 @@ export function CompatShare({
     setWorking(kind);
     try {
       const dataUrl = await captureNode(cardRef.current);
-      if (kind === 'share') await shareDataUrl(dataUrl, 'soulprofile-uyum.png');
-      else downloadDataUrl(dataUrl, 'soulprofile-uyum.png');
+      const file = tr ? 'soulprofile-uyum.png' : 'soulid-compatibility.png';
+      if (kind === 'share') await shareDataUrl(dataUrl, file, locale);
+      else downloadDataUrl(dataUrl, file);
     } catch (e) {
       console.error(e);
     } finally {
