@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useMemo, memo, lazy, Suspense } from "react";
+import BackButton, { BackArrow } from "./back-button.jsx";
 import { createPortal } from "react-dom";
 import { makeTrans, LANGUAGES } from "./i18n";
 import { CHAKRA_TRANS, FREQ_TRANS, ASTRO_TRANS, NOTIF_TRANS } from "./i18n-data";
@@ -1065,7 +1066,7 @@ async function scheduleLetterNotif(opensAt, lang) {
     await LocalNotifications.schedule({ notifications: [{
       id: LETTER_NOTIF_ID, title: pickLang(LETTER_TXT.title, lang), body: pickLang(LETTER_TXT.notif, lang), largeBody: pickLang(LETTER_TXT.notif, lang),
       schedule: { at, allowWhileIdle: true }, extra: { screen: "harita" },
-      smallIcon: "ic_stat_icon_config_sample", iconColor: "#e8c07a",
+      smallIcon: "ic_stat_sakin", iconColor: "#e8c07a",
     }] });
   } catch (e) { console.warn("[Letter]", e); }
 }
@@ -1238,10 +1239,7 @@ function MeditationCard({ lang, S }) {
         animation:"fadeIn .5s ease" }}>
       {/* Üst: kurumsal yuvarlak geri düğmesi + etiket */}
       <div style={{ display:"flex", alignItems:"center", padding:"0 16px", minHeight:44 }}>
-        <button onClick={() => { try { haptic(); } catch (_) {} setFull(false); }} aria-label={L(MED_TXT.close)}
-          style={{ WebkitAppearance:"none", appearance:"none", width:40, height:40, borderRadius:"50%", background:"rgba(255,255,255,0.05)",
-            border:"1px solid rgba(255,255,255,0.12)", color:"#ddd", fontSize:18, cursor:"pointer", display:"flex", alignItems:"center",
-            justifyContent:"center", lineHeight:1, paddingRight:2, flexShrink:0 }}>←</button>
+        <BackButton onClick={() => { try { haptic(); } catch (_) {} setFull(false); }} label={L(MED_TXT.close)} size={40} color="#ddd" />
         <div style={{ flex:1, textAlign:"center", marginRight:40, fontFamily:"'Jost',sans-serif", fontSize:11, letterSpacing:4, color:"#8f88a3", textTransform:"uppercase" }}>
           {L(MED_TXT.eyebrow)}
         </div>
@@ -2014,8 +2012,7 @@ function CemberScreen({ lang, unlocked, minor, onClose, onGoBaglan, onGoNefes, s
       display:"flex",flexDirection:"column",animation:"fadeIn 0.4s ease" }}>
       {/* Başlık */}
       <div style={{ padding:"calc(10px + var(--sat)) 14px 10px",display:"flex",alignItems:"center",gap:10,borderBottom:"1px solid rgba(184,164,216,0.12)" }}>
-        <button onClick={onClose} aria-label="close" style={{ ...BTN,width:36,height:36,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",
-          border:"1px solid rgba(255,255,255,0.12)",color:"#cfc7e0",fontSize:16,flexShrink:0 }}>←</button>
+        <BackButton onClick={onClose} label="close" />
         <div style={{ flex:1,minWidth:0 }}>
           <div style={{ fontFamily:SERIF,fontSize:22,lineHeight:1.1,color:INK }}>{L(CEMBER_TXT.title)}</div>
           {/* Tek satır: dar ekranda 4 satıra kırılıyordu, taşan kısım "…" olur. */}
@@ -3066,7 +3063,7 @@ async function scheduleWinBack(lang) {
       id: 9400 + i, title: "Sakin", body: hasBirth ? arr[i] : WINBACK_TXT_NOBIRTH(arr, i), largeBody: hasBirth ? arr[i] : WINBACK_TXT_NOBIRTH(arr, i),
       schedule: { at: new Date(now.getFullYear(), now.getMonth(), now.getDate() + n, 19, 30, 0), allowWhileIdle: true },
       extra: { screen: (!hasBirth && WINBACK_SCREENS[i] === "bugun") ? "mandala" : WINBACK_SCREENS[i] },
-      smallIcon: "ic_stat_icon_config_sample", iconColor: "#b8a4d8",
+      smallIcon: "ic_stat_sakin", iconColor: "#b8a4d8",
     }));
     await LocalNotifications.schedule({ notifications: out });
   } catch (e) { console.warn("[WinBack]", e); }
@@ -6103,7 +6100,7 @@ async function scheduleAllNotifications(lang, birthDate, opts = {}) {
     // dakikada boşalıyordu. allowWhileIdle:true → setAndAllowWhileIdle(RTC_WAKEUP):
     // Doze'dan muaf, EK İZİN GEREKTİRMEZ (exact-alarm değil).
     const SCHED = { allowWhileIdle: true };
-    const icon = { smallIcon: "ic_stat_icon_config_sample", iconColor: "#b8a4d8" };
+    const icon = { smallIcon: "ic_stat_sakin", iconColor: "#b8a4d8" };
     const now = new Date();
     const out = [];
     const add = (id, at, body, extra) => {
@@ -19110,12 +19107,11 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
           aria-label={fromSettings ? pickLang(TAB_TXT.ayarlar, lang) : t("back").replace(/^←\s*/,"")}
           style={{ WebkitAppearance:"none",appearance:"none",position:"fixed",
             top: topNavVisible ? "calc(52px + var(--sat))" : "calc(10px + var(--sat))",
-            left:14, zIndex:9996, width:40,height:40,borderRadius:"50%",
+            left:14, zIndex:9996, width:40,height:40,borderRadius:"50%",margin:0,padding:0,lineHeight:0,
             background:"rgba(255,255,255,0.05)",backdropFilter:"blur(14px)",
             border:"1px solid rgba(255,255,255,0.12)",cursor:"pointer",
-            color:"#ddd",fontSize:18,fontWeight:700,lineHeight:1,
-            display:"flex",alignItems:"center",justifyContent:"center",paddingRight:2 }}>
-          ←
+            color:"#ddd",display:"flex",alignItems:"center",justifyContent:"center" }}>
+          <BackArrow size={17} strokeWidth={1.8} />
         </button>
       )}
 

@@ -50,13 +50,13 @@ gerekçesiyle buraya ekle (tarih + kullanıcının sözü).
 Sıra: A -> B -> C -> build + R8 + cihaz testi. Bittikçe [x] işaretle.
 
 **A. Hatalar**
-- [ ] A1 HAZIRIM dönüşü + yol seçimi tekrarı + ana sayfa = Bugün (madde 14/15/16).
+- [x] A1 HAZIRIM dönüşü + yol seçimi tekrarı + ana sayfa = Bugün (madde 14/15/16).
   Yol seçimi: doğum bilgisi varsa HİÇ çıkmaz, yoksa oturum başına en fazla 1 kez.
-- [ ] A2 İkili uyum ilk dokunuşta SoulID ana sayfası (köprü 8 sn yarışı).
-- [ ] A3 Ortak BackButton (SVG ok), Çember/Odalar/Pong/meditasyon.
+- [x] A2 İkili uyum ilk dokunuşta SoulID ana sayfası (köprü 8 sn yarışı).
+- [x] A3 Ortak BackButton (SVG ok), Çember/Odalar/Pong/meditasyon.
 - [ ] A4 SoulID İngilizce kavram kartları + detay penceresi portal.
-- [ ] A5 Bağlanma testi: "korkulu-kaçıngan", eşitlikte güvenli taraf, "şu anki eğilimin".
-- [ ] A6 Bildirim smallIcon `ic_stat_sakin`.
+- [x] A5 Bağlanma testi: "korkulu-kaçıngan", eşitlikte güvenli taraf, "şu anki eğilimin".
+- [x] A6 Bildirim smallIcon `ic_stat_sakin`.
 
 **B. Bildirimler**
 - [ ] B1 AI 10:00 süzgeci 7 dil (birkaç dakika, meditasyon, pencere, havalandır,

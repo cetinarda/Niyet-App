@@ -6,6 +6,7 @@
 // Tek görsel dil: koyu yüzey, oda rengi yalnızca köşe ışığında ve küçük vurgularda.
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
+import BackButton from "./back-button.jsx";
 import { ROOMS, ROOMS_TXT, ROOMS_MOTTO, SEED_EVENTS } from "./rooms-data.js";
 
 const CACHE_KEY = "sakin_rooms_cache";
@@ -189,11 +190,10 @@ export default function RoomsOverlay({ lang, onClose, apiBase, birthDate, onPrac
 
   const headTitle = view.v === "room" ? "" : view.v === "events" ? L(ROOMS_TXT.events) : L(ROOMS_TXT.title);
   return createPortal(
-    <div style={{ position:"fixed", inset:0, zIndex:100010, display:"flex", flexDirection:"column", animation:"fadeIn 0.35s ease",
+    <div style={{ position:"fixed", inset:0, zIndex:100010, display:"flex", flexDirection:"column", fontFamily:"'Inter',sans-serif", animation:"fadeIn 0.35s ease",
       background:"radial-gradient(ellipse 90% 50% at 50% 0%, rgba(90,60,150,0.22), transparent 70%), #07060d" }}>
       <div style={{ padding:"calc(10px + var(--sat)) 14px 8px", display:"flex", alignItems:"center", gap:12, borderBottom:"1px solid rgba(184,164,216,0.1)" }}>
-        <button onClick={() => { if (view.v === "home") onClose(); else setView({ v: "home" }); }} aria-label={L(ROOMS_TXT.back)}
-          style={{ ...BTN, width:36, height:36, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", border:"1px solid rgba(255,255,255,0.12)", color:"#cfc7e0", fontSize:16, flexShrink:0, textAlign:"center" }}>←</button>
+        <BackButton onClick={() => { if (view.v === "home") onClose(); else setView({ v: "home" }); }} label={L(ROOMS_TXT.back)} />
         <div style={{ flex:1, minWidth:0, fontFamily:SERIF, fontSize:23, color:INK, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{headTitle}</div>
       </div>
       <div style={{ flex:1, overflowY:"auto", WebkitOverflowScrolling:"touch" }}>

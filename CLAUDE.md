@@ -229,6 +229,12 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    - **Doğrulama:** yeni buton/kart eklediğinde gerçek boyutta (390x844 ve dar
      bir ekran) Puppeteer screenshot ile GÖRSEL kontrol et, sadece build yeşil
      yeterli değil.
+   - **ÇERÇEVELİ/YUVARLAK DÜĞMEDE İKON YAZI KARAKTERİ OLMAZ (Eki 2026, kullanıcı: "geri
+     oku kutuya göre ortalı değil, önlem al").** "←" gibi glifler fontun satır kutusuna
+     göre ortalanır, mürekkep 1-1,4 px kayar; portal ekranlarında yazı tipi tanımsızsa
+     Times'a düşer. Geri düğmesi = `src/back-button.jsx` `BackButton` (SVG ok, padding 0,
+     lineHeight 0); ok tek başına lazımsa `BackArrow`. Başka ikonlu daire/çerçeve
+     düğme yaparsan SVG kullan, ölç (Puppeteer 3x ekran görüntüsü, mürekkep merkezi).
 
 8. **SONRA YAPILACAKLAR LİSTESİ = `SONRA-YAPILACAKLAR.md` (kullanıcı isteği, Eki 2026).**
    Kullanıcının ertelediği işler ve ONAYLI iş akışı (1.4.3 planı, [ ] / [x]) orada.
@@ -292,6 +298,16 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
       `setIfChanged` bu adı yok sayar. ASLA uydurma ad koyma.
     - `?go=attachment` hem `target()`'ta hem doğrudan yönlendirmede olmalı:
       telefonda köprü/karne hidrasyonu da `target()`'a gidiyor, yoksa /profil'e düşer.
+    - ⚠️ **İKİLİ UYUM İLK DOKUNUŞTA ANA SAYFA (Eki 2026, kullanıcı bildirdi):** köprü
+      (`tryAutoConnectFromSakin`) içindeki anlatı AI çağrısı 12 sn bekliyor, köprü 8 sn'de
+      kesiyordu: ilk dokunuş SoulID ana sayfası, ikinci dokunuş /pair. Artık sınır 14 sn VE
+      `?go=pair/sky` ile gelindiyse cihazda karne varsa köprü BEKLENMEDEN hedefe gidilir,
+      köprü arka planda tazeler (`app/page.tsx`). Köprü süresini 12 sn'nin altına İNDİRME.
+    - **BAĞLANMA TESTİ (Eki 2026):** eşitlik (tam 50) artık güvenli tarafa (`> MID`; eskiden
+      her soruya "Bazen" diyen "düzensiz" çıkıyordu). "Düzensiz" adı "Korkulu-kaçıngan"
+      oldu (anahtar `disorganized` AYNI, kayıtlı sonuçlar bozulmasın; host `ATTACH_TXT` 7 dil).
+      Sonuç başlığı "ŞU ANKİ EĞİLİMİN". Ölçek özgün, doğrulanmamış: bilimsel doğrulama
+      `SONRA-YAPILACAKLAR.md`'de.
     - **İKİLİ UYUM: IP BAŞINA 1 ÜCRETSİZ ÇİFT (1.4.3, kullanıcı: "premium olmayanlara her IP
       için 1 kez; şu an birden fazla yapabiliyorlar"):** yerel kural (`soulprofile.used.compat`,
       1 çift) silip kurunca / "verilerimi sil" / başka tarayıcıda sıfırlanıyordu. Artık
@@ -459,6 +475,11 @@ SAYILMAZ (`streakData.lastDate === todayKey` ise 1 düşülür).
    yalnızca burada çıkar. ⚠️ ÖNCEDEN HER GÜN, SONSUZA KADAR çıkıyordu
    ("bir daha gösterme" seçeneği de kaldırılmıştı, kimse kapatamıyordu).
    **İLK 3 AÇILIŞ (Eyl 2026, kullanıcı: "bir yolu seçen diğerini merak eder"):**
+   ⚠️ **GÜNCEL (Eki 2026, kullanıcı: "doğum bilgisini girmişse zaten appi sevmiştir,
+   tekrar yolu çıkartmayalım; bir oturum boyunca tekrar göstermeyelim"):**
+   `nedirEligible` doğum bilgisi VARSA hep false; yoksa oturum başına EN FAZLA 1 kez
+   (`sessionStorage sakin_nedir_shown`). İlk 3 açılış kuralı bunlara EK. Keşfet
+   tanışmasında doğum kayıtlıysa ad adımından sonra tarih/şehir atlanır (adım 4'e).
    `sakin_open_count` açılışları sayar (soğuk açılış + 30 dk'dan uzun arka
    plandan dönüş). Yol seçimi ilk 3 açılışta çıkar: girişte HAZIRIM'dan, aynı
    gün tekrar açılışta doğrudan ana sekmede (`nedirEligible`). İki yol da
@@ -746,7 +767,13 @@ Doğrulama: gerçek ai-call ile prompt+parse (7/7 gün, em dash yok), web smoke
   kapısı sorar. Yol seçimi sonu: "Sakinleşmek" → onboarding → Bağlan;
   "Kendimi tanımak" → onboarding → BUGÜN (eskiden Ben/harita), doğum varsa
   "hazırlanıyor" geçişiyle. "Ne yeni" kartı Bugün'de de çıkar.
-- **Varsayılan karşılama = BUGÜN.** `_initialScreen()` tekrar giren kullanıcıda
+- **Varsayılan karşılama = BUGÜN.**
+- ⚠️ **HAZIRIM'A DÖNÜŞ YOK (Eki 2026, kullanıcı: "bir kere hazırım deyip girmişse
+  anlamsız; ana sayfaya dön her zaman Bugün"):** `enteredOnce()` (= `sakin_hazirim_today`
+  dolu) ise ⌂, native "← Sakin" ve geri tuşu Bugün'e gider; `onPop` geçmişteki "giris"
+  kayıtlarını (HAZIRIM, kaydedilmiş doğum formu) ATLAR, dipte Bugün. Giriş ekranı yalnızca
+  ilk kullanıcıya, doğum formuna (girisPhase "birth") ve hesap silmeye kalır. Web'de
+  "← Sakin" hâlâ tanıtım sitesini açar. `_initialScreen()` tekrar giren kullanıcıda
   (bugün HAZIRIM'a basmış) "mandala" yerine "bugun" döner. HAZIRIM da
   `setScreen("bugun")` yapıyor (eskiden mandala). İlk kez giren kullanıcı akışı
   (giriş → HAZIRIM → yol seçimi forku → onboarding) değişmedi; kural "ilk

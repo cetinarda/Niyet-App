@@ -21,6 +21,7 @@
 //   katmanın saniyelik mesaj sınırı).
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import BackButton from "./back-button.jsx";
 
 const TXT = {
   title:     { tr:"Pong", en:"Pong", de:"Pong", es:"Pong", pt:"Pong", fr:"Pong", ja:"ポン" },
@@ -470,11 +471,10 @@ export default function PongOverlay({ lang, onClose, getCember, haptic, track, i
 
   return createPortal(
     <div style={{ position:"fixed", inset:0, zIndex:100010, background:"radial-gradient(ellipse 90% 55% at 50% 0%, rgba(90,60,150,0.2), transparent 70%), #07060d",
-      display:"flex", flexDirection:"column", animation:"fadeIn 0.35s ease", touchAction: inGame ? "none" : "auto", userSelect:"none", WebkitUserSelect:"none" }}>
+      display:"flex", flexDirection:"column", fontFamily:"'Inter',sans-serif", animation:"fadeIn 0.35s ease", touchAction: inGame ? "none" : "auto", userSelect:"none", WebkitUserSelect:"none" }}>
       {/* Üst: geri + başlık / skor */}
       <div style={{ padding:"calc(10px + var(--sat)) 14px 8px", display:"flex", alignItems:"center", gap:12 }}>
-        <button onClick={() => { if (view === "menu") onClose(); else leaveAll(true); }} aria-label={L(TXT.back)}
-          style={{ ...BTN, width:36, height:36, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", border:"1px solid rgba(255,255,255,0.12)", color:"#cfc7e0", fontSize:16, flexShrink:0 }}>←</button>
+        <BackButton onClick={() => { if (view === "menu") onClose(); else leaveAll(true); }} label={L(TXT.back)} />
         {inGame ? (
           <div style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:14, fontFamily:JOST }}>
             <span style={{ fontSize:12, letterSpacing:1.2, color:LAV, maxWidth:"34%", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{names.op}</span>
