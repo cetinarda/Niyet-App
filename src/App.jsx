@@ -308,7 +308,7 @@ try { if (typeof window !== "undefined") window.__sakinResumeAudio = __resumeAll
 // bildirimi gider (1.3.4'te bu hata yaşandı). Doğru sıra:
 //   1) burada + pbxproj + build.gradle bump  → gönder
 //   2) App Store'da YAYINLANDIKTAN SONRA     → latest-ios-version.json bump
-const APP_VERSION = "1.4.2";
+const APP_VERSION = "1.4.3";
 
 // ── "NE YENİ" NOTLARI ───────────────────────────────────────────────────────
 // Telefon uygulamayı OTOMATİK güncellediğinde kullanıcı "yeni sürüm var"
@@ -320,48 +320,46 @@ const APP_VERSION = "1.4.2";
 // okumak boş metin riski taşır.
 // YENİ SÜRÜMDE: `version`ı APP_VERSION ile aynı yap ve metinleri güncelle.
 const WHATS_NEW = {
-  version: "1.4.2",
+  version: "1.4.3",
   // `since`: bu notların anlattığı özellikler hangi sürümde geldi. O sürümü
   // (ya da sonrasını) zaten görmüş kullanıcıya kart TEKRAR çıkmaz. 1.4.3 notları:
-  // Ayna devam sohbeti, 7/7 tam akort, Çember rozetleri + Ben'deki bildirim zili
-  // (1.4.2'nin Çember/Niyet Mektubu notları git geçmişinde). ⚠️ iOS 1.4.2 (1) iOS 27
-  // açılış çökmesiyle reddedildi, bu notlar 1.4.2 (2) ile çıkıyor (sürüm 1.4.2'ye
-  // geri çekildi, kullanıcı kararı). Yeni görünür özellik
+  // kendini sevme yansıması, Pong galibiyet rozetleri, Orkestra'da niyet sandıkları
+  // (1.4.2'nin Ayna sohbeti/tam akort notları git geçmişinde). Yeni görünür özellik
   // gelince notları yaz, `since`i güncelle. Bildirim merkezinde de bu not görünür.
-  since: "1.4.2",
+  since: "1.4.3",
   // KISA TUT (kullanıcı tercihi, CLAUDE.md çalışma tarzı #3): başlık + en fazla
   // 3 madde. Değişen her şeyi saymak yerine sürümün "başlığı" ne ise onu söyle.
   headline: {
-    tr:"Ayna'yla sohbet ve tam akort",
-    en:"Talk with the Mirror, and the full chord",
-    de:"Gespräch mit dem Spiegel und der volle Akkord",
-    es:"Conversa con el Espejo y el acorde pleno",
-    pt:"Conversa com o Espelho e o acorde pleno",
-    fr:"Converser avec le Miroir, et l'accord parfait",
-    ja:"鏡との対話と、完全な和音",
+    tr:"Kendine yeni bir bakış",
+    en:"A new way to look at yourself",
+    de:"Ein neuer Blick auf dich",
+    es:"Una nueva forma de mirarte",
+    pt:"Uma nova forma de te olhares",
+    fr:"Un nouveau regard sur toi",
+    ja:"自分を見つめる新しいまなざし",
   },
   items: {
-    tr:["Ayna: cevabına doğrudan yanıt ver, sohbet orada sürsün",
-        "Yedi adımın hepsini tamamla, tünel altına dönsün",
-        "Çember'de rozetler, Ben'de bildirim zili"],
-    en:["Mirror: reply to its answer and keep the conversation going",
-        "Complete all seven steps and the tunnel turns gold",
-        "Badges in the Circle, a notification bell in Me"],
-    de:["Spiegel: antworte direkt auf seine Antwort, das Gespräch geht weiter",
-        "Schließe alle sieben Schritte ab, dann wird der Tunnel golden",
-        "Abzeichen im Kreis, eine Mitteilungsglocke unter Ich"],
-    es:["Espejo: responde a su respuesta y la conversación continúa",
-        "Completa los siete pasos y el túnel se vuelve dorado",
-        "Insignias en el Círculo y una campana de avisos en Yo"],
-    pt:["Espelho: responde à resposta dele e a conversa continua",
-        "Completa os sete passos e o túnel fica dourado",
-        "Insígnias no Círculo e um sino de notificações em Eu"],
-    fr:["Miroir : réponds à sa réponse, la conversation continue",
-        "Termine les sept étapes et le tunnel devient doré",
-        "Des badges dans le Cercle, une cloche de notifications dans Moi"],
-    ja:["鏡：答えにそのまま返信して、対話を続けられます",
-        "7つのステップをすべて終えると、トンネルが金色に",
-        "サークルにバッジ、「わたし」にお知らせのベル"],
+    tr:["Ben'de kendini sevme yansıması: eski kodu bırak, yenisini taşı",
+        "Çember'de Pong galibiyet rozetleri",
+        "Orkestra'da mühürlü niyet sandıkları"],
+    en:["A self-love reflection in Me: let go of an old code, carry a new one",
+        "Pong win badges in the Circle",
+        "Sealed intention chests in the Orchestra"],
+    de:["Eine Selbstliebe-Spiegelung unter Ich: einen alten Code loslassen, einen neuen tragen",
+        "Pong-Siegesabzeichen im Kreis",
+        "Versiegelte Absichtstruhen im Orchester"],
+    es:["Un reflejo de amor propio en Yo: suelta un código antiguo, lleva uno nuevo",
+        "Insignias de victorias de Pong en el Círculo",
+        "Cofres de intención sellados en la Orquesta"],
+    pt:["Um reflexo de amor-próprio em Eu: larga um código antigo, leva um novo",
+        "Insígnias de vitórias de Pong no Círculo",
+        "Baús de intenção selados na Orquestra"],
+    fr:["Un reflet d'amour de soi dans Moi : laisse un ancien code, porte un nouveau",
+        "Des badges de victoires au Pong dans le Cercle",
+        "Des coffres d'intention scellés dans l'Orchestre"],
+    ja:["「わたし」に自分を愛するふりかえり：古いコードを手放し、新しいコードを持ち歩く",
+        "サークルにポンの勝利バッジ",
+        "オーケストラに封印された意図の箱"],
   },
 };
 // Tam (canonical) adres kullanılıyor: kısa /app/id... adresi /us/.../slug/...'a
