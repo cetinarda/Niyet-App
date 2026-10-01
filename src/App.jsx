@@ -8180,6 +8180,12 @@ export default function SakinApp() {
     try { if (localStorage.getItem("sakin_hazirim_today")) return "bugun"; } catch(_) {}
     return "giris";
   };
+  // HAZIRIM'a en az bir kez basmış mı? (Eki 2026, kullanıcı: "kişi bir kere hazırım
+  // deyip girmişse HAZIRIM ekranına dönmek anlamsız; ana sayfa her zaman Bugün'e").
+  // true ise giriş/HAZIRIM ekranına HİÇBİR yoldan dönülmez: ⌂, "← Sakin" ve geri
+  // tuşu Bugün'e gider (doğum yoksa Bugün kendi kapısını gösterir). Giriş ekranı
+  // yalnızca doğum formu (girisPhase "birth") ve hesap silme için kalır.
+  const enteredOnce = () => { try { return !!localStorage.getItem("sakin_hazirim_today"); } catch(_) { return false; } };
   const [screen,        setScreenRaw]     = useState(_initialScreen);
   const screenHistoryRef = useRef([_initialScreen()]);
   const isPopRef = useRef(false);
@@ -10304,8 +10310,17 @@ export default function SakinApp() {
   // İki yolu da denemiş kullanıcıda (her iki onboarding bitti) çıkmaz, zaten
   // merak edecek yol kalmadı. Deneyimli kullanıcıda (isEarlyTunnel false)
   // hiç çıkmaz: güncellemeyle gelen eski kullanıcı sayaç 0'dan başlasa bile.
+  //
+  // GÜNCEL (Eki 2026, kullanıcı: "doğum bilgilerini girmişse zaten appi sevmiştir,
+  // tekrar yolu çıkartmayalım; bir oturum boyunca tekrar göstermeyelim"):
+  // doğum bilgisi KAYITLIYSA hiç çıkmaz; yoksa oturum başına EN FAZLA bir kez
+  // (sessionStorage `sakin_nedir_shown`). İlk 3 açılış kuralı bunların ÜSTÜNE gelir.
   const nedirEligible = () => {
     if (!isEarlyTunnel) return false;
+    if (birthDate) return false;
+    try {
+      if (sessionStorage.getItem("sakin_nedir_shown") === "1") return false;
+    } catch(_) {}
     try {
       if (localStorage.getItem("sakin_nedir_off") === "1") return false;
       if (localStorage.getItem("sakin_onb_baglan") && localStorage.getItem("sakin_onb_kesfet")) return false;
@@ -10316,6 +10331,7 @@ export default function SakinApp() {
   // "3 açılış" kuralının işe yarayıp yaramadığını veriyle görmek için.
   const maybeShowNedir = () => {
     if (!nedirEligible()) return;
+    try { sessionStorage.setItem("sakin_nedir_shown", "1"); } catch(_) {}
     setShowNedir(true);
     try { track("fork_shown"); } catch(_) {}
   };
@@ -10850,7 +10866,14 @@ export default function SakinApp() {
       isPopRef.current = true;
       const hist = screenHistoryRef.current;
       if (hist.length > 1) hist.pop();
-      const prev = hist[hist.length - 1] || "giris";
+      let prev = hist[hist.length - 1] || "giris";
+      // Girmiş kullanıcı geri giderken giriş ekranına (HAZIRIM ya da az önce
+      // kaydettiği doğum formu) DÜŞMEZ: o kayıtlar atlanır, en dipte Bugün.
+      if (prev === "giris" && enteredOnce()) {
+        while (hist.length > 1 && hist[hist.length - 1] === "giris") hist.pop();
+        prev = hist[hist.length - 1];
+        if (prev === "giris") { prev = "bugun"; hist[hist.length - 1] = "bugun"; }
+      }
       setScreenRaw(prev);
       // KRİTİK: bayrağı BURADA sıfırla. onPop setScreenRaw kullanır (setScreen değil),
       // yani isPopRef tüketilmez; sıfırlanmazsa geri hareketinden SONRAKİ ilk setScreen
@@ -12923,7 +12946,9 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
         <button
           onClick={()=>{
             if (!isNative) { window.location.href = "/"; return; }
-            setShowAilesi(false); setGirisPhase("intro"); setScreen("giris");
+            setShowAilesi(false);
+            if (enteredOnce()) { setScreen("bugun"); return; }   // ana sayfa = Bugün
+            setGirisPhase("intro"); setScreen("giris");
           }}
           style={{ background:"transparent",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:5,padding:"0 10px 0 6px",height:44,flexShrink:0,borderRight:"1px solid rgba(255,255,255,0.06)" }}
         >
@@ -14208,6 +14233,9 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
             // ikonuna tıklandığında dil seçim ekranına dönsün" diyerek geri aldı.
             // Adım akışında kilitlenme riski yok: alt bardaki 4 sekme artık her
             // ekranda sabit duruyor, çıkış her zaman elinin altında.
+            // GÜNCEL (Eki 2026): HAZIRIM'a bir kez basmış kullanıcı için ⌂ = BUGÜN
+            // (kullanıcı: "ana sayfaya dön tuşu her zaman Bugün'e gitmeli").
+            if(n.id==="giris" && enteredOnce()) { setScreen("bugun"); return; }
             if(n.id==="giris") setGirisPhase("intro");
             setScreen(n.id);
             // NOT: burada bir `setShowTopMenu(false)` çağrısı duruyordu. Native
@@ -14588,6 +14616,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
           stop();
           if (onbStep >= LAST) { finish(); return; }
           if (!isB && onbStep >= 2 && !birthInput && !birthDate) { finish(); return; }
+          if (!isB && onbStep === 1 && birthDate) { setOnbStep(4); return; }
           // ŞEHİR ADIMINI GEÇERKEN KAYDET. Eskiden kayıt YALNIZCA "Haritamı
           // çıkar" butonunda yapılıyordu: kullanıcı tarihini/saatini yazıp son
           // adımda "Geç" derse yazdıklarının hepsi uçuyor, harita animasyonu
@@ -14596,7 +14625,14 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
           if (!isB && onbStep === 3) { saveBirthInputs({ mode: "lenient" }); setOnbStep(4); return; }
           setOnbStep(onbStep + 1);
         };
-        const nextStep = () => { stop(); setOnbStep(Math.min(onbStep + 1, LAST)); };
+        // DOĞUM ZATEN KAYITLIYSA (Eki 2026, kullanıcı: "Keşfet seçince doğum bilgisi
+        // yeniden, içi dolu görünüyor; mantıksız") ad adımından sonra tarih/şehir
+        // atlanır, doğrudan "harita hazırlanıyor" + sonuç kartına geçilir.
+        const nextStep = () => {
+          stop();
+          if (!isB && onbStep === 1 && birthDate) { setOnbStep(4); return; }
+          setOnbStep(Math.min(onbStep + 1, LAST));
+        };
 
         // Doğum bilgisini KAYDET, sonra harita animasyonuna geç. astro/yukselen
         // yalnızca COMMIT edilmiş state'ten türüyor (birthDate/Time/City),
