@@ -39,7 +39,12 @@ gerekçesiyle buraya ekle (tarih + kullanıcının sözü).
   ya da ECR-R'nin Türkçe uyarlamasına (Selçuk ve ark. 2005) geçiş, norm tabanlı
   kesim noktası, pilot veri (Cronbach alfa + test-tekrar test).
 
-### 4. Konuma göre bildirim: İPTAL (kullanıcı, 1 Eki 2026)
+### 4. SoulID: İngilizce modda kalan Türkçe parçalar (A4'ün dışında kaldı)
+- `components/CharacterStats.tsx` iki başlık + `lib/stats` stat adları/açıklamaları.
+- `HeroCard`, `ProfileCard`, `app/history/page.tsx` kayıtlı Türkçe yıldız ırkı adını gösteriyor;
+  history'de sabit "Yaşam Yolu". Çözüm: `concepts-en.ts` ırk tablosundan okumak.
+
+### 5. Konuma göre bildirim: İPTAL (kullanıcı, 1 Eki 2026)
 - Yerine: AI bildirim süzgeci ortam varsayan metinleri (pencere, havalandır...)
   eliyor (B1). Konum izni ekleme. Kayıt için burada.
 
@@ -54,7 +59,7 @@ Sıra: A -> B -> C -> build + R8 + cihaz testi. Bittikçe [x] işaretle.
   Yol seçimi: doğum bilgisi varsa HİÇ çıkmaz, yoksa oturum başına en fazla 1 kez.
 - [x] A2 İkili uyum ilk dokunuşta SoulID ana sayfası (köprü 8 sn yarışı).
 - [x] A3 Ortak BackButton (SVG ok), Çember/Odalar/Pong/meditasyon.
-- [ ] A4 SoulID İngilizce kavram kartları + detay penceresi portal.
+- [x] A4 SoulID İngilizce kavram kartları + detay penceresi portal.
 - [x] A5 Bağlanma testi: "korkulu-kaçıngan", eşitlikte güvenli taraf, "şu anki eğilimin".
 - [x] A6 Bildirim smallIcon `ic_stat_sakin`.
 

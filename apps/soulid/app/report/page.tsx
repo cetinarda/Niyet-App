@@ -85,7 +85,7 @@ export default function ReportPage() {
     } catch { /* sessiz */ }
   }, [report]);
 
-  const concepts = useMemo(() => (report ? buildConceptDecks(report) : []), [report]);
+  const concepts = useMemo(() => (report ? buildConceptDecks(report, locale) : []), [report, locale]);
 
   if (hydrated && !report) {
     return (

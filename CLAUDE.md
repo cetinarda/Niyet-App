@@ -303,6 +303,15 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
       kesiyordu: ilk dokunuş SoulID ana sayfası, ikinci dokunuş /pair. Artık sınır 14 sn VE
       `?go=pair/sky` ile gelindiyse cihazda karne varsa köprü BEKLENMEDEN hedefe gidilir,
       köprü arka planda tazeler (`app/page.tsx`). Köprü süresini 12 sn'nin altına İNDİRME.
+    - **KAVRAM KARTLARI İNGİLİZCE (Eki 2026, kullanıcı geri bildirimi: "İngilizce seçimde
+      Batı astrolojisi, Kuzey Ay Düğümü Türkçe kalıyor"):** `buildConceptDecks(report, locale)`
+      (`lib/concepts.ts`); rapor verisi TÜRKÇE saklanır, İngilizcesi `lib/content/concepts-en.ts`
+      tablolarından SABİT ANAHTARLA (burç, sayı, kart no, rün/nakshatra adı) bakılır, eksikse
+      Türkçeye düşer. Türkçe çıktı byte-identical (400 örnekle doğrulandı). Yeni içerik eklersen
+      İngilizcesini de bu dosyaya ekle. Detay pencereleri (kavram kartı, 3B gezegen) ortak
+      `components/Sheet.tsx`: body'ye PORTAL, kaydırma kilidi + konum geri yükleme, 88dvh. Eskiden
+      iframe'de sayfanın DİBİNDE açılıp ekranı "donmuş" gösteriyordu. Hâlâ Türkçe kalanlar
+      (CharacterStats, HeroCard/ProfileCard ırk adı, history "Yaşam Yolu"): SONRA-YAPILACAKLAR.
     - **BAĞLANMA TESTİ (Eki 2026):** eşitlik (tam 50) artık güvenli tarafa (`> MID`; eskiden
       her soruya "Bazen" diyen "düzensiz" çıkıyordu). "Düzensiz" adı "Korkulu-kaçıngan"
       oldu (anahtar `disorganized` AYNI, kayıtlı sonuçlar bozulmasın; host `ATTACH_TXT` 7 dil).

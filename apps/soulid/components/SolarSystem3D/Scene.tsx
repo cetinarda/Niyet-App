@@ -11,6 +11,7 @@ type Props = {
   chart: Chart;
   onSelect: (planetKey: string) => void;
   selected: string | null;
+  locale?: 'tr' | 'en';
 };
 
 function lonToXZ(longitude: number, distance: number): [number, number, number] {
@@ -62,11 +63,13 @@ function EarthMesh() {
 
 function PlanetMesh({
   planet,
+  label,
   longitude,
   onClick,
   isSelected,
 }: {
   planet: PlanetVisual;
+  label: string;
   longitude: number;
   onClick: () => void;
   isSelected: boolean;
@@ -135,7 +138,7 @@ function PlanetMesh({
           anchorX="center"
           anchorY="bottom"
         >
-          {planet.glyph} {planet.tr}
+          {planet.glyph} {label}
         </Text>
       </Billboard>
     </group>
@@ -168,11 +171,13 @@ function OrbitRing({ distance }: { distance: number }) {
 
 function PlanetWithFallback({
   planet,
+  label,
   longitude,
   onClick,
   isSelected,
 }: {
   planet: PlanetVisual;
+  label: string;
   longitude: number;
   onClick: () => void;
   isSelected: boolean;
@@ -183,24 +188,27 @@ function PlanetWithFallback({
       fallback={
         <FallbackSphere
           planet={planet}
+          label={label}
           longitude={longitude}
           isSelected={isSelected}
           onClick={onClick}
         />
       }
     >
-      <PlanetMesh planet={planet} longitude={longitude} onClick={onClick} isSelected={isSelected} />
+      <PlanetMesh planet={planet} label={label} longitude={longitude} onClick={onClick} isSelected={isSelected} />
     </Suspense>
   );
 }
 
 function FallbackSphere({
   planet,
+  label,
   longitude,
   isSelected,
   onClick,
 }: {
   planet: PlanetVisual;
+  label: string;
   longitude: number;
   isSelected: boolean;
   onClick: () => void;
@@ -220,7 +228,7 @@ function FallbackSphere({
           anchorX="center"
           anchorY="bottom"
         >
-          {planet.glyph} {planet.tr}
+          {planet.glyph} {label}
         </Text>
       </Billboard>
     </group>
@@ -236,7 +244,7 @@ function FallbackEarth() {
   );
 }
 
-export default function Scene({ chart, onSelect, selected }: Props) {
+export default function Scene({ chart, onSelect, selected, locale = 'tr' }: Props) {
   const isCoarse =
     typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
   const starCount = isCoarse ? 1500 : 3000;
@@ -271,6 +279,7 @@ export default function Scene({ chart, onSelect, selected }: Props) {
           <PlanetWithFallback
             key={p.key}
             planet={p}
+            label={locale === 'en' ? p.en : p.tr}
             longitude={lon}
             onClick={() => onSelect(p.key)}
             isSelected={selected === p.key}
