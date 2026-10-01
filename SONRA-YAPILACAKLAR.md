@@ -78,7 +78,7 @@ Sıra: A -> B -> C -> build + R8 + cihaz testi. Bittikçe [x] işaretle.
   güncelleyince kaybolur. store-version-watch'taki gdkpd adımı kaldırılır.
 - [x] C4 Tanıtım turu: 3-4 ANA ADIM (kullanıcı kararı), kullanıcı başlatır, atlanabilir,
   Ayarlar'da "Turu yeniden izle".
-- [ ] C5 Kendini sevme YANSIMASI (test değil), özgün 8-10 soru, puan yok, 21 gün sonra
+- [x] C5 Kendini sevme YANSIMASI (test değil), özgün 8-10 soru, puan yok, 21 gün sonra
   hatırlatma, yalnızca cihazda, Ben > Bağlanma kutusunun altı.
 - [ ] C6 Pong galibiyet rozeti: yalnızca iki kişilik, iki cihazın raporu eşleşirse,
   aynı rakipten günlük sınır, eşikler 5 / 15 / 30 / 50, profilde tek rozet, gizlilik 3 yer.

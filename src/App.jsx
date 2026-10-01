@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useMemo, memo, lazy, Suspense } from "react";
 import BackButton, { BackArrow } from "./back-button.jsx";
 import { TourOffer, TourOverlay, TOUR_TXT } from "./tour.jsx";
+import { SelfLoveCard, selfLoveEveningLine } from "./selflove.jsx";
 import { createPortal } from "react-dom";
 import { makeTrans, LANGUAGES } from "./i18n";
 import { CHAKRA_TRANS, FREQ_TRANS, ASTRO_TRANS, NOTIF_TRANS } from "./i18n-data";
@@ -6243,7 +6244,11 @@ async function scheduleAllNotifications(lang, birthDate, opts = {}) {
       })();
       for (const slot of plan) {
         if (slot === "aksam") {
-          if (coachInEvening && addCoach(9070 + d, at(18), getCoach())) { /* koç */ }
+          // Kendini sevme yansımasından sonraki 2./5./9. akşam: kişinin YENİ KODU gider
+          // (src/selflove.jsx, günlük sayı artmaz; dokununca Ben'deki kart + tam metin).
+          const slLine = selfLoveEveningLine(lang, day);
+          if (slLine && !recent.has(slLine) && !clash("ic")) addT(9070 + d, at(18), { body: slLine, extra: { screen: "harita", note: 1 } }, "ic");
+          else if (coachInEvening && addCoach(9070 + d, at(18), getCoach())) { /* koç */ }
           else addT(9070 + d, at(18), pickT(eveningPool, "ev"));
         }
         else if (slot === "koc") {
@@ -17173,6 +17178,8 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
             );
           })()}
           {/* NİYET MEKTUBU: 21 gün mühürlü kalan mektup (bkz. NiyetMektubu). */}
+          {/* KENDİNİ SEVME YANSIMASI (1.4.3, src/selflove.jsx): bağlanma kutusunun altı. */}
+          <SelfLoveCard lang={lang} haptic={haptic} onTrack={(d) => { try { track("selflove", d); } catch (_) {} }} />
           <NiyetMektubu lang={lang} />
           {/* İÇSEL HARİTA: artık açılır-kapanır ve KAPALI başlıyor (kullanıcı
               isteği). Ekrandaki diğer bölümlerle (haftalık rapor, 12. ev,

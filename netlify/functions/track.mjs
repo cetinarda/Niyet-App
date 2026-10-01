@@ -133,6 +133,10 @@ export function mergeBatch(rec, body, now) {
     // Deep link ile açılış (App Store etkinliği vb.): hedef ekran sayılır.
     else if (e === "pong") { if (["open", "single", "host", "join", "end", "invite"].includes(it.a)) bump("pong_" + it.a); }
     else if (e === "rooms") { if (["open", "room", "event", "practice"].includes(it.a)) bump("rooms_" + it.a); }
+    else if (e === "selflove") {
+      if (it.a === "start" || it.a === "done") bump("selflove_" + it.a);
+      if (it.a === "done" && ["kind", "bond", "calm", "see"].includes(it.w)) bump("selflove_w_" + it.w);
+    }
     else if (e === "tour") { if (["offer", "start", "later", "skip", "done"].includes(it.a)) bump("tour_" + it.a); }
     else if (e === "inbox") { if (it.a === "open" || it.a === "update") bump("inbox_" + it.a); }
     else if (e === "deeplink_open") {

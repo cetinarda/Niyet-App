@@ -1021,6 +1021,20 @@ alt klasörü doğrudan açmak iOS'ta güvenilir değil). Stil adları/özleri
 `ATTACH_TXT` (7 dil), SoulID `lib/attachment/index.ts` STYLES ile BİREBİR:
 orada değişirse burayı da değiştir. Test ekranının kendisi yalnızca tr/en.
 
+## 🌸 BEN > KENDİNİ SEVME YANSIMASI (1.4.3, Eki 2026; kullanıcı: "kendini yargılama kodlarını güncelleyip
+kendini sevmesini ve etrafındaki güzellikleri görmesini sağlayacak kısa, benzersiz test; hatırlatmalar")
+
+- `src/selflove.jsx` `SelfLoveCard` (Bağlanma Profili kutusu ile Niyet Mektubu arasında). Adı TEST
+  DEĞİL "yansıma", PUAN YOK, tanı iddiası yok (Apple 1.4.1, kullanıcı onayı). 8 ÖZGÜN cümle (Neff
+  ölçeği KOPYALANMADI), 4 alan: kendine nezaket / yalnız olmadığını bilmek / duygulara alan açmak /
+  güzelliği görmek; ters maddeler çevrilir. Sonuç: en güçlü alan + şefkat isteyen alan + o alan için
+  "eski kod -> yeni kod" + taşınacak cümle. 7 dil (`SL_ITEMS`, `SL_AREAS`, `SL_TXT`).
+- Veri YALNIZCA cihazda (`sakin_selflove`). Analitik `selflove` {start/done, w = şefkat isteyen alan
+  kategorisi} yalnızca sayaç (track + rapor).
+- Hatırlatma: yansımadan sonraki 2. ve 9. akşam YENİ KOD, 5. akşam taşınacak cümle; AKŞAM slotunun
+  YERİNE geçer (günlük sayı artmaz, tema "ic"), dokununca Ben + tam metin kartı. 21 gün sonra kart
+  "21 gün geçti, kendine bakışın nasıl değişti?" der ve yeniden bakmaya çağırır.
+
 ## ✉ BEN > NİYET MEKTUBU (kullanıcı isteği, Eyl 2026: "21 gün sonra açılsın, geri sayım olsun" + "fikri geliştir")
 
 Bağlanma Profili kutusunun altında, `NiyetMektubu` bileşeni (MODÜL seviyesinde,

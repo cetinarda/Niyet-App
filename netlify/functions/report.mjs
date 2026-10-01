@@ -119,7 +119,7 @@ export function aggregate(users) {
         }
       // ⚠️ cember_/letter_/deeplink_/push_optin_/jserr_ bu süzgeçte YOKTU: track.mjs
       // onları sayıyordu ama rapor hep 0 gösteriyordu (Eyl 2026 düzeltmesi).
-      } else if (/^(fork_|bgate_|ayna_|notif_|cember_|letter_|deeplink_|push_optin_|jserr_|inbox_|pong_|rooms_|tour_)/.test(k)) {
+      } else if (/^(fork_|bgate_|ayna_|notif_|cember_|letter_|deeplink_|push_optin_|jserr_|inbox_|pong_|rooms_|tour_|selflove_)/.test(k)) {
         ch[k] = (ch[k] || 0) + c[k];
       }
     }
@@ -212,6 +212,7 @@ export function aggregate(users) {
       pushYes: ch.push_optin_1 || 0, pushNo: ch.push_optin_0 || 0,
       inboxOpen: ch.inbox_open || 0, inboxUpdate: ch.inbox_update || 0,
       tour: ["offer", "start", "later", "skip", "done"].reduce((o, k) => (o[k] = ch["tour_" + k] || 0, o), {}),
+      selflove: ["start", "done", "w_kind", "w_bond", "w_calm", "w_see"].reduce((o, k) => (o[k] = ch["selflove_" + k] || 0, o), {}),
       rooms: ["open", "room", "event", "practice"].reduce((o, k) => (o[k] = ch["rooms_" + k] || 0, o), {}),
       pong: ["open", "single", "host", "join", "end", "invite"].reduce((o, k) => (o[k] = ch["pong_" + k] || 0, o), {}),
       cember: ["open", "rules", "send", "report", "block", "crisis", "badges", "badgeof", "pong_invite", "pong_accept"].reduce((o, k) => (o[k] = ch["cember_" + k] || 0, o), {}),
@@ -451,6 +452,7 @@ export function renderHTML(r, truncated) {
        <tr><td>Pong: açılış / tek oyuncu / oda açma / katılma / biten maç / davetle</td><td class="num">${["open","single","host","join","end","invite"].map((k) => (c.pong || {})[k] || 0).join(" / ")}</td></tr>
        <tr><td>Bildirim merkezi (zil) açılışı</td><td class="num">${c.inboxOpen || 0}</td></tr>
        <tr><td>Zilden "Güncelle"ye dokunma</td><td class="num">${c.inboxUpdate || 0}</td></tr>
+       <tr><td>Kendini sevme yansıması: başladı / bitirdi (şefkat isteyen: nezaket · bağ · denge · görme)</td><td class="num">${c.selflove ? `${c.selflove.start} / ${c.selflove.done} (${c.selflove.w_kind} · ${c.selflove.w_bond} · ${c.selflove.w_calm} · ${c.selflove.w_see})` : "-"}</td></tr>
        <tr><td>Tanıtım turu: teklif / başladı / sonra / atladı / bitirdi</td><td class="num">${c.tour ? [c.tour.offer, c.tour.start, c.tour.later, c.tour.skip, c.tour.done].join(" / ") : "-"}</td></tr>
        <tr><td>Çember: rozet rehberi / takma ada dokunup rozet özeti</td><td class="num">${(c.cember || {}).badges || 0} / ${(c.cember || {}).badgeof || 0}</td></tr>
        <tr><td>Uygulama hatası (hata ekranına düşen)</td><td class="num">${c.jsErr || 0}</td></tr>
